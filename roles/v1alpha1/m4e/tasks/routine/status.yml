@@ -10,4 +10,4 @@
   when: status_moodle_task.stdout is defined and status_moodle_task.stdout
   delegate_to: localhost
   vars:
-    k8s_status_status: "{{ status_moodle_task.stdout | from_json }}"
+    k8s_status_properties: "{{ status_moodle_task.stdout | from_json }}"

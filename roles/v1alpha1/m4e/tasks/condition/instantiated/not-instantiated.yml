@@ -2,7 +2,7 @@
   import_tasks: "{{ common_path }}/k8s/status.yml"
   vars:
     lastTransitionTime: "{{ now(utc=False).isoformat(timespec='seconds') + 'Z' }}"
-    k8s_status_status:
+    k8s_status_properties:
       instantiated: "False"
       ready: "False"
     k8s_status_conditions:

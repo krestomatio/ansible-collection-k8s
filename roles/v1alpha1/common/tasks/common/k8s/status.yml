@@ -8,7 +8,7 @@
     kind: "{{ k8s_status_kind | default(cr_kind) }}"
     name: "{{ k8s_status_name | default(meta_name) }}"
     namespace: "{{ k8s_status_namespace | default(meta_namespace) }}"
-    status: "{{ k8s_status_status | default(omit,true) }}"
+    status: "{{ k8s_status_properties | default(omit,true) }}"
     conditions: "{{ k8s_status_conditions | default(omit,true) }}"
 
 - name: set uid fact

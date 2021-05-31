@@ -52,6 +52,6 @@
         - name: set nginx ingress ip status
           import_tasks: "{{ common_path }}/k8s/status.yml"
           vars:
-            k8s_status_status:
+            k8s_status_properties:
               ip: "{{ (nginx_ingress_ip_task.resources | first).status.loadBalancer.ingress |
                 map(attribute='ip') | first }}"
