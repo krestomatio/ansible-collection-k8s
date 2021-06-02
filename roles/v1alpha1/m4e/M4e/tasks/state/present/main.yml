@@ -1,7 +1,7 @@
 - name: import tasks
   block:
     - name: handle initial status
-      import_tasks: init-status.yml
+      import_tasks: status/init.yml
 
     - name: handle postgres
       import_tasks: postgres.yml

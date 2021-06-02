@@ -6,6 +6,6 @@
     component: php-fpm
     metadata_app: "{{ php_fpm_appname }}"
   block:
-    - import_tasks: php-fpm/deploy.yml
+    - import_tasks: php-fpm/resource/deploy.yml
 
-    - import_tasks: php-fpm/service.yml
+    - import_tasks: php-fpm/resource/service.yml

@@ -6,7 +6,7 @@
 - name: import tasks
   block:
     - name: handle initial status
-      import_tasks: init-status.yml
+      import_tasks: status/init.yml
 
     - name: handle nginx removal
       import_tasks: nginx.yml
@@ -19,7 +19,6 @@
 
     - name: handle postgres removal
       import_tasks: postgres.yml
-
   rescue:
     - name: include rescue tasks
       import_tasks: rescue.yml

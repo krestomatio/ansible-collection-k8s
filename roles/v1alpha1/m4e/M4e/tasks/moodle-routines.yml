@@ -5,8 +5,8 @@
         hostvars['localhost'].k8s_php_fpm_deploy is changed) or
         (hostvars['localhost'].k8s_nginx_deploy is defined and
         hostvars['localhost'].k8s_nginx_deploy is changed)
-  include_tasks: routine/refresh-inventory.yml
+  include_tasks: refresh-inventory.yml
 
-- import_tasks: routine/status.yml
+- import_tasks: moodle/routine/status.yml
 
-- import_tasks: routine/sync-config.yml
+- import_tasks: moodle/routine/sync-config.yml

@@ -6,10 +6,10 @@
     component: nginx
     metadata_app: "{{ nginx_appname }}"
   block:
-    - import_tasks: nginx/deploy.yml
+    - import_tasks: nginx/resource/deploy.yml
 
-    - import_tasks: nginx/service.yml
+    - import_tasks: nginx/resource/service.yml
 
-    - import_tasks: nginx/route.yml
+    - import_tasks: nginx/resource/route.yml
 
-    - import_tasks: nginx/ingress.yml
+    - import_tasks: nginx/resource/ingress.yml
