@@ -15,8 +15,10 @@ state: present
 
 # common path
 common_path: common
+
 # templates
 deploy_template: "{{ common_path }}/deploy.yaml.j2"
+sts_template: "{{ common_path }}/sts.yaml.j2"
 job_template: "{{ common_path }}/job.yaml.j2"
 cronjob_template: "{{ common_path }}/cronjob.yaml.j2"
 config_template: "{{ common_path }}/config.yaml.j2"
@@ -25,7 +27,7 @@ secret_template: "{{ common_path }}/secret.yaml.j2"
 service_template: "{{ common_path }}/service.yaml.j2"
 route_template: "{{ common_path }}/route.yaml.j2"
 ingress_template: "{{ common_path }}/ingress.yaml.j2"
-
+sc_template: "{{ common_path }}/sc.yaml.j2"
 
 # inventory
 inventory_include: false
