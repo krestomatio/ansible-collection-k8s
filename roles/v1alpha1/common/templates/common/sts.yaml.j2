@@ -3,7 +3,7 @@
 kind: StatefulSet
 apiVersion: apps/v1
 {% include common_path + '/metadata.j2' ignore missing %}
-{% if deploy_spec != false %}
+{% if sts_spec != false %}
 spec:
-  {{ deploy_spec | indent(width=2) }}
+  {{ sts_spec | indent(width=2) }}
 {% endif %}
