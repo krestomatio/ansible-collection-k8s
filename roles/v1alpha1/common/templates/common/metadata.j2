@@ -8,9 +8,13 @@ metadata:
     app: '{{ metadata_app | default(metadata_name) | default(default_name) }}'
     app.kubernetes.io/name: '{{ metadata_app | default(metadata_name) | default(default_name) }}'
     app.kubernetes.io/instance: '{{ meta_name }}'
-    app.kubernetes.io/part-of: moodle
     app.kubernetes.io/managed-by: ansible
-    app.kubernetes.io/created-by: m4e-operator
+{% if meta_app_part_of | default(false) != false %}
+    app.kubernetes.io/part-of: "{{ meta_app_part_of }}"
+{% endif %}
+{% if meta_app_created_by | default(false) != false %}
+    app.kubernetes.io/created_by: {{ meta_app_created_by }}
+{% endif %}
 {% if inventory_uuid | default(false) != false and inventory_include %}
     {{ cr_group }}/inventory: '{{ inventory_uuid }}'
 {% endif %}
