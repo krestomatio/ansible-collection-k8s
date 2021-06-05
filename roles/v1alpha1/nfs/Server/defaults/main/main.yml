@@ -1,0 +1,14 @@
+---
+# defaults file for m4e
+cr_group: nfs.krestomat.io
+cr_kind: Server
+
+# custom resource state: present, absent
+cr_state: present
+
+# templates
+server_sts_spec_template: sts/server-spec.yaml.j2
+
+# common labels
+meta_app_part_of: nfs
+meta_app_created_by: nfs-operator

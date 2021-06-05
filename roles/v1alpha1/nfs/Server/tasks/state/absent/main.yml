@@ -1,0 +1,15 @@
+- name: set state absent
+  set_fact:
+    state: absent
+    k8s_wait: true
+
+- name: import tasks
+  block:
+#     - name: handle initial status
+#       import_tasks: status/init.yml
+
+    - name: handle nfs
+      import_tasks: nfs.yml
+  # rescue:
+  #   - name: include rescue tasks
+  #     import_tasks: rescue.yml

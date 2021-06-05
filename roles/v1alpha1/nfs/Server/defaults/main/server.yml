@@ -1,0 +1,89 @@
+# server
+## nfs server size is either 1 or 0. If > 1 it will be converted to 1
+server_size: 1
+server_state: "{{ state }}"
+server_appname: "{{ meta_name }}-server"
+server_image: rook/nfs:v1.6.2
+server_container: "nfs-server"
+server_container_group: "{{ server_container.replace('-', '_') }}"
+server_provisoner: "nfs.krestomatio.io/{{ meta_name }}-provisioner"
+
+# configmap
+server_cm: "{{ server_appname }}-cm"
+server_cm_data: |-
+  {{ meta_name }}: {{ server_export_config | to_json }}
+server_export_name: share1
+server_export_config: |
+  EXPORT {
+  	Export_Id = 10;
+  	Path = {{ '/' + server_export_pvc }};
+  	Pseudo = {{ '/' + server_export_pvc }};
+  	Protocols = 4;
+  	Transports = TCP;
+  	Sectype = sys;
+  	Access_Type = {{ server_export_access_type }};
+  	Squash = {{ server_export_squash }};
+  	FSAL {
+  		Name = VFS;
+  	}
+  }
+  NFS_Core_Param {
+  	fsid_device = true;
+  }
+server_export_pvc: "{{ server_pvc }}"
+server_export_access_type: RW
+server_export_squash: none
+
+# pvc
+server_pvc: "{{ server_appname }}-pvc"
+server_pvc_storage_access_modes: ReadWriteOnce
+server_pvc_size: 1Gi
+server_pvc_spec: |
+  {% if server_pvc_storage_class_name is defined and server_pvc_storage_class_name %}
+  storageClassName: {{ server_pvc_storage_class_name }}
+  {% endif %}
+  accessModes:
+    - '{{ server_pvc_storage_access_modes }}'
+  resources:
+    requests:
+      storage: '{{ server_pvc_size }}'
+# sts
+server_sts: "{{ server_appname }}-sts"
+server_resource_requests: true
+server_resource_requests_cpu: 150m
+server_resource_requests_memory: 256Mi
+server_resource_limits: false
+server_resource_limits_cpu: 1
+server_resource_limits_memory: 1Gi
+server_term_grace_period: 30
+server_tolerations: false
+server_sa: nfs-server-sa
+
+# service
+server_service: "{{ server_appname }}-service"
+server_service_spec: |
+  selector:
+    app: '{{ server_appname }}'
+  type: ClusterIP
+  ports:
+  - name: nfs
+    port: 2049
+    protocol: TCP
+    targetPort: 2049
+  - name: rpc
+    port: 111
+    protocol: TCP
+    targetPort: 111
+
+# sc
+server_sc: "{{ server_appname }}-sc"
+server_sc_parameters:
+  exportName: "{{ server_export_name }}"
+  nfsServerName: "{{ meta_name }}"
+  nfsServerNamespace: "{{ meta_namespace }}"
+server_sc_mount_options:
+  - vers=4.2
+server_sc_provisioner: "{{ server_provisoner }}"
+server_sc_allow_volume_expansion: false
+server_sc_reclaim_policy: Delete
+server_sc_volume_binding_mode: Immediate

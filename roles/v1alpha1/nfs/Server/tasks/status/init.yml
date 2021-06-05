@@ -1,0 +1,2 @@
+- name: init status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
