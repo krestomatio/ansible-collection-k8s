@@ -1,4 +1,10 @@
-# tasks file for m4e
+# tasks file for nfs
+- name: assert namespace is 'rook-nfs'
+  assert:
+    that:
+      - meta_namespace == 'rook-nfs'
+    msg: "'Server' CR must be created in rook-nfs namespace"
+
 - name: get k8s distribution
   import_tasks: "{{ common_path }}/k8s/distribution.yml"
 

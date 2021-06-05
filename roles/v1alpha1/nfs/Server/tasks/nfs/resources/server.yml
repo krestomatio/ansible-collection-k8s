@@ -1,0 +1,27 @@
+- name: nfs server resource definition
+  vars:
+    k8s_kind: NFSServer
+    k8s_state: "{{ server_state | default(server_state) }}"
+    template: "{{ server_template }}"
+    metadata_name: "{{ server_appname }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save nfs server resource definition task
+  set_fact:
+    k8s_server: "{{ k8s_object_task }}"
+
+- name: wait for nfs server
+  when:
+    - k8s_server is changed
+    - "'absent' not in server_state | default(server_state)"
+    - not ansible_check_mode
+  retries: 12
+  until:
+    - (server_wait_task.resources | first).status.state is defined
+    - "'Running' in (server_wait_task.resources | first).status.state"
+  k8s_info:
+    api_version: nfs.rook.io/v1alpha1
+    kind: NFSServer
+    name: "{{ server_appname }}"
+    namespace: "{{ meta_namespace }}"
+  register: server_wait_task
