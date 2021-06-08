@@ -11,7 +11,3 @@ spec:
       # A Persistent Volume Claim must be created before creating NFS CRD instance.
       persistentVolumeClaim:
         claimName: {{ server_export_pvc }}
-{% if server_spec_annotations is defined and server_spec_annotations %}
-  annotations:
-    {{ server_spec_annotations | to_nice_yaml(indent=2) | indent(4) }}
-{% endif %}

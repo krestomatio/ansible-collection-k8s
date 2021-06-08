@@ -12,3 +12,7 @@ server_template: server.yaml.j2
 # common labels
 meta_app_part_of: nfs
 meta_app_created_by: nfs-operator
+
+# inventory
+annotation_inventory_hostvars:
+  ansible_python_interpreter: /usr/bin/python3

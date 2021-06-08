@@ -1,0 +1,11 @@
+- name: get mount info
+  register: mount_info_task
+  mount_info:
+    path: "/{{ server_pvc }}"
+
+- name: set mount info in nfs status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  when: mount_info_task.mount_info is defined and mount_info_task.mount_info
+  delegate_to: localhost
+  vars:
+    k8s_status_properties: "{{ mount_info_task.mount_info }}"

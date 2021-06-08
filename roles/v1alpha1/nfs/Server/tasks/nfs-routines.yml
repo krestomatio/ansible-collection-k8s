@@ -1,0 +1,10 @@
+- name: refresh dynamic inventory
+  when: (hostvars['localhost'].k8s_postgres_deploy is defined and
+        hostvars['localhost'].k8s_postgres_deploy is changed) or
+        (hostvars['localhost'].k8s_php_fpm_deploy is defined and
+        hostvars['localhost'].k8s_php_fpm_deploy is changed) or
+        (hostvars['localhost'].k8s_nginx_deploy is defined and
+        hostvars['localhost'].k8s_nginx_deploy is changed)
+  include_tasks: "{{ common_path }}/refresh-inventory.yml"
+
+- import_tasks: nfs/routine/mount_info.yml
