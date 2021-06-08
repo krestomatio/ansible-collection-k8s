@@ -16,3 +16,10 @@
 - name: save nfs storage class resource definition task
   set_fact:
     k8s_server_sc: "{{ k8s_object_task }}"
+
+- name: set sc property in status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  when: k8s_server_sc is changed
+  vars:
+    k8s_status_properties:
+      storage_class: "{{ server_sc }}"
