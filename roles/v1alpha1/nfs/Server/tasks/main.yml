@@ -1,9 +1,9 @@
 # tasks file for nfs
-- name: assert namespace is 'rook-nfs'
+- name: "assert namespace is '{{ servers_namespace }}'"
   assert:
     that:
-      - meta_namespace == 'rook-nfs'
-    msg: "'Server' CR must be created in rook-nfs namespace"
+      - meta_namespace == servers_namespace
+    msg: "'Server' CR must be created in '{{ servers_namespace }}' namespace"
 
 - name: get k8s distribution
   import_tasks: "{{ common_path }}/k8s/distribution.yml"
