@@ -41,3 +41,15 @@
               metadata:
                 labels: "{{ { cr_group + '/inventory': inventory_uuid } }}"
                 annotations: "{{ { cr_group + '/inventory_hostvars': annotation_inventory_hostvars | to_json | indent(width=4) } }}"
+
+    - name: wait for nfs server sts
+      retries: 6
+      until:
+        - (server_sts_wait_task.resources | first).status.readyReplicas is defined
+        - (server_sts_wait_task.resources | first).status.readyReplicas > 0
+      k8s_info:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ server_appname }}"
+        namespace: "{{ meta_namespace }}"
+      register: server_sts_wait_task
