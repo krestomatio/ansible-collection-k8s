@@ -12,9 +12,9 @@
       usage:
         - description: Storage available
           name: size_available
-          unit: GB
-          value: "{{ mount_info_task.mount_info.size_available | krestomatio.k8s.b_to_gb }}"
+          unit: GiB
+          value: "{{ mount_info_task.mount_info.size_available | krestomatio.k8s.b_to_gib }}"
         - description: Total storage
           name: size_total
-          unit: GB
-          value: "{{ mount_info_task.mount_info.size_total | krestomatio.k8s.b_to_gb }}"
+          unit: GiB
+          value: "{{ mount_info_task.mount_info.size_total | krestomatio.k8s.b_to_gib }}"

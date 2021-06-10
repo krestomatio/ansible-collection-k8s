@@ -40,8 +40,8 @@ Example:
 $json = array();
 
 # Convert bytes to gigabytes
-function convertBytesToGB($bytes) {
-    return $gigabytes = round($bytes / 1024 / 1024 / 1024,1);
+function convertBytesToGiB($bytes) {
+    return round($bytes / 1024 / 1024 / 1024,1);
 }
 
 if($options['version']){
@@ -78,24 +78,24 @@ if($options['usage']){
     # save total storage of files in array
     $storage_files = array(
         "name" => "storage_files",
-        "value" => convertBytesToGB($files_bytes),
-        "unit" => "GB",
+        "value" => convertBytesToGiB($files_bytes),
+        "unit" => "GiB",
         "description" => "Total storage used for files"
     );
 
     # save total storage of database in array
     $storage_database = array(
         "name" => "storage_database",
-        "value" => convertBytesToGB($database_bytes),
-        "unit" => "GB",
+        "value" => convertBytesToGiB($database_bytes),
+        "unit" => "GiB",
         "description" => "Total storage used for database"
     );
 
     # save total storage in array
     $storage_total = array(
         "name" => 'storage_total',
-        "value" => convertBytesToGB($files_bytes+$database_bytes),
-        "unit" => "GB",
+        "value" => convertBytesToGiB($files_bytes+$database_bytes),
+        "unit" => "GiB",
         "description" => "Total storage used (database + files)"
     );
 
