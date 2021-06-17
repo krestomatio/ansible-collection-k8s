@@ -25,6 +25,11 @@
       "{% set copy=_cr_status.copy() %}{% if copy.conditions is defined %}{% set
       removed=copy.pop('conditions') %}{% endif %}{{ copy }}"
 
+- name: set ready fact
+  set_fact:
+    cr_status_ready: "{{ true if cr_status_properties.ready is defined and
+      cr_status_properties.ready == 'True' else false }}"
+
 - name: notify status
   when:
     - k8s_status_task is defined and k8s_status_task is changed

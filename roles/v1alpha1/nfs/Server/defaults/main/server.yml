@@ -12,7 +12,7 @@ server_export_access_mode: ReadWrite
 # pvc
 server_pvc: "{{ server_appname }}-pvc"
 server_pvc_storage_access_modes: ReadWriteOnce
-server_pvc_size: 1Gi
+server_pvc_size_gib: "{{ cr_status_properties.server_pvc_size_gib | default('1') }}"
 server_pvc_spec: |
   {% if server_pvc_storage_class_name is defined and server_pvc_storage_class_name %}
   storageClassName: {{ server_pvc_storage_class_name }}
@@ -21,7 +21,13 @@ server_pvc_spec: |
     - '{{ server_pvc_storage_access_modes }}'
   resources:
     requests:
-      storage: '{{ server_pvc_size }}'
+      storage: '{{ server_pvc_size | default(server_pvc_size_gib + 'Gi') }}'
+# enable autoexpansion
+server_pvc_autoexpansion: false
+# Increments in those GiB
+server_pvc_autoexpansion_gib: 25
+# No more than those GiB
+server_pvc_autoexpansion_gib_cap: 1000
 
 # sc
 server_sc: "{{ server_appname }}-sc"

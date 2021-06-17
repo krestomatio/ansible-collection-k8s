@@ -1,3 +1,22 @@
+- name: set autoexpansion nfs pvc size fact
+  when:
+    - server_pvc_autoexpansion
+    - server_pvc_size is not defined
+    - server_pvc_size_gib | int < server_pvc_autoexpansion_gib_cap | int
+    - cr_status_properties.expansion_required | default(false) | bool
+  block:
+    - name: "assert server_pvc_autoexpansion_gib_cap is bigger than server_pvc_autoexpansion_gib"
+      assert:
+        that:
+          - server_pvc_autoexpansion_gib_cap | int > server_pvc_autoexpansion_gib | int
+        msg: "'server_pvc_autoexpansion_gib_cap' must be bigger than 'server_pvc_autoexpansion_gib'"
+
+    - name: set autoexpansion nfs pvc size fact
+      set_fact:
+        server_pvc_size_gib:
+          "{{ server_pvc_size_gib | krestomatio.k8s.autoexpand_gib(server_pvc_autoexpansion_gib,
+          server_pvc_autoexpansion_gib_cap) }}"
+
 - name: nfs pvc resource definition
   vars:
     k8s_kind: PersistentVolumeClaim
@@ -10,3 +29,18 @@
 - name: save nfs pvc resource definition task
   set_fact:
     k8s_server_pvc: "{{ k8s_object_task }}"
+
+- name: set nfs pvc size status
+  when: k8s_server_pvc is defined and k8s_server_pvc is changed
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_properties:
+      server_pvc_size_gib: "{{ server_pvc_size_gib }}"
+
+- name: set autoexpansion done status
+  when:
+    - k8s_server_pvc is defined and k8s_server_pvc is changed
+    - server_pvc_autoexpansion
+    - server_pvc_size is not defined
+    - cr_status_properties.expansion_required | default(false) | bool
+  import_tasks: "condition/expanded/done.yml"
