@@ -23,7 +23,7 @@ options:
     type: str
 
 author:
-  - Job Céspedes Ortiz <jobcespedes@krestomatio.com>
+  - "Job Céspedes Ortiz (@jobcespedes)"
 '''
 
 EXAMPLES = r'''
@@ -57,39 +57,8 @@ mount_info:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_native
-from ansible.module_utils.facts.hardware import linux
-from ansible.module_utils.facts.utils import get_mount_size
+from ansible_collections.krestomatio.k8s.plugins.module_utils.storage import get_mount_info
 
-def get_mount_info(module):
-    lh = linux.LinuxHardware(module)
-    bind_mounts = lh._find_bind_mounts()
-    mtab_entries = lh._mtab_entries()
-    mount_info = {}
-    mount_size = {}
-    for fields in mtab_entries:
-        # Transform octal escape sequences
-        fields = [lh._replace_octal_escapes(field) for field in fields]
-
-        device, mount, fstype, options = fields[0], fields[1], fields[2], fields[3]
-
-        if not device.startswith('/') and ':/' not in device or fstype == 'none':
-            continue
-
-        if module.params['path'] != mount:
-            break
-
-        mount_info = get_mount_size(mount)
-        mount_info['mount'] = mount
-        mount_info['device'] = device
-        mount_info['fstype'] = fstype
-        mount_info['options'] = options
-
-        if mount in bind_mounts:
-            # only add if not already there, we might have a plain /etc/mtab
-            if not lh.MTAB_BIND_MOUNT_RE.match(options):
-                mount_info['options'] += ",bind"
-
-    return mount_info
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -119,8 +88,8 @@ def run_module():
     # if the user is working with this module in only check mode we do not
     # want to make any changes to the environment, just return the current
     # state with no modifications
-    if module.check_mode:
-        module.exit_json(**result)
+    # if module.check_mode:
+    #     module.exit_json(**result)
 
     # manipulate or modify the state as needed (this is going to be the
     # part where your module will do what it needs to do)
