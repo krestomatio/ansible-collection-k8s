@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  creationTimestamp: null
+  name: pullrequest
+spec:
+  pipelineSpec:
+    tasks:
+      - name: pullrequest
+        resources: {}
+        taskSpec:
+          metadata: {}
+          stepTemplate:
+            name: ''
+            env:
+              - name: VERSION_MAKEFILE
+                value: "true"
+              - name: PROJECT_TIMESTAMP
+                value: midnight
+            resources:
+              requests:
+                cpu: 400m
+                memory: 512Mi
+            workingDir: /workspace/source
+          steps:
+            - image: uses:krestomatio/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@1a6580e62be0986d18dbb1c42327231ccc378e7c
+            - image: quay.io/krestomatio/ansible-docker-ci
+              name: pr
+              script: |
+                #!/bin/bash
+                ## copy source to ansible_collections dir
+                rsync -a /workspace/source/ /workspace/ansible_collections/krestomatio/k8s
+
+                ## pipeline from make
+                make ${JOB_NAME}
+              volumeMounts:
+                - name: libdocker
+                  mountPath: /var/lib/docker
+              securityContext:
+                privileged: true
+              workingDir: /workspace/ansible_collections/krestomatio/k8s
+          volumes:
+            - name: libdocker
+              persistentVolumeClaim:
+                claimName: libdocker-0sd6j3-pvc
+  podTemplate: {}
+  serviceAccountName: tekton-bot
+  timeout: 240h0m0s
+status: {}
