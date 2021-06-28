@@ -7,7 +7,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: expand_info
+module: pvc_info
 
 short_description: Get expand info
 
@@ -21,6 +21,11 @@ options:
       - Path to the mount point (e.g. C(/mnt/files))
     required: true
     type: str
+  recommend_size:
+    description:
+      - Whether size recommendation is done based on usage, 'increment_gib' and 'cap_gib'
+    default: false
+    type: bool
   increment_gib:
     description:
       - Recommended GiB increments if expansion required
@@ -28,8 +33,8 @@ options:
     type: int
   cap_gib:
     description:
-      - Cap / max size in GiB to recommend/increment
-    default: 250
+      - Cap / max size in GiB to recommend
+    default: 30
     type: int
 
 author:
@@ -38,44 +43,45 @@ author:
 
 EXAMPLES = r'''
 - name: Get expand info of mount/pvc
-  krestomatio.k8s.expand_info:
+  krestomatio.k8s.pvc_info:
     path: /mypvc
-    increment_gib: 25
-    cap_gib: 250
-  register: expand_info
+    recommend_size: true
+    increment_gib: 5
+    cap_gib: 30
+  register: pvc_info
 '''
 
 RETURN = r'''
-size_available_pct:
-    description: Current available storage percentage (%)
-    type: float
-    returned: success
-    sample: 0.1
-size_available_gib:
-    description: Current available storage (GiB)
-    type: float
-    returned: success
-    sample: 0.5
-size_total_gib:
-    description: Current total storage(GiB)
-    type: float
-    returned: success
-    sample: 5.0
-expansion_required:
-    description: Whether expansion is required if storage available is below percentage
-    type: bool
-    returned: always
-    sample: false
-recommended_size_gib:
-    description: Recommended size after checking available and total storage
-    type: int
-    returned: success
-    sample: 10
-cap_reached:
-    description: Whether cap / max expansion has been reached
-    type: bool
-    returned: success
-    sample: false
+status:
+  type: complex
+  description: A dictionary of mount/pvc expand status output
+  returned: only when release exists
+  contains:
+    size_available_gib:
+        description: Current available storage (GiB)
+        type: float
+        returned: success
+        sample: 0.5
+    size_total_gib:
+        description: Current total storage(GiB)
+        type: float
+        returned: success
+        sample: 5.0
+    expansion_required:
+        description: Whether expansion is required if storage available is below percentage
+        type: bool
+        returned: always
+        sample: false
+    recommended_size_gib:
+        description: Recommended size after checking available and total storage
+        type: int
+        returned: success
+        sample: 10
+    cap_reached:
+        description: Whether cap / max recommendation has been reached
+        type: bool
+        returned: success
+        sample: false
 '''
 
 from ansible.module_utils.basic import AnsibleModule
@@ -92,8 +98,9 @@ def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         path=dict(type='str', required=True),
+        recommend_size=dict(type='bool', default=False),
         increment_gib=dict(type='int', default=5),
-        cap_gib=dict(type='int', default=250)
+        cap_gib=dict(type='int', default=30)
     )
 
     # seed the result dict in the object
@@ -102,9 +109,12 @@ def run_module():
     # state will include any data that you want your module to pass back
     # for consumption, for example, in a subsequent task
     expansion_required = False
+    status = dict(
+        expansion_required=expansion_required
+    )
     result = dict(
         changed=False,
-        expansion_required=expansion_required
+        status=status
     )
 
     # the AnsibleModule object will be our abstraction working with Ansible
@@ -133,6 +143,7 @@ def run_module():
     if not mount_info:
         module.fail_json(msg="Mount path is not present", **result)
 
+    recommend_size = module.params['recommend_size']
     increment_gib = module.params['increment_gib']
     cap_gib = module.params['cap_gib']
     size_available = mount_info['size_available']
@@ -147,13 +158,21 @@ def run_module():
     if below_twenty_pct(size_available, size_total) and size_available_gib < increment_gib:
         expansion_required = True
 
-    this_recommended_size_gib = recommended_size_gib(size_total_gib, increment_gib, cap_gib, expansion_required)
+    status['size_available_gib'] = b_to_gib(size_available)
+    status['size_total_gib'] = b_to_gib(size_total)
+    status['expansion_required'] = expansion_required
 
-    result['size_available_gib'] = b_to_gib(size_available)
-    result['size_total_gib'] = b_to_gib(size_total)
-    result['expansion_required'] = expansion_required
-    result['recommended_size_gib'] = this_recommended_size_gib
-    result['cap_reached'] = bool(this_recommended_size_gib >= cap_gib)
+    if recommend_size:
+        this_recommended_size_gib = recommended_size_gib(
+            size_total_gib,
+            increment_gib,
+            cap_gib,
+            expansion_required
+        )
+        status['recommended_size_gib'] = this_recommended_size_gib
+        status['cap_reached'] = bool(this_recommended_size_gib >= cap_gib)
+
+    result['status'] = status
 
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results
