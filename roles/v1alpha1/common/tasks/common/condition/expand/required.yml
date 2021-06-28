@@ -1,0 +1,8 @@
+- name: set expansion required status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_conditions:
+      - type: "{{ condition_expand_keyname }}Expand"
+        status: "True"
+        reason: "Required"
+        message: "Storage/PVC '{{ condition_expand_keyname }}' requires expansion"
