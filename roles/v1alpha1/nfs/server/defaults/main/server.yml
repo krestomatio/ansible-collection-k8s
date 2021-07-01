@@ -12,7 +12,8 @@ server_export_access_mode: ReadWrite
 # pvc
 server_pvc: "{{ server_appname }}-pvc"
 server_pvc_storage_access_modes: ReadWriteOnce
-server_pvc_size_gib: "{{ cr_status_properties.pvc.server.spec_gib | default('1') }}"
+server_pvc_init_size_gib: 1
+server_pvc_size_gib: "{{ cr_status_properties.pvc.server.spec_gib | default(server_pvc_init_size_gib) }}"
 server_pvc_spec: |
   {% if server_pvc_storage_class_name is defined and server_pvc_storage_class_name %}
   storageClassName: {{ server_pvc_storage_class_name }}
