@@ -1,7 +1,7 @@
 - name: nfs server resource definition
   vars:
     k8s_kind: NFSServer
-    k8s_state: "{{ server_state | default(server_state) }}"
+    k8s_state: "{{ server_state }}"
     template: "{{ server_template }}"
     metadata_name: "{{ server_appname }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
@@ -13,7 +13,7 @@
 - name: wait and add labels and annotations
   when:
   - k8s_server is changed
-  - "'absent' not in server_state | default(server_state)"
+  - "'absent' not in server_state"
   - not ansible_check_mode
   block:
     - name: wait for nfs server

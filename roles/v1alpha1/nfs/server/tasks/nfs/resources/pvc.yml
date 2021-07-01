@@ -12,4 +12,5 @@
     k8s_server_pvc: "{{ k8s_object_task }}"
 
 - name: include pvc and autoexpand info
+  when: "'absent' not in server_pvc_state | default(server_state)"
   import_tasks: "{{ common_path }}/pvc-info.yml"
