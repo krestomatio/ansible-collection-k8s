@@ -53,3 +53,25 @@
         name: "{{ server_appname }}"
         namespace: "{{ meta_namespace }}"
       register: server_sts_wait_task
+
+- name: refresh dynamic inventory
+  meta: refresh_inventory
+
+- name: set ownership/permissions of export folder
+  when:
+    - groups[server_container_group] | length > 0
+    - groups[server_container_group][0] in groups[pods_ready_group]
+  delegate_to: "{{ groups[server_container_group][0] }}"
+  run_once: true
+  block:
+    - name: set ownership/permission of export folder
+      register: server_export_owner_permissions_task
+      when: server_export_permissions is defined or
+        server_export_userid is defined or
+        server_export_groupid is defined
+      file:
+        path: "/{{ server_pvc }}"
+        state: directory
+        mode: "{{ server_export_permissions | default(omit) }}"
+        owner: "{{ server_export_userid | default(omit) }}"
+        group: "{{ server_export_groupid | default(omit) }}"

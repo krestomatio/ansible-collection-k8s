@@ -8,6 +8,9 @@ server_export_name: share1
 server_export_pvc: "{{ server_pvc }}"
 server_export_squash: none
 server_export_access_mode: ReadWrite
+# server_export_userid: root
+# server_export_groupid: root
+# server_export_permissions: 755
 
 # pvc
 server_pvc: "{{ server_appname }}-pvc"
