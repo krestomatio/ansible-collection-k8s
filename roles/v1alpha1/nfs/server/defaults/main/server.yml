@@ -42,6 +42,6 @@ server_sc_parameters:
 server_sc_mount_options:
   - vers=4.2
 server_sc_provisioner: "nfs.rook.io/{{ server_appname }}-provisioner"
-server_sc_allow_volume_expansion: false
+server_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
 server_sc_reclaim_policy: Delete
 server_sc_volume_binding_mode: Immediate

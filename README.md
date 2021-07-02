@@ -1,3 +1,3 @@
 # Ansible Collection - krestomatio.k8s
 
-Documentation for the collection.
+Meant to be used in conjunction with kubernetes and operator sdk
