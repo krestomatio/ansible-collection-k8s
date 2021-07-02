@@ -106,7 +106,6 @@ connection:
 import os
 import json
 
-from ansible.errors import AnsibleError
 from ansible.plugins.filter.core import to_uuid
 from ansible_collections.community.kubernetes.plugins.module_utils.common import K8sAnsibleMixin, HAS_K8S_MODULE_HELPER, k8s_import_exception
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable, Cacheable
