@@ -19,4 +19,4 @@
       import_tasks: condition/ready/successful.yml
   rescue:
     - name: include rescue tasks
-      import_tasks: rescue.yml
+      import_tasks: "{{ common_path }}/rescue.yml"

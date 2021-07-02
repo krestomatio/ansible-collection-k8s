@@ -1,0 +1,10 @@
+- name: set successful status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_properties:
+      ready: "True"
+    k8s_status_conditions:
+      - type: "Ready"
+        status: "True"
+        reason: "Successful"
+        message: "All tasks completed successfully"

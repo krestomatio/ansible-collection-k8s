@@ -8,11 +8,15 @@ server_export_name: share1
 server_export_pvc: "{{ server_pvc }}"
 server_export_squash: none
 server_export_access_mode: ReadWrite
+# server_export_userid: root
+# server_export_groupid: root
+# server_export_permissions: 755
 
 # pvc
 server_pvc: "{{ server_appname }}-pvc"
 server_pvc_storage_access_modes: ReadWriteOnce
-server_pvc_size_gib: "{{ cr_status_properties.server_pvc_size_gib | default('1') }}"
+server_pvc_init_size_gib: 1
+server_pvc_size_gib: "{{ cr_status_properties.pvc.server.spec_gib | default(server_pvc_init_size_gib) }}"
 server_pvc_spec: |
   {% if server_pvc_storage_class_name is defined and server_pvc_storage_class_name %}
   storageClassName: {{ server_pvc_storage_class_name }}
@@ -22,12 +26,12 @@ server_pvc_spec: |
   resources:
     requests:
       storage: '{{ server_pvc_size | default(server_pvc_size_gib + 'Gi') }}'
-# enable autoexpansion
+## enable autoexpansion
 server_pvc_autoexpansion: false
-# Increments in those GiB
-server_pvc_autoexpansion_gib: 25
-# No more than those GiB
-server_pvc_autoexpansion_gib_cap: 1000
+### Increments in those GiB
+server_pvc_autoexpansion_gib: 5
+### No more than those GiB
+server_pvc_autoexpansion_cap_gib: 250
 
 # sc
 server_sc: "{{ server_appname }}-sc"
@@ -38,6 +42,6 @@ server_sc_parameters:
 server_sc_mount_options:
   - vers=4.2
 server_sc_provisioner: "nfs.rook.io/{{ server_appname }}-provisioner"
-server_sc_allow_volume_expansion: false
+server_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
 server_sc_reclaim_policy: Delete
 server_sc_volume_binding_mode: Immediate

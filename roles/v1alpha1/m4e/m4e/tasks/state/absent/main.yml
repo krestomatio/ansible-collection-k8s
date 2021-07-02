@@ -21,4 +21,4 @@
       import_tasks: postgres.yml
   rescue:
     - name: include rescue tasks
-      import_tasks: rescue.yml
+      import_tasks: "{{ common_path }}/rescue.yml"
