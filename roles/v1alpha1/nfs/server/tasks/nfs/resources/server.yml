@@ -12,9 +12,8 @@
 
 - name: wait and add labels and annotations
   when:
-  - k8s_server is changed
-  - "'absent' not in server_state"
-  - not ansible_check_mode
+    - "'absent' not in server_state"
+    - not ansible_check_mode
   block:
     - name: wait for nfs server
       retries: 12
@@ -29,6 +28,7 @@
       register: server_wait_task
 
     - name: add inventory label selector to nfs server
+      when: k8s_server is changed
       k8s:
         definition:
           apiVersion: apps/v1
@@ -59,6 +59,7 @@
 
 - name: set ownership/permissions of export folder
   when:
+    - server_container_group in groups
     - groups[server_container_group] | length > 0
     - groups[server_container_group][0] in groups[pods_ready_group]
   delegate_to: "{{ groups[server_container_group][0] }}"

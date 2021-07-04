@@ -1,6 +1,7 @@
 - name: get pvc info
   register: pvc_info_task
   when:
+    - pvc_info_container_group in groups
     - groups[pvc_info_container_group] | length > 0
     - groups[pvc_info_container_group][0] in groups[pods_ready_group]
   delegate_to: "{{ groups[pvc_info_container_group][0] }}"
