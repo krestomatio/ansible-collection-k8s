@@ -82,6 +82,10 @@ else
 	$(info dockerd already running...)
 endif
 
+.PHONY: lint
+lint: ## Linting
+	ansible-lint roles/
+
 ##@ Tests
 
 .PHONY: test-sanity
@@ -93,7 +97,7 @@ test-sanity: ## Run sanity test with ansible-test
 ifeq ($(origin SKIP_PIPELINE),undefined)
 ##@ Pullrequest
 .PHONY: sanity
-sanity: start-dockerd test-sanity ## Run sanity test pipeline
+sanity: lint start-dockerd test-sanity ## Run sanity test pipeline
 
 ##@ Release
 .PHONY: release

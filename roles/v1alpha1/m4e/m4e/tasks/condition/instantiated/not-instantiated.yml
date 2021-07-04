@@ -1,7 +1,7 @@
 - name: set not instantiated status
   import_tasks: "{{ common_path }}/k8s/status.yml"
   vars:
-    lastTransitionTime: "{{ now(utc=False).isoformat(timespec='seconds') + 'Z' }}"
+    last_transition_time: "{{ now(utc=False).isoformat(timespec='seconds') + 'Z' }}"
     k8s_status_properties:
       instantiated: "False"
       ready: "False"
@@ -10,14 +10,14 @@
         status: "False"
         reason: "NotInstantiated"
         message: "Database has not been instantiated"
-        lastTransitionTime: "{{ lastTransitionTime }}"
+        lastTransitionTime: "{{ last_transition_time }}"
       - type: "Created"
         status: "False"
         reason: "NotInstantiated"
         message: "Database is being instantiated"
-        lastTransitionTime: "{{ lastTransitionTime }}"
+        lastTransitionTime: "{{ last_transition_time }}"
       - type: "Ready"
         status: "False"
         reason: "NotInstantiated"
         message: "Database has not been instantiated"
-        lastTransitionTime: "{{ lastTransitionTime }}"
+        lastTransitionTime: "{{ last_transition_time }}"
