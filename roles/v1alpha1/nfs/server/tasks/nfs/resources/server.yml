@@ -40,7 +40,8 @@
             template:
               metadata:
                 labels: "{{ { cr_group + '/inventory': inventory_uuid } }}"
-                annotations: "{{ { cr_group + '/inventory_hostvars': annotation_inventory_hostvars | to_json | indent(width=4) } }}"
+                annotations: "{{ { cr_group + '/inventory_hostvars': annotation_inventory_hostvars |
+                  to_json | indent(width=4) } }}"
 
     - name: wait for nfs server sts
       retries: 6

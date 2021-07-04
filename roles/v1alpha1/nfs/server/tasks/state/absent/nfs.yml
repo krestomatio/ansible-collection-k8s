@@ -6,7 +6,7 @@
     metadata_app: "{{ server_appname }}"
   block:
     - import_tasks: nfs/resources/sc.yml
-    
+
     - import_tasks: nfs/resources/server.yml
 
     - import_tasks: nfs/resources/pvc.yml
