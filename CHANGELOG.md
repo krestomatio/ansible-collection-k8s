@@ -1,22 +1,11 @@
 ## Changes
 
-### New Features
-
-* add ansible lint (Job Céspedes Ortiz)
-
-### Bug Fixes
-
-* add condition to pvc info (Job Céspedes Ortiz)
-
 ### Code Refactoring
 
+* fix distribution condition in templates (Job Céspedes Ortiz)
 * nfs: assert namespace when not cr removal (Job Céspedes Ortiz)
-* plugins: remove unused import (Job Céspedes Ortiz)
-
-### Documentation
-
-* update README (Job Céspedes Ortiz)
 
 ### Chores
 
+* release: 0.0.4 (krestomatio-cibot)
 * release: 0.0.3 (krestomatio-cibot)
