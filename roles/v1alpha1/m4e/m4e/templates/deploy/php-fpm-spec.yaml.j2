@@ -7,7 +7,7 @@ template:
   {{ metadata() | indent(width=2) }}
   spec:
     terminationGracePeriodSeconds: {{ php_fpm_term_grace_period }}
-{% if moodle_app_container or k8s_distribution %}
+{% if moodle_app_container or k8s_distribution == 'k8s' %}
     initContainers:
 {% if moodle_app_container %}
     - name: 'moodle-app'
