@@ -76,3 +76,7 @@ jobTemplate:
         tolerations:
         {{ moodle_cron_tolerations | to_nice_yaml(indent=2) | indent(8)  }}
 {% endif %}
+{% if moodle_image_pull_secret  %}
+        imagePullSecrets:
+        - name: {{ moodle_image_pull_secret }}
+{% endif %}

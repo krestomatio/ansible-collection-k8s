@@ -2,6 +2,7 @@
 # php-fpm
 php_fpm_size: 1
 php_fpm_image: quay.io/krestomatio/moodle_web
+php_fpm_image_pull_secret: "{{ image_pull_secret }}"
 php_fpm_state: "{{ state }}"
 php_fpm_appname: "{{ meta_name }}-php-fpm"
 php_fpm_service: "{{ php_fpm_appname }}-service"
