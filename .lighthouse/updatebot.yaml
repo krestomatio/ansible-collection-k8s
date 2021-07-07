@@ -7,6 +7,6 @@ spec:
         - https://github.com/krestomatio/nfs-operator
       changes:
         - regex:
-            pattern: "COLLECTION_BRANCH \\?= (.*)"
+            pattern: "COLLECTION_VERSION \\?= (.*)"
             files:
               - "Makefile"
