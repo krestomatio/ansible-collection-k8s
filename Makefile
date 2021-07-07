@@ -106,7 +106,6 @@ endif
 jx-updatebot: ## Create PRs in downstream repos with new version using jx
 	jx-updatebot pr -c .lighthouse/updatebot.yaml \
 		--commit-title "chore(update): bump collection krestomatio.k8s $(VERSION)" \
-		--commit-message "/test all" \
 		--version $(VERSION) \
 		--auto-merge false
 
