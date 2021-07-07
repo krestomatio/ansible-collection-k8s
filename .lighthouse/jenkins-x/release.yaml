@@ -42,10 +42,10 @@ spec:
               - release
               command:
               - make
-            - name: promote-release
+            - name: promote
               image: ghcr.io/jenkins-x/jx-updatebot:0.0.86
               args:
-              - promote-release
+              - promote
               command:
               - make
   podTemplate: {}
