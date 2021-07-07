@@ -42,6 +42,12 @@ spec:
               - release
               command:
               - make
+            - name: promote-release
+              image: ghcr.io/jenkins-x/jx-updatebot:0.0.86
+              args:
+              - promote-release
+              command:
+              - make
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 240h0m0s
