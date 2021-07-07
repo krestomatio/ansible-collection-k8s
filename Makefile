@@ -39,6 +39,8 @@ CHANGELOG_FILE ?= CHANGELOG.md
 
 all: sanity
 
+##@ General
+
 # The help target prints out all targets with their descriptions organized
 # beneath their categories. The categories are represented by '##@' and the
 # target descriptions by '##'. The awk commands is responsible for reading the
@@ -53,7 +55,6 @@ all: sanity
 help: ## Display this help.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ General
 .PHONY: git
 git: ## Git add, commit, tag and push
 	git add $(GIT_ADD_FILES)
@@ -69,7 +70,7 @@ galaxy-version: ## Bump galaxy version
 .PHONY: galaxy-publish
 galaxy-publish: ## Publish galaxy collection
 	ansible-galaxy collection build --force
-	$(info 'ansible-galaxy collection publish krestomatio-k8s-$(VERSION).tar.gz')
+	$(info ansible-galaxy collection publish krestomatio-k8s-$(VERSION).tar.gz)
 	@ansible-galaxy collection publish krestomatio-k8s-$(VERSION).tar.gz --api-key $(ANSIBLE_GALAXY_TOKEN)
 
 .PHONY: start-dockerd
@@ -82,29 +83,14 @@ else
 	$(info dockerd already running...)
 endif
 
-.PHONY: lint
-lint: ## Linting
+.PHONY: ansible-lint
+ansible-lint: ## Ansible linting
 	ansible-lint roles/
 
-##@ Tests
+##@ JX
 
-.PHONY: test-sanity
-test-sanity: ## Run sanity test with ansible-test
-	ansible-test sanity --docker default
-
-# CI tasks
-## start if not SKIP_PIPELINE
-ifeq ($(origin SKIP_PIPELINE),undefined)
-##@ Pullrequest
-.PHONY: sanity
-sanity: lint start-dockerd test-sanity ## Run sanity test pipeline
-
-##@ Release
-.PHONY: release
-release: galaxy-version galaxy-publish git ## Run release pipeline
-
-.PHONY: changelog
-changelog: ## Generate changelog file using jx
+.PHONY: jx-changelog
+jx-changelog: ## Generate changelog file using jx
 ifeq (0, $(shell test -d  "charts/$(REPO_NAME)"; echo $$?))
 	sed -i "s/^version:.*/version: $(VERSION)/" charts/$(REPO_NAME)/Chart.yaml
 	sed -i "s/tag:.*/tag: $(VERSION)/" charts/$(REPO_NAME)/values.yaml
@@ -116,12 +102,38 @@ endif
 	jx changelog create --verbose --version=$(VERSION) --rev=$(CHANGELOG_FROM) --output-markdown=$(CHANGELOG_FILE) --update-release=false
 	git add $(CHANGELOG_FILE)
 
-.PHONY: promote-release
-promote-release: ## Create PRs in downstream repos with new version using jx
+.PHONY: jx-updatebot
+jx-updatebot: ## Create PRs in downstream repos with new version using jx
 	jx-updatebot pr -c .lighthouse/updatebot.yaml \
 	    --commit-title "chore(update): bump collection krestomatio.k8s $(VERSION)" \
 	    --commit-message "/test all" \
 	    --version $(VERSION)
+
+##@ Tests
+
+.PHONY: test-sanity
+test-sanity: ## Run sanity test with ansible-test
+	ansible-test sanity --docker default
+
+# CI tasks
+## start if not SKIP_PIPELINE
+ifeq ($(origin SKIP_PIPELINE),undefined)
+
+##@ Pullrequest
+
+.PHONY: sanity
+sanity: ansible-lint start-dockerd test-sanity ## Run sanity tests
+
+##@ Release
+
+.PHONY: changelog
+changelog: jx-changelog ## Generate changelog
+
+.PHONY: release
+release: galaxy-version galaxy-publish ## Run release tasks
+
+.PHONY: promote
+promote: jx-updatebot git ## Promote release
 
 ## else if not SKIP_PIPELINE
 else
@@ -134,11 +146,11 @@ sanity:
 changelog:
 	$(info skipping changelog...)
 
-promote-release:
-	$(info skipping promote-release...)
-
 release:
 	$(info skipping release...)
+
+promote:
+	$(info skipping promote...)
 
 ## end if not SKIP_PIPELINE
 endif
