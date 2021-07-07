@@ -2,4 +2,4 @@
 
 ### Chores
 
-* release: 0.0.8 (krestomatio-cibot)
+* release: 0.0.9 (krestomatio-cibot)
