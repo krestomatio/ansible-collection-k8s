@@ -116,6 +116,13 @@ endif
 	jx changelog create --verbose --version=$(VERSION) --rev=$(CHANGELOG_FROM) --output-markdown=$(CHANGELOG_FILE) --update-release=false
 	git add $(CHANGELOG_FILE)
 
+.PHONY: promote-release
+promote-release: ## Create PRs in downstream repos with new version using jx
+	jx-updatebot pr -c .lighthouse/updatebot.yaml \
+	    --commit-title "chore(update): bump collection krestomatio.k8s $(VERSION)" \
+	    --commit-message "/test all" \
+	    --version $(VERSION)
+
 ## else if not SKIP_PIPELINE
 else
 $(info SKIP_PIPELINE set:)
@@ -126,6 +133,9 @@ sanity:
 ## Release
 changelog:
 	$(info skipping changelog...)
+
+promote-release:
+	$(info skipping promote-release...)
 
 release:
 	$(info skipping release...)
