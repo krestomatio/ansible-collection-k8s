@@ -7,5 +7,6 @@ __pycache__/
 *.tar.gz
 
 # Temporary test files.
+/metadata-*.json
 tests/output
 .cache

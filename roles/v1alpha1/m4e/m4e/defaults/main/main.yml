@@ -29,6 +29,9 @@ nginx_deploy_spec_template: deploy/nginx-spec.yaml.j2
 moodle_new_instance_job_spec_template: job/moodle-new-instance-spec.yaml.j2
 moodle_cronjob_spec_template: cronjob/moodle-spec.yaml.j2
 
+# images
+image_pull_secret: false
+
 # common labels
 meta_app_part_of: moodle
 meta_app_created_by: m4e-operator

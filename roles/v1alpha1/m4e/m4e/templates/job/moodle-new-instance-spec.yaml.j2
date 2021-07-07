@@ -109,3 +109,7 @@ template:
     tolerations:
     {{ moodle_new_instance_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
+{% if moodle_image_pull_secret  %}
+    imagePullSecrets:
+    - name: {{ moodle_image_pull_secret }}
+{% endif %}
