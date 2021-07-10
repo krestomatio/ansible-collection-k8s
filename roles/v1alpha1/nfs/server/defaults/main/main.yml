@@ -16,6 +16,3 @@ meta_app_created_by: nfs-operator
 # inventory
 annotation_inventory_hostvars:
   ansible_python_interpreter: /usr/bin/python3
-
-# Namespace ready with RBAC and other Rook NFS requirements for (NFS) Servers
-servers_namespace: "{{ lookup('env','SERVERS_NAMESPACE') | default('rook-nfs',true) }}"
