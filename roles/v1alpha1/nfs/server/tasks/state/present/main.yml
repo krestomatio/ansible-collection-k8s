@@ -1,9 +1,3 @@
-- name: "assert namespace is '{{ servers_namespace }}'"
-  assert:
-    that:
-      - meta_namespace == servers_namespace
-    msg: "'Server' CR must be created in '{{ servers_namespace }}' namespace"
-
 - name: import tasks
   block:
     - name: handle initial status
