@@ -1,9 +1,9 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
-schedule: "{{ moodle_cron_schedule }}"
-suspend: {{ moodle_cron_suspend }}
-concurrencyPolicy: {{ moodle_cron_concurrency_policy }}
-successfulJobsHistoryLimit: {{ moodle_cron_success_limit }}
-failedJobsHistoryLimit: {{ moodle_cron_failed_limit }}
+schedule: "{{ moodle_cronjob_schedule }}"
+suspend: {{ moodle_cronjob_suspend }}
+concurrencyPolicy: {{ moodle_cronjob_concurrency_policy }}
+successfulJobsHistoryLimit: {{ moodle_cronjob_success_limit }}
+failedJobsHistoryLimit: {{ moodle_cronjob_failed_limit }}
 jobTemplate:
   spec:
     template:
@@ -11,31 +11,31 @@ jobTemplate:
       spec:
         restartPolicy: Never
         containers:
-        - name: 'moodle-php-fpm-cron'
-          image: '{{ php_fpm_image }}'
+        - name: 'moodle-cronjob'
+          image: '{{ moodle_image }}'
           env:
           - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
             value: any
           - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
-            value: '{{ php_fpm_process_control_timeout }}'
-          args: {{ moodle_cron_args }}
+            value: '{{ php_fpm_config_process_control_timeout }}'
+          args: {{ moodle_cronjob_args }}
           ports:
           - containerPort: 9000
           imagePullPolicy: IfNotPresent
           readinessProbe:
             exec:
-              command: {{ php_fpm_readiness_command }}
-{% if moodle_cron_resource_requests or moodle_cron_resource_limits %}
+              command: {{ moodle_readiness_command }}
+{% if moodle_cronjob_resource_requests or moodle_cronjob_resource_limits %}
           resources:
-{% if moodle_cron_resource_requests %}
+{% if moodle_cronjob_resource_requests %}
             requests:
-              cpu: '{{ moodle_cron_resource_requests_cpu }}'
-              memory: '{{ moodle_cron_resource_requests_memory }}'
+              cpu: '{{ moodle_cronjob_resource_requests_cpu }}'
+              memory: '{{ moodle_cronjob_resource_requests_memory }}'
 {% endif %}
-{% if moodle_cron_resource_limits %}
+{% if moodle_cronjob_resource_limits %}
             limits:
-              cpu: '{{ moodle_cron_resource_limits_cpu }}'
-              memory: '{{ moodle_cron_resource_limits_memory }}'
+              cpu: '{{ moodle_cronjob_resource_limits_cpu }}'
+              memory: '{{ moodle_cronjob_resource_limits_memory }}'
 {% endif %}
 {% endif %}
           volumeMounts:
@@ -55,9 +55,9 @@ jobTemplate:
             items:
             - key: config.php
               path: config.php
-{% if moodle_cron_tolerations %}
+{% if moodle_cronjob_tolerations %}
         tolerations:
-        {{ moodle_cron_tolerations | to_nice_yaml(indent=2) | indent(8)  }}
+        {{ moodle_cronjob_tolerations | to_nice_yaml(indent=2) | indent(8)  }}
 {% endif %}
 {% if moodle_image_pull_secret  %}
         imagePullSecrets:

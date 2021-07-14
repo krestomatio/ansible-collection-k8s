@@ -14,7 +14,7 @@ template:
         - name: MOODLE_CHECK_HOST
           value: '{{ nginx_host }}'
         - name: PHP_FPM_HOST
-          value: '{{ php_fpm_service }}'
+          value: '{{ moodle_service }}'
       ports:
       - containerPort: {{ nginx_port }}
       imagePullPolicy: IfNotPresent

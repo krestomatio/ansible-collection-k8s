@@ -11,7 +11,7 @@ template:
 {% if k8s_distribution == 'k8s' %}
     initContainers:
     - name: 'data-dir-permissions'
-      image: '{{ php_fpm_image }}'
+      image: '{{ moodle_image }}'
       securityContext:
         runAsUser: 0
       command:
@@ -25,13 +25,13 @@ template:
         name: moodledata
 {% endif %}
     containers:
-    - name: 'moodle-php-fpm-new-instance'
-      image: '{{ php_fpm_image }}'
+    - name: 'moodle-new-instance-job'
+      image: '{{ moodle_image }}'
       env:
       - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
-        value: '{{ php_fpm_process_control_timeout }}'
+        value: '{{ php_fpm_config_process_control_timeout }}'
       - name: MOODLE_ADMINPASS
         valueFrom:
           secretKeyRef:

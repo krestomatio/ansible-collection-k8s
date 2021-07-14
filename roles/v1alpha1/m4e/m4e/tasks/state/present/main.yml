@@ -9,9 +9,6 @@
     - name: handle moodle
       import_tasks: moodle.yml
 
-    - name: handle php-fpm
-      import_tasks: php-fpm.yml
-
     - name: handle nginx
       import_tasks: nginx.yml
 

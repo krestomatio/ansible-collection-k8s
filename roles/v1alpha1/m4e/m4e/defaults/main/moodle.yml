@@ -1,7 +1,5 @@
 ---
-# moodle app
-moodle_image: quay.io/krestomatio/moodle_app
-moodle_image_pull_secret: "{{ image_pull_secret }}"
+# moodle
 moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
 
@@ -62,7 +60,8 @@ moodle_host: "{{ fqdn }}"
 moodle_protocol: "{{ 'https' if expose_tls else 'http' }}"
 moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
 moodle_config_autosync: true
-moodle_secret: "{{ moodle_appname }}-secret"
+
+# moodle new instance
 moodle_new_instance_job: "{{ moodle_appname }}-new-instance-job"
 moodle_new_instance_wait_timeout: 900
 moodle_new_instance_active_deadline_seconds: "{{ moodle_new_instance_wait_timeout }}"
@@ -92,40 +91,50 @@ moodle_new_instance_cmd:
     --agree-license
 moodle_new_instance_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
 moodle_new_instance_tolerations: false
+
+# moodle status
 moodle_status_script: scripts/status.php
 moodle_status_version: true
 moodle_status_usage: true
 moodle_status_checks: critical,error
-moodle_cron_schedule: "*/1 * * * *"
-moodle_cron_success_limit: 3
-moodle_cron_failed_limit: 1
-moodle_cron_suspend: "false"
-moodle_cron_concurrency_policy: Allow
-moodle_cron_args: "['php', 'admin/cli/cron.php']"
-moodle_cron_resource_requests: true
-moodle_cron_resource_requests_cpu: 50m
-moodle_cron_resource_requests_memory: 128Mi
-moodle_cron_resource_limits: false
-moodle_cron_resource_limits_cpu: 1
-moodle_cron_resource_limits_memory: 1Gi
-moodle_cron_tolerations: false
+
+# moodle cronjob
 moodle_cronjob: "{{ moodle_appname }}-cronjob"
-moodle_data_pvc: "{{ moodle_appname }}-data"
-moodle_data_pvc_size: 1Gi
-moodle_pvc_storage_access_modes: ReadWriteMany
-moodle_pvc_storage_class_name: false
-moodle_pvc_spec: |
-  {% if moodle_pvc_storage_class_name is defined and moodle_pvc_storage_class_name %}
-  storageClassName: {{ moodle_pvc_storage_class_name }}
+moodle_cronjob_schedule: "*/1 * * * *"
+moodle_cronjob_success_limit: 3
+moodle_cronjob_failed_limit: 1
+moodle_cronjob_suspend: "false"
+moodle_cronjob_concurrency_policy: Allow
+moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
+moodle_cronjob_resource_requests: true
+moodle_cronjob_resource_requests_cpu: 50m
+moodle_cronjob_resource_requests_memory: 128Mi
+moodle_cronjob_resource_limits: false
+moodle_cronjob_resource_limits_cpu: 1
+moodle_cronjob_resource_limits_memory: 1Gi
+moodle_cronjob_tolerations: false
+
+# moodle pvc
+moodle_pvc_moodledata: "{{ moodle_appname }}-moodledata-pvc"
+moodle_pvc_moodledata_size: 1Gi
+moodle_pvc_moodledata_storage_access_modes: ReadWriteMany
+moodle_pvc_moodledata_storage_class_name: false
+moodle_pvc_moodledata_spec: |
+  {% if moodle_pvc_moodledata_storage_class_name is defined and moodle_pvc_moodledata_storage_class_name %}
+  storageClassName: {{ moodle_pvc_moodledata_storage_class_name }}
   {% endif %}
   accessModes:
-    - '{{ moodle_pvc_storage_access_modes }}'
+    - '{{ moodle_pvc_moodledata_storage_access_modes }}'
   resources:
     requests:
-      storage: '{{ moodle_data_pvc_size }}'
+      storage: '{{ moodle_pvc_moodledata_size }}'
+
+# moodle secret
+moodle_secret: "{{ moodle_appname }}-secret"
 moodle_secret_data: |
   moodle_new_instance_adminpass: '{{ moodle_new_instance_adminpass | b64encode }}'
   config.php: '{{ lookup('template', moodle_config_template) | b64encode }}'
+
 # moodle config.php
 moodle_config_dbhost: "{{ postgres_service }}"
 moodle_config_dbname: "{{ database_name }}"
@@ -173,8 +182,8 @@ moodle_config_sslproxy: "{{ true if expose_tls else false }}"
 #     setting_two: 2
 # moodle_config_tool_generator_users_password: secret
 # moodle_config_additional_cfg:
-#    property_name_one: "one"
-#    property_name_two: 2
+#   property_name_one: "one"
+#   property_name_two: 2
 # moodle_config_additional_block: |
-#    $CFG->property_name_one = 'value';
-#    $CFG->property_name_two = 2;
+#   $CFG->property_name_one = 'value';
+#   $CFG->property_name_two = 2;

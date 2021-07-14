@@ -11,9 +11,6 @@
     - name: handle nginx removal
       import_tasks: nginx.yml
 
-    - name: handle php-fpm removal
-      import_tasks: php-fpm.yml
-
     - name: handle moodle removal
       import_tasks: moodle.yml
 

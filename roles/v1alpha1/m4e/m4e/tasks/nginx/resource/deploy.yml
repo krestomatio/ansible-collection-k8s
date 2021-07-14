@@ -16,7 +16,7 @@
     template: "{{ deploy_template }}"
     metadata_name: "{{ nginx_deploy }}"
     annotations: "{{ nginx_deploy_annotations | default(false) }}"
-    connects_to: "{{ php_fpm_appname }}"
+    connects_to: "{{ moodle_appname }}"
     runtime: nginx
     deploy_spec: "{{ nginx_deploy_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
