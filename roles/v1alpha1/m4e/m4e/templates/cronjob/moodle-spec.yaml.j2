@@ -10,15 +10,6 @@ jobTemplate:
       {{ metadata() | indent(width=6) }}
       spec:
         restartPolicy: Never
-{% if moodle_app_container %}
-        initContainers:
-        - name: 'moodle-app'
-          image: '{{ moodle_image }}'
-          # Shared volume with main container
-          volumeMounts:
-          - mountPath: '{{ moodle_app }}'
-            name: moodle-app
-{% endif %}
         containers:
         - name: 'moodle-php-fpm-cron'
           image: '{{ php_fpm_image }}'
@@ -50,10 +41,6 @@ jobTemplate:
           volumeMounts:
           - mountPath: '{{ moodle_data }}'
             name: moodledata
-{% if moodle_app_container %}
-          - mountPath: '{{ moodle_app }}'
-            name: moodle-app
-{% endif %}
           - mountPath: '{{ moodle_app }}/config.php'
             name: config-php
             subPath: config.php
@@ -61,11 +48,7 @@ jobTemplate:
         volumes:
         - name: moodledata
           persistentVolumeClaim:
-            claimName: '{{ moodle_data_pvc }}'
-{% if moodle_app_container %}
-        - name: moodle-app
-          emptyDir: {}
-{% endif %}
+            claimName: '{{ moodle_pvc_moodledata }}'
         - name: config-php
           secret:
             secretName: '{{ moodle_secret }}'

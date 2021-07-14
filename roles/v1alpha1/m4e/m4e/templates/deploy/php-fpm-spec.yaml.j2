@@ -6,18 +6,9 @@ selector:
 template:
   {{ metadata() | indent(width=2) }}
   spec:
-    terminationGracePeriodSeconds: {{ php_fpm_term_grace_period }}
-{% if moodle_app_container or k8s_distribution == 'k8s' %}
-    initContainers:
-{% if moodle_app_container %}
-    - name: 'moodle-app'
-      image: '{{ moodle_image }}'
-      # Shared volume with main container
-      volumeMounts:
-      - mountPath: '{{ moodle_app }}'
-        name: moodle-app
-{% endif %}
+    terminationGracePeriodSeconds: {{ moodle_term_grace_period }}
 {% if k8s_distribution == 'k8s' %}
+    initContainers:
     - name: 'data-dir-permissions'
       image: '{{ php_fpm_image }}'
       securityContext:
@@ -31,7 +22,6 @@ template:
       volumeMounts:
       - mountPath: '{{ moodle_data }}'
         name: moodledata
-{% endif %}
 {% endif %}
     containers:
     - name: '{{ php_fpm_container }}'
@@ -86,18 +76,10 @@ template:
       - mountPath: {{ moodle_config_path }}
         name: config-php
         readOnly: true
-{% if moodle_app_container %}
-      - mountPath: '{{ moodle_app }}'
-        name: moodle-app
-{% endif %}
     volumes:
     - name: moodledata
       persistentVolumeClaim:
-        claimName: '{{ moodle_data_pvc }}'
-{% if moodle_app_container %}
-    - name: moodle-app
-      emptyDir: {}
-{% endif %}
+        claimName: '{{ moodle_pvc_moodledata }}'
     - name: config-php
       secret:
         secretName: '{{ moodle_secret }}'

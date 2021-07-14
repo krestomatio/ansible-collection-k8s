@@ -4,7 +4,57 @@ moodle_image: quay.io/krestomatio/moodle_app
 moodle_image_pull_secret: "{{ image_pull_secret }}"
 moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
-moodle_app_container: false
+
+# moodle deploy
+moodle_size: 1
+moodle_image: quay.io/krestomatio/moodle_web
+moodle_image_pull_secret: "{{ image_pull_secret }}"
+moodle_deploy: "{{ moodle_appname }}-deploy"
+moodle_container_args: "['php-fpm']"
+moodle_container: "moodle-php-fpm"
+moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
+moodle_readiness_probe: true
+moodle_readiness_command: "['/usr/libexec/check-container-php', '-t', '-r']"
+moodle_readiness_initial: 5
+moodle_readiness_period: 30
+moodle_readiness_timeout: 3
+moodle_readiness_success: 1
+moodle_readiness_failure: 6
+moodle_liveness_probe: true
+moodle_liveness_command: "['/usr/libexec/check-container-php', '-t', '-l']"
+moodle_liveness_initial: 5
+moodle_liveness_period: 10
+moodle_liveness_timeout: 3
+moodle_liveness_success: 1
+moodle_liveness_failure: 3
+moodle_resource_requests: true
+moodle_resource_requests_cpu: 150m
+moodle_resource_requests_memory: 256Mi
+moodle_resource_limits: false
+moodle_resource_limits_cpu: 1
+moodle_resource_limits_memory: 1Gi
+moodle_term_grace_period: 30
+moodle_tolerations: false
+
+# moodle service
+moodle_service: "{{ moodle_appname }}-service"
+moodle_service_spec: |
+  type: {{ moodle_service_type | default('ClusterIP') }}
+  sessionAffinity: {{ moodle_service_session_affinity | default('ClientIP')  }}
+  {% if moodle_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ moodle_service_session_affinity_timeout }}
+  {% endif %}
+  ports:
+  - name: php-fpm
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: '{{ moodle_appname }}'
+
+# moodle app
 moodle_app: /var/www/html
 moodle_data: /var/moodledata
 moodle_config_path: /config
