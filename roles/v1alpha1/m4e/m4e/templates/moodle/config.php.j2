@@ -69,6 +69,9 @@ $CFG->localcachedir = '{{ moodle_config_localcachedir }}';      // Intended for 
 {% if moodle_config_extramemorylimit is defined %}
 $CFG->extramemorylimit = '{{ moodle_config_extramemorylimit }}';
 {% endif %}
+{% if moodle_config_disableupdateautodeploy is defined and moodle_config_disableupdateautodeploy %}
+$CFG->disableupdateautodeploy = true;
+{% endif %}
 {% if moodle_config_tool_lockstats is defined %}
 $CFG->lock_factory = "\\tool_lockstats\\proxy_lock_factory";
 $CFG->proxied_lock_factory = "auto";

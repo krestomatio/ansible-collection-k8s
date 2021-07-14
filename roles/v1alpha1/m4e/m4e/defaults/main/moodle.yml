@@ -173,6 +173,7 @@ moodle_config_sslproxy: "{{ true if expose_tls else false }}"
 #   pathtodot: '/usr/bin/dot'
 # moodle_config_localcachedir: /var/moodledata-localcache
 # moodle_config_extramemorylimit: 256M
+moodle_config_disableupdateautodeploy: true
 # moodle_config_tool_lockstats: true
 # moodle_config_perfdebug: true
 # moodle_config_noemailever: true
