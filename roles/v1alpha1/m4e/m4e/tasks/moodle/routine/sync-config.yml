@@ -1,4 +1,4 @@
-- name: keep config.php update without need of pod restart
+- name: keep config.php in sync
   run_once: false
   when:
     - moodle_config_autosync

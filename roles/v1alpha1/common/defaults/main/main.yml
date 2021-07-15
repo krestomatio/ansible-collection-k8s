@@ -36,3 +36,4 @@ inventory_uuid: '{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_nam
 annotation_inventory_hostvars:
   ansible_remote_tmp: /var/tmp/.ansible
   ansible_python_interpreter: /usr/libexec/platform-python
+  ansible_ssh_pipelining: true
