@@ -12,6 +12,10 @@
     - name: handle nginx
       import_tasks: nginx.yml
 
+    - name: end play without successful status
+      when: not cr_status_properties.uptodate | default('True') | bool
+      meta: end_play
+
     - name: include successful status
       import_tasks: condition/ready/successful.yml
   rescue:

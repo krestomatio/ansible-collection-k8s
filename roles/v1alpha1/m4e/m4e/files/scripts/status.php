@@ -44,13 +44,21 @@ function convertBytesToGiB($bytes) {
     return round($bytes / 1024 / 1024 / 1024,1);
 }
 
+# Whether upgrade is pending
+if (moodle_needs_upgrading()) {
+    $json['uptodate'] = "False";
+    $json['ready'] = "False";
+} else {
+    $json['uptodate'] = "True";
+}
+
 if($options['version']){
     # save version properties in array
     $version = array(
         "version" => $CFG->version,
         "release" => $CFG->release,
         "allversionshash" => $CFG->allversionshash,
-        "branch" => $CFG->branch,
+        "branch" => $CFG->branch
     );
 
     if ($MOODLE_COMMIT){

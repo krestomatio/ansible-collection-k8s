@@ -1,13 +1,27 @@
-- name: run moodle status script
-  register: status_moodle_task
+- name: refresh inventory fact
+  when: k8s_moodle_deploy is changed
+  set_fact:
+    inventory_refresh_task: refresh
+
+- name: refresh dynamic inventory
+  include_tasks: "{{ common_path }}/inventory/{{ inventory_refresh_task }}.yml"
+
+- name: get moodle status
+  when:
+    - moodle_container_group in groups
+    - groups[moodle_container_group] | length > 0
+    - groups[moodle_container_group][0] in groups[pods_ready_group]
+  delegate_to: "{{ groups[moodle_container_group][0] }}"
   changed_when: false
+  run_once: true
+  register: status_moodle_task
   script: "{{ moodle_status_script }}{{ ' -v' if moodle_status_version else '' }}{{ ' -u' if
     moodle_status_usage else '' }}{% if moodle_status_checks is defined and
     moodle_status_checks %} -c='{{ moodle_status_checks }}'{% endif %}"
 
-- name: set moodle status from script output
-  import_tasks: "{{ common_path }}/k8s/status.yml"
-  when: status_moodle_task.stdout is defined and status_moodle_task.stdout
-  delegate_to: localhost
+- name: set moodle status
+  when: status_moodle_task.stdout | default(false,true)
+  include_tasks: "condition/uptodate//{{ 'uptodate' if
+    (k8s_status_properties.uptodate | default('True') | bool) else 'pending' }}.yml"
   vars:
     k8s_status_properties: "{{ status_moodle_task.stdout | from_json }}"

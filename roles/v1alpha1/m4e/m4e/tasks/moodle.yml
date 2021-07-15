@@ -13,6 +13,8 @@
 
     - import_tasks: moodle/resource/deploy.yml
 
-    - import_tasks: moodle/resource/service.yml
+    - import_tasks: moodle/routine/status.yml
 
     - import_tasks: moodle/resource/cronjob.yml
+
+    - import_tasks: moodle/resource/service.yml
