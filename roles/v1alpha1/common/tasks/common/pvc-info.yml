@@ -14,7 +14,7 @@
 
 - name: set pvc status
   when: pvc_info_task.status is defined
-  import_tasks: "{{ common_path }}/condition/expand/{{ 'required' if
+  import_tasks: "{{ common_path }}/condition/expansion/{{ 'required' if
     pvc_info_task.status.expansion_required | default(false) else 'not-required' }}.yml"
   vars:
     k8s_status_properties:
