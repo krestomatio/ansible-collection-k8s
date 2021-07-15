@@ -55,8 +55,13 @@
         namespace: "{{ meta_namespace }}"
       register: server_sts_wait_task
 
+- name: refresh inventory fact
+  when: k8s_server is changed
+  set_fact:
+    inventory_refresh_task: refresh
+
 - name: refresh dynamic inventory
-  meta: refresh_inventory
+  include_tasks: "{{ common_path }}/inventory/{{ inventory_refresh_task }}.yml"
 
 - name: set ownership/permissions of export folder
   when:
