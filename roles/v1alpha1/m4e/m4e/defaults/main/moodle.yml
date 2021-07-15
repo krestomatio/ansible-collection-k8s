@@ -103,7 +103,7 @@ moodle_cronjob: "{{ moodle_appname }}-cronjob"
 moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
 moodle_cronjob_failed_limit: 1
-moodle_cronjob_suspend: "false"
+moodle_cronjob_suspend: "{{ not cr_status_properties.uptodate | default('True') | bool }}"
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
 moodle_cronjob_resource_requests: true
