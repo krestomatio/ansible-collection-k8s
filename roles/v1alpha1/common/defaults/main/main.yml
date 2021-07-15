@@ -31,6 +31,7 @@ sc_template: "{{ common_path }}/sc.yaml.j2"
 
 # inventory
 inventory_include: false
+inventory_refresh_task: not-refresh
 inventory_uuid: '{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}'
 annotation_inventory_hostvars:
   ansible_remote_tmp: /var/tmp/.ansible
