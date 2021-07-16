@@ -8,3 +8,4 @@
     src: "{{ moodle_config_template }}"
     dest: "{{ moodle_app }}/config.php"
     mode: 0400
+    validate: /usr/bin/php -l %s
