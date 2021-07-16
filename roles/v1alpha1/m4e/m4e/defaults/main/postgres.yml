@@ -55,8 +55,9 @@ postgres_service_spec: |
 
 # postgres pvc
 postgres_pvc_data: "{{ postgres_appname }}-data-pvc"
-postgres_pvc_data_storage_access_modes: ReadWriteOnce
 postgres_pvc_data_size: 1Gi
+postgres_pvc_data_storage_access_modes: ReadWriteOnce
+postgres_pvc_data_storage_class_name: false
 postgres_pvc_data_spec: |
   {% if postgres_pvc_data_storage_class_name is defined and postgres_pvc_data_storage_class_name %}
   storageClassName: {{ postgres_pvc_data_storage_class_name }}
