@@ -7,7 +7,7 @@ cr_kind: M4e
 cr_state: present
 
 # expose
-expose_type: "ingress"  # only route
+expose_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
 expose_tls: false
 expose_tls_secret_name: false
 
