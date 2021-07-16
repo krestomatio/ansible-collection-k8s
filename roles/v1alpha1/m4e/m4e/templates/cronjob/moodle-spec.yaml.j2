@@ -57,7 +57,7 @@ jobTemplate:
               path: config.php
 {% if moodle_cronjob_tolerations %}
         tolerations:
-        {{ moodle_cronjob_tolerations | to_nice_yaml(indent=2) | indent(8)  }}
+        {{ moodle_cronjob_tolerations | to_nice_yaml(indent=2) | indent(8) }}
 {% endif %}
 {% if moodle_image_pull_secret  %}
         imagePullSecrets:

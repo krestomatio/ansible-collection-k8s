@@ -27,6 +27,7 @@ postgres_deploy_spec_template: deploy/postgres-spec.yaml.j2
 moodle_deploy_spec_template: deploy/moodle-spec.yaml.j2
 nginx_deploy_spec_template: deploy/nginx-spec.yaml.j2
 moodle_new_instance_job_spec_template: job/moodle-new-instance-spec.yaml.j2
+moodle_update_job_spec_template: job/moodle-update-spec.yaml.j2
 moodle_cronjob_spec_template: cronjob/moodle-spec.yaml.j2
 
 # images

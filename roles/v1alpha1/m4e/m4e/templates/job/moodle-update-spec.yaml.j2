@@ -1,0 +1,91 @@
+{% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
+completions: 1
+parallelism: 1
+backoffLimit: 3
+activeDeadlineSeconds: {{ moodle_update_job_active_deadline_seconds }}
+{% if moodle_update_job_ttl_seconds_after_finished is defined and moodle_update_job_ttl_seconds_after_finished %}
+ttlSecondsAfterFinished: {{ moodle_update_job_ttl_seconds_after_finished }}
+{% endif %}
+template:
+  {{ metadata() | indent(width=2) }}
+  spec:
+    restartPolicy: Never
+{% if k8s_distribution == 'k8s' %}
+    initContainers:
+    - name: 'data-dir-permissions'
+      image: '{{ moodle_image }}'
+      securityContext:
+        runAsUser: 0
+      command:
+        - '/bin/bash'
+        - '-c'
+        - |
+          chown ${CTR_USER_ID}:${CTR_USER_ID} '{{ moodle_data }}'
+          chmod 0740 {{ moodle_data }}
+      volumeMounts:
+      - mountPath: '{{ moodle_data }}'
+        name: moodledata
+{% endif %}
+    containers:
+    - name: 'moodle-new-instance-job'
+      image: '{{ moodle_image }}'
+      env:
+      - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
+        value: any
+      - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
+        value: '{{ php_fpm_config_process_control_timeout }}'
+      - name: MOODLE_ADMINPASS
+        valueFrom:
+          secretKeyRef:
+            name: {{ moodle_secret }}
+            key: moodle_new_instance_adminpass
+      command:
+      - '/bin/bash'
+      - '-c'
+      - |
+        container-entrypoint
+        {{ moodle_update_job_command_snippet | indent(8) }}
+      ports:
+      - containerPort: 9000
+      imagePullPolicy: IfNotPresent
+      readinessProbe:
+        exec:
+          command: {{ moodle_update_job_readiness_command }}
+{% if moodle_update_job_resource_requests or moodle_update_job_resource_limits %}
+      resources:
+{% if moodle_update_job_resource_requests %}
+        requests:
+          cpu: '{{ moodle_update_job_resource_requests_cpu }}'
+          memory: '{{ moodle_update_job_resource_requests_memory }}'
+{% endif %}
+{% if moodle_update_job_resource_limits %}
+        limits:
+          cpu: '{{ moodle_update_job_resource_limits_cpu }}'
+          memory: '{{ moodle_update_job_resource_limits_memory }}'
+{% endif %}
+{% endif %}
+      volumeMounts:
+      - mountPath: '{{ moodle_data }}'
+        name: moodledata
+      - mountPath: '{{ moodle_app }}/config.php'
+        name: config-php
+        subPath: config.php
+        readOnly: true
+    volumes:
+    - name: moodledata
+      persistentVolumeClaim:
+        claimName: '{{ moodle_pvc_moodledata }}'
+    - name: config-php
+      secret:
+        secretName: '{{ moodle_secret }}'
+        items:
+        - key: config.php
+          path: config.php
+{% if moodle_update_job_tolerations %}
+    tolerations:
+    {{ moodle_update_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
+{% if moodle_image_pull_secret  %}
+    imagePullSecrets:
+    - name: {{ moodle_image_pull_secret }}
+{% endif %}

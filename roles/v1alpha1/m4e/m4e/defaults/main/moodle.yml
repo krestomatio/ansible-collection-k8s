@@ -38,7 +38,7 @@ moodle_tolerations: false
 moodle_service: "{{ moodle_appname }}-service"
 moodle_service_spec: |
   type: {{ moodle_service_type | default('ClusterIP') }}
-  sessionAffinity: {{ moodle_service_session_affinity | default('ClientIP')  }}
+  sessionAffinity: {{ moodle_service_session_affinity | default('ClientIP') }}
   {% if moodle_service_session_affinity_timeout is defined %}
   sessionAffinityConfig:
     clientIP:
@@ -91,6 +91,23 @@ moodle_new_instance_cmd:
     --agree-license
 moodle_new_instance_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
 moodle_new_instance_tolerations: false
+
+# moodle new instance
+moodle_update_job: "{{ moodle_appname }}-update-{{ cr_status_properties.version.allversionshash[:10]
+  if cr_status_properties.version.allversionshash | default(false) else
+  now(utc=False).timestamp() | int }}-job"
+moodle_update_job_ttl_seconds_after_finished: 604800
+moodle_update_job_wait_timeout: 900
+moodle_update_job_active_deadline_seconds: "{{ moodle_update_job_wait_timeout }}"
+moodle_update_job_resource_requests: true
+moodle_update_job_resource_requests_cpu: 150m
+moodle_update_job_resource_requests_memory: 256Mi
+moodle_update_job_resource_limits: false
+moodle_update_job_resource_limits_cpu: 1
+moodle_update_job_resource_limits_memory: 1Gi
+moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
+moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
+moodle_update_job_tolerations: false
 
 # moodle status
 moodle_status_script: scripts/status.php

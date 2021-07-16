@@ -17,4 +17,6 @@
 
     - import_tasks: moodle/resource/cronjob.yml
 
+    - import_tasks: moodle/resource/job-update.yml
+
     - import_tasks: moodle/resource/service.yml
