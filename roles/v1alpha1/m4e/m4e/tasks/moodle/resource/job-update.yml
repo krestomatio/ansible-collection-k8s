@@ -1,5 +1,7 @@
 - name: moodle update
-  when: not (cr_status_properties.uptodate | default('True') | bool)
+  when:
+    - moodle_update
+    - not (cr_status_properties.uptodate | default('True') | bool)
   vars:
     moodle_component: "job"
   block:

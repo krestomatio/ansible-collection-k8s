@@ -2,8 +2,10 @@
 completions: 1
 parallelism: 1
 backoffLimit: 3
-activeDeadlineSeconds: {{ moodle_new_instance_active_deadline_seconds }}
-# ttlSecondsAfterFinished: 60
+activeDeadlineSeconds: {{ moodle_new_instance_job_active_deadline_seconds }}
+{% if moodle_new_instance_job_ttl_seconds_after_finished is defined and moodle_new_instance_job_ttl_seconds_after_finished %}
+ttlSecondsAfterFinished: {{ moodle_new_instance_job_ttl_seconds_after_finished }}
+{% endif %}
 template:
   {{ metadata() | indent(width=2) }}
   spec:
@@ -38,36 +40,28 @@ template:
             name: {{ moodle_secret }}
             key: moodle_new_instance_adminpass
       command:
-        - '/bin/sh'
-        - '-c'
-        - |
-          container-entrypoint echo "Instantiating moodle...";
-          /usr/libexec/check-container-php -d;
-          exit_code=$?;
-          if [ $exit_code -eq 2 ];
-          then
-            {{ moodle_new_instance_cmd }};
-          else
-            echo "Moodle not instantiated, exit code when checking database: '${exit_code}'";
-            exit 1;
-          fi
+      - '/bin/bash'
+      - '-c'
+      - |
+        container-entrypoint
+        {{ moodle_new_instance_job_command_snippet | indent(8) }}
       ports:
       - containerPort: 9000
       imagePullPolicy: IfNotPresent
       readinessProbe:
         exec:
-          command: {{ moodle_new_instance_readiness_command }}
-{% if moodle_new_instance_resource_requests or moodle_new_instance_resource_limits %}
+          command: {{ moodle_new_instance_job_readiness_command }}
+{% if moodle_new_instance_job_resource_requests or moodle_new_instance_job_resource_limits %}
       resources:
-{% if moodle_new_instance_resource_requests %}
+{% if moodle_new_instance_job_resource_requests %}
         requests:
-          cpu: '{{ moodle_new_instance_resource_requests_cpu }}'
-          memory: '{{ moodle_new_instance_resource_requests_memory }}'
+          cpu: '{{ moodle_new_instance_job_resource_requests_cpu }}'
+          memory: '{{ moodle_new_instance_job_resource_requests_memory }}'
 {% endif %}
-{% if moodle_new_instance_resource_limits %}
+{% if moodle_new_instance_job_resource_limits %}
         limits:
-          cpu: '{{ moodle_new_instance_resource_limits_cpu }}'
-          memory: '{{ moodle_new_instance_resource_limits_memory }}'
+          cpu: '{{ moodle_new_instance_job_resource_limits_cpu }}'
+          memory: '{{ moodle_new_instance_job_resource_limits_memory }}'
 {% endif %}
 {% endif %}
       volumeMounts:
@@ -87,9 +81,9 @@ template:
         items:
         - key: config.php
           path: config.php
-{% if moodle_new_instance_tolerations %}
+{% if moodle_new_instance_job_tolerations %}
     tolerations:
-    {{ moodle_new_instance_tolerations | to_nice_yaml(indent=2) | indent(4) }}
+    {{ moodle_new_instance_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
 {% if moodle_image_pull_secret  %}
     imagePullSecrets:
