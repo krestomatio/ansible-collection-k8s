@@ -38,7 +38,7 @@ template:
             secretKeyRef:
               name: '{{ postgres_secret }}'
               key: database_password
-{% if postgres_log_stderr %}
+{% if postgres_config_log_stderr %}
         - name: POSTGRESQL_LOG_STDERR
           value: "true"
 {% endif %}
@@ -85,7 +85,7 @@ template:
     volumes:
     - name: postgres-data
       persistentVolumeClaim:
-        claimName: '{{ postgres_pvc }}'
+        claimName: '{{ postgres_pvc_data }}'
 {% if postgres_tolerations %}
     tolerations:
     {{ postgres_tolerations | to_nice_yaml(indent=2) | indent(4) }}

@@ -1,0 +1,37 @@
+- name: moodle update
+  when:
+    - moodle_update
+    - not (cr_status_properties.uptodate | default('True') | bool)
+  vars:
+    moodle_component: "job"
+  block:
+    - name: set moodle update job spec
+      when: moodle_update_job_spec is not defined
+      vars:
+        metadata_name: "{{ moodle_update_job }}"
+        annotations: "{{ moodle_update_job_annotations | default(false) }}"
+        extra_labels: "{{ moodle_update_job_extra_labels | default(false) }}"
+      set_fact:
+        moodle_update_job_spec:
+          "{{ lookup('template', moodle_update_job_spec_template) }}"
+
+    - name: moodle update job resource definition
+      vars:
+        k8s_kind: Job
+        k8s_state: "{{ moodle_update_job_state | default(moodle_state) }}"
+        k8s_wait: true
+        k8s_wait_timeout: "{{ moodle_update_job_wait_timeout }}"
+        k8s_wait_condition:
+          type: "Complete"
+          status: "True"
+        template: "{{ job_template }}"
+        metadata_name: "{{ moodle_update_job }}"
+        job_spec: "{{ moodle_update_job_spec }}"
+      import_tasks: "{{ common_path }}/k8s/object.yml"
+
+    - name: save moodle update job resource definition task
+      set_fact:
+        k8s_moodle_update_job: "{{ k8s_object_task }}"
+
+    - name: import moodle status
+      import_tasks: moodle/routine/status.yml

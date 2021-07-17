@@ -1,10 +1,58 @@
 ---
-# moodle app
-moodle_image: quay.io/krestomatio/moodle_app
-moodle_image_pull_secret: "{{ image_pull_secret }}"
+# moodle
 moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
-moodle_app_container: false
+
+# moodle deploy
+moodle_size: 1
+moodle_image: quay.io/krestomatio/moodle_web
+moodle_image_pull_secret: "{{ image_pull_secret }}"
+moodle_deploy: "{{ moodle_appname }}-deploy"
+moodle_container_args: "['php-fpm']"
+moodle_container: "moodle-php-fpm"
+moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
+moodle_readiness_probe: true
+moodle_readiness_command: "['/usr/libexec/check-container-php', '-t', '-r']"
+moodle_readiness_initial: 5
+moodle_readiness_period: 30
+moodle_readiness_timeout: 3
+moodle_readiness_success: 1
+moodle_readiness_failure: 6
+moodle_liveness_probe: true
+moodle_liveness_command: "['/usr/libexec/check-container-php', '-t', '-l']"
+moodle_liveness_initial: 5
+moodle_liveness_period: 10
+moodle_liveness_timeout: 3
+moodle_liveness_success: 1
+moodle_liveness_failure: 3
+moodle_resource_requests: true
+moodle_resource_requests_cpu: 150m
+moodle_resource_requests_memory: 256Mi
+moodle_resource_limits: false
+moodle_resource_limits_cpu: 1
+moodle_resource_limits_memory: 1Gi
+moodle_term_grace_period: 30
+moodle_tolerations: false
+
+# moodle service
+moodle_service: "{{ moodle_appname }}-service"
+moodle_service_spec: |
+  type: {{ moodle_service_type | default('ClusterIP') }}
+  sessionAffinity: {{ moodle_service_session_affinity | default('ClientIP') }}
+  {% if moodle_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ moodle_service_session_affinity_timeout }}
+  {% endif %}
+  ports:
+  - name: php-fpm
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: '{{ moodle_appname }}'
+
+# moodle app
 moodle_app: /var/www/html
 moodle_data: /var/moodledata
 moodle_config_path: /config
@@ -12,16 +60,9 @@ moodle_host: "{{ fqdn }}"
 moodle_protocol: "{{ 'https' if expose_tls else 'http' }}"
 moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
 moodle_config_autosync: true
-moodle_secret: "{{ moodle_appname }}-secret"
-moodle_new_instance_job: "{{ moodle_appname }}-new-instance-job"
-moodle_new_instance_wait_timeout: 900
-moodle_new_instance_active_deadline_seconds: "{{ moodle_new_instance_wait_timeout }}"
-moodle_new_instance_resource_requests: true
-moodle_new_instance_resource_requests_cpu: 150m
-moodle_new_instance_resource_requests_memory: 256Mi
-moodle_new_instance_resource_limits: false
-moodle_new_instance_resource_limits_cpu: 1
-moodle_new_instance_resource_limits_memory: 1Gi
+
+# moodle new instance
+moodle_new_instance: true
 moodle_new_instance_fullname: Demo site
 moodle_new_instance_shortname: demo
 moodle_new_instance_summary: A demo site
@@ -30,52 +71,99 @@ moodle_new_instance_adminpass: secret
 moodle_new_instance_adminmail: admin@example.com
 moodle_new_instance_lang: en
 moodle_new_instance_agree_license: false
-moodle_new_instance_cmd:
-  php admin/cli/install_database.php
-    --lang="{{ moodle_new_instance_lang }}"
-    --fullname="{{ moodle_new_instance_fullname }}"
-    --shortname="{{ moodle_new_instance_shortname }}"
-    --summary="{{ moodle_new_instance_summary }}"
-    --adminuser="{{ moodle_new_instance_adminuser }}"
-    --adminpass="${MOODLE_ADMINPASS}"
-    --adminemail="{{ moodle_new_instance_adminmail }}"
-    --agree-license
-moodle_new_instance_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
-moodle_new_instance_tolerations: false
+moodle_new_instance_job: "{{ moodle_appname }}-new-instance-job"
+moodle_new_instance_job_ttl_seconds_after_finished: false
+moodle_new_instance_job_wait_timeout: 900
+moodle_new_instance_job_active_deadline_seconds: "{{ moodle_new_instance_job_wait_timeout }}"
+moodle_new_instance_job_resource_requests: true
+moodle_new_instance_job_resource_requests_cpu: 150m
+moodle_new_instance_job_resource_requests_memory: 256Mi
+moodle_new_instance_job_resource_limits: false
+moodle_new_instance_job_resource_limits_cpu: 1
+moodle_new_instance_job_resource_limits_memory: 1Gi
+moodle_new_instance_job_command_snippet: |
+  echo "Instantiating moodle..."
+  /usr/libexec/check-container-php -d
+  exit_code=$?
+  if [ $exit_code -eq 2 ]
+  then
+    php admin/cli/install_database.php \
+      --lang="{{ moodle_new_instance_lang }}" \
+      --fullname="{{ moodle_new_instance_fullname }}" \
+      --shortname="{{ moodle_new_instance_shortname }}" \
+      --summary="{{ moodle_new_instance_summary }}" \
+      --adminuser="{{ moodle_new_instance_adminuser }}" \
+      --adminpass="${MOODLE_ADMINPASS}" \
+      --adminemail="{{ moodle_new_instance_adminmail }}" \
+      --agree-license
+  else
+    echo "Moodle not instantiated, exit code when checking database: '${exit_code}'"
+    exit 1
+  fi
+moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
+moodle_new_instance_job_tolerations: false
+
+# moodle auto update
+moodle_update: false
+moodle_update_job: "{{ moodle_appname }}-update-{{ cr_status_properties.version.allversionshash[:10]
+  if cr_status_properties.version.allversionshash | default(false) else
+  now(utc=False).timestamp() | int }}-job"
+moodle_update_job_ttl_seconds_after_finished: 604800
+moodle_update_job_wait_timeout: 900
+moodle_update_job_active_deadline_seconds: "{{ moodle_update_job_wait_timeout }}"
+moodle_update_job_resource_requests: true
+moodle_update_job_resource_requests_cpu: 150m
+moodle_update_job_resource_requests_memory: 256Mi
+moodle_update_job_resource_limits: false
+moodle_update_job_resource_limits_cpu: 1
+moodle_update_job_resource_limits_memory: 1Gi
+moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
+moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
+moodle_update_job_tolerations: false
+
+# moodle status
 moodle_status_script: scripts/status.php
 moodle_status_version: true
 moodle_status_usage: true
 moodle_status_checks: critical,error
-moodle_cron_schedule: "*/1 * * * *"
-moodle_cron_success_limit: 3
-moodle_cron_failed_limit: 1
-moodle_cron_suspend: "false"
-moodle_cron_concurrency_policy: Allow
-moodle_cron_args: "['php', 'admin/cli/cron.php']"
-moodle_cron_resource_requests: true
-moodle_cron_resource_requests_cpu: 50m
-moodle_cron_resource_requests_memory: 128Mi
-moodle_cron_resource_limits: false
-moodle_cron_resource_limits_cpu: 1
-moodle_cron_resource_limits_memory: 1Gi
-moodle_cron_tolerations: false
+
+# moodle cronjob
 moodle_cronjob: "{{ moodle_appname }}-cronjob"
-moodle_data_pvc: "{{ moodle_appname }}-data"
-moodle_data_pvc_size: 1Gi
-moodle_pvc_storage_access_modes: ReadWriteMany
-moodle_pvc_storage_class_name: false
-moodle_pvc_spec: |
-  {% if moodle_pvc_storage_class_name is defined and moodle_pvc_storage_class_name %}
-  storageClassName: {{ moodle_pvc_storage_class_name }}
+moodle_cronjob_schedule: "*/1 * * * *"
+moodle_cronjob_success_limit: 3
+moodle_cronjob_failed_limit: 1
+moodle_cronjob_suspend: "{{ not cr_status_properties.uptodate | default('True') | bool }}"
+moodle_cronjob_concurrency_policy: Allow
+moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
+moodle_cronjob_resource_requests: true
+moodle_cronjob_resource_requests_cpu: 50m
+moodle_cronjob_resource_requests_memory: 128Mi
+moodle_cronjob_resource_limits: false
+moodle_cronjob_resource_limits_cpu: 1
+moodle_cronjob_resource_limits_memory: 1Gi
+moodle_cronjob_tolerations: false
+
+# moodle pvc
+moodle_pvc_moodledata: "{{ moodle_appname }}-moodledata-pvc"
+moodle_pvc_moodledata_size: 1Gi
+moodle_pvc_moodledata_storage_access_modes: ReadWriteMany
+moodle_pvc_moodledata_storage_class_name: false
+moodle_pvc_moodledata_spec: |
+  {% if moodle_pvc_moodledata_storage_class_name is defined and moodle_pvc_moodledata_storage_class_name %}
+  storageClassName: {{ moodle_pvc_moodledata_storage_class_name }}
   {% endif %}
   accessModes:
-    - '{{ moodle_pvc_storage_access_modes }}'
+    - '{{ moodle_pvc_moodledata_storage_access_modes }}'
   resources:
     requests:
-      storage: '{{ moodle_data_pvc_size }}'
+      storage: '{{ moodle_pvc_moodledata_size }}'
+
+# moodle secret
+moodle_secret: "{{ moodle_appname }}-secret"
 moodle_secret_data: |
   moodle_new_instance_adminpass: '{{ moodle_new_instance_adminpass | b64encode }}'
   config.php: '{{ lookup('template', moodle_config_template) | b64encode }}'
+
 # moodle config.php
 moodle_config_dbhost: "{{ postgres_service }}"
 moodle_config_dbname: "{{ database_name }}"
@@ -114,6 +202,7 @@ moodle_config_sslproxy: "{{ true if expose_tls else false }}"
 #   pathtodot: '/usr/bin/dot'
 # moodle_config_localcachedir: /var/moodledata-localcache
 # moodle_config_extramemorylimit: 256M
+moodle_config_disableupdateautodeploy: true
 # moodle_config_tool_lockstats: true
 # moodle_config_perfdebug: true
 # moodle_config_noemailever: true
@@ -123,8 +212,8 @@ moodle_config_sslproxy: "{{ true if expose_tls else false }}"
 #     setting_two: 2
 # moodle_config_tool_generator_users_password: secret
 # moodle_config_additional_cfg:
-#    property_name_one: "one"
-#    property_name_two: 2
+#   property_name_one: "one"
+#   property_name_two: 2
 # moodle_config_additional_block: |
-#    $CFG->property_name_one = 'value';
-#    $CFG->property_name_two = 2;
+#   $CFG->property_name_one = 'value';
+#   $CFG->property_name_two = 2;

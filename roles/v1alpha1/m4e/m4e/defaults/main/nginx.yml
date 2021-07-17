@@ -1,14 +1,13 @@
 ---
 # nginx
-nginx_size: 1
-nginx_image: quay.io/krestomatio/moodle_web
-nginx_image_pull_secret: "{{ image_pull_secret }}"
 nginx_state: "{{ state }}"
 nginx_appname: "{{ meta_name }}-nginx"
-nginx_service: "{{ nginx_appname }}-service"
+
+# nginx deploy
+nginx_size: 1
+nginx_image: "{{ moodle_image }}"
+nginx_image_pull_secret: "{{ image_pull_secret }}"
 nginx_deploy: "{{ nginx_appname }}-deploy"
-nginx_route: "{{ nginx_appname }}-route"
-nginx_ingress: "{{ nginx_appname }}-ingress"
 nginx_port: 8080
 nginx_host: "{{ fqdn }}"
 nginx_args: "['nginx']"
@@ -36,9 +35,52 @@ nginx_resource_limits_cpu: 1
 nginx_resource_limits_memory: 1Gi
 nginx_term_grace_period: 30
 nginx_run_as_user: 999
+nginx_tolerations: false
+
+# nginx service
+nginx_service: "{{ nginx_appname }}-service"
+nginx_service_type: ClusterIP
+nginx_service_spec: |
+  type: {{ nginx_service_type }}
+  sessionAffinity: {{ nginx_service_session_affinity | default('None') }}
+  {% if nginx_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ nginx_service_session_affinity_timeout }}
+  {% endif %}
+  ports:
+  - name: http
+    port: {{ nginx_port }}
+    protocol: TCP
+    targetPort: {{ nginx_port }}
+  selector:
+    app: '{{ nginx_appname }}'
+
+# nginx ingress
+nginx_ingress: "{{ nginx_appname }}-ingress"
 nginx_ingress_tls: "{{ expose_tls }}"
-nginx_route_tls: "{{ expose_tls }}"
 nginx_ingress_tls_secret_name: "{{ expose_tls_secret_name }}"
+nginx_ingress_spec: |
+  {% if nginx_ingress_tls %}
+  tls:
+  - hosts:
+    - '{{ nginx_host }}'
+  {% if nginx_ingress_tls_secret_name is defined and nginx_ingress_tls_secret_name %}
+    secretName: {{ nginx_ingress_tls_secret_name }}
+  {% endif %}
+  {% endif %}
+  rules:
+  - host: '{{ nginx_host }}'
+    http:
+      paths:
+      - path: {{ nginx_ingress_path | default('/') }}
+        backend:
+          serviceName: '{{ nginx_service }}'
+          servicePort: {{ nginx_port }}
+
+# nginx router
+nginx_route: "{{ nginx_appname }}-route"
+nginx_route_tls: "{{ expose_tls }}"
 nginx_route_annotations: |
   haproxy.router.openshift.io/rate-limit-connections: 'true'
   haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'
@@ -58,37 +100,3 @@ nginx_route_spec: |
     insecureEdgeTerminationPolicy: Redirect
   {% endif %}
   wildcardPolicy: None
-nginx_ingress_spec: |
-  {% if nginx_ingress_tls %}
-  tls:
-  - hosts:
-    - '{{ nginx_host }}'
-  {% if nginx_ingress_tls_secret_name is defined and nginx_ingress_tls_secret_name %}
-    secretName: {{ nginx_ingress_tls_secret_name }}
-  {% endif %}
-  {% endif %}
-  rules:
-  - host: '{{ nginx_host }}'
-    http:
-      paths:
-      - path: {{ nginx_ingress_path | default('/') }}
-        backend:
-          serviceName: '{{ nginx_service }}'
-          servicePort: {{ nginx_port }}
-nginx_service_type: ClusterIP
-nginx_service_spec: |
-  type: {{ nginx_service_type }}
-  sessionAffinity: {{ nginx_service_session_affinity | default('None') }}
-  {% if nginx_service_session_affinity_timeout is defined %}
-  sessionAffinityConfig:
-    clientIP:
-      timeoutSeconds: {{ nginx_service_session_affinity_timeout }}
-  {% endif %}
-  ports:
-  - name: http
-    port: {{ nginx_port }}
-    protocol: TCP
-    targetPort: {{ nginx_port }}
-  selector:
-    app: '{{ nginx_appname }}'
-nginx_tolerations: false

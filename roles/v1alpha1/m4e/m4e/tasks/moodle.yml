@@ -5,10 +5,18 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
-    - import_tasks: moodle/resource/moodledata-pvc.yml
+    - import_tasks: moodle/resource/pvc-moodledata.yml
 
-    - import_tasks: moodle/resource/config-secret.yml
+    - import_tasks: moodle/resource/secret-config.yml
 
-    - import_tasks: moodle/resource/new-instance-job.yml
+    - import_tasks: moodle/resource/job-new-instance.yml
+
+    - import_tasks: moodle/resource/deploy.yml
+
+    - import_tasks: moodle/routine/status.yml
 
     - import_tasks: moodle/resource/cronjob.yml
+
+    - import_tasks: moodle/resource/job-update.yml
+
+    - import_tasks: moodle/resource/service.yml

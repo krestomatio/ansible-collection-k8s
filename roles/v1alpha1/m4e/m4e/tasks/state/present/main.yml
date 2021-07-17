@@ -9,11 +9,12 @@
     - name: handle moodle
       import_tasks: moodle.yml
 
-    - name: handle php-fpm
-      import_tasks: php-fpm.yml
-
     - name: handle nginx
       import_tasks: nginx.yml
+
+    - name: end play without successful status
+      when: not cr_status_properties.uptodate | default('True') | bool
+      meta: end_play
 
     - name: include successful status
       import_tasks: condition/ready/successful.yml

@@ -1,0 +1,8 @@
+- name: set up-to-date status
+  include_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_conditions:
+      - type: "UpToDate"
+        status: "True"
+        reason: "UpToDate"
+        message: "No Moodle updates pending"

@@ -2,9 +2,9 @@
 completions: 1
 parallelism: 1
 backoffLimit: 3
-activeDeadlineSeconds: {{ moodle_new_instance_job_active_deadline_seconds }}
-{% if moodle_new_instance_job_ttl_seconds_after_finished is defined and moodle_new_instance_job_ttl_seconds_after_finished %}
-ttlSecondsAfterFinished: {{ moodle_new_instance_job_ttl_seconds_after_finished }}
+activeDeadlineSeconds: {{ moodle_update_job_active_deadline_seconds }}
+{% if moodle_update_job_ttl_seconds_after_finished is defined and moodle_update_job_ttl_seconds_after_finished %}
+ttlSecondsAfterFinished: {{ moodle_update_job_ttl_seconds_after_finished }}
 {% endif %}
 template:
   {{ metadata() | indent(width=2) }}
@@ -44,24 +44,24 @@ template:
       - '-c'
       - |
         container-entrypoint
-        {{ moodle_new_instance_job_command_snippet | indent(8) }}
+        {{ moodle_update_job_command_snippet | indent(8) }}
       ports:
       - containerPort: 9000
       imagePullPolicy: IfNotPresent
       readinessProbe:
         exec:
-          command: {{ moodle_new_instance_job_readiness_command }}
-{% if moodle_new_instance_job_resource_requests or moodle_new_instance_job_resource_limits %}
+          command: {{ moodle_update_job_readiness_command }}
+{% if moodle_update_job_resource_requests or moodle_update_job_resource_limits %}
       resources:
-{% if moodle_new_instance_job_resource_requests %}
+{% if moodle_update_job_resource_requests %}
         requests:
-          cpu: '{{ moodle_new_instance_job_resource_requests_cpu }}'
-          memory: '{{ moodle_new_instance_job_resource_requests_memory }}'
+          cpu: '{{ moodle_update_job_resource_requests_cpu }}'
+          memory: '{{ moodle_update_job_resource_requests_memory }}'
 {% endif %}
-{% if moodle_new_instance_job_resource_limits %}
+{% if moodle_update_job_resource_limits %}
         limits:
-          cpu: '{{ moodle_new_instance_job_resource_limits_cpu }}'
-          memory: '{{ moodle_new_instance_job_resource_limits_memory }}'
+          cpu: '{{ moodle_update_job_resource_limits_cpu }}'
+          memory: '{{ moodle_update_job_resource_limits_memory }}'
 {% endif %}
 {% endif %}
       volumeMounts:
@@ -81,9 +81,9 @@ template:
         items:
         - key: config.php
           path: config.php
-{% if moodle_new_instance_job_tolerations %}
+{% if moodle_update_job_tolerations %}
     tolerations:
-    {{ moodle_new_instance_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}
+    {{ moodle_update_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
 {% if moodle_image_pull_secret  %}
     imagePullSecrets:
