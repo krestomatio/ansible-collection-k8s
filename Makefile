@@ -1,6 +1,6 @@
 REPO_NAME ?= ansible-collection-k8s
 REPO_OWNER ?= krestomatio
-VERSION ?= 0.0.16
+VERSION ?= 0.0.17
 
 # JX
 JOB_NAME ?= sanity

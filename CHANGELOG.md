@@ -22,5 +22,5 @@
 
 ### Chores
 
-* release: 0.0.15 (krestomatio-cibot)
-* ci: update catalog ref (Job Céspedes Ortiz)
+* m4e: bump image versions with updatebot (krestomatio-cibot)
+* release: 0.0.16 (krestomatio-cibot)
