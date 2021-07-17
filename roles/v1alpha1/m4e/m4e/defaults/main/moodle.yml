@@ -5,7 +5,7 @@ moodle_appname: "{{ meta_name }}-moodle"
 
 # moodle deploy
 moodle_size: 1
-moodle_image: quay.io/krestomatio/moodle_app:3.9.8
+moodle_image: quay.io/krestomatio/moodle_web@sha256:6c28b349d44e844b960ac1288309a3390ce454310ef47c859d3fbd6ec53416df
 moodle_image_pull_secret: "{{ image_pull_secret }}"
 moodle_deploy: "{{ moodle_appname }}-deploy"
 moodle_container_args: "['php-fpm']"
