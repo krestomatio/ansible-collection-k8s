@@ -97,7 +97,7 @@ moodle_new_instance_job_command_snippet: |
       --adminemail="{{ moodle_new_instance_adminmail }}" \
       --agree-license
   else
-    echo "Moodle not instantiated, exit code when checking database: '${exit_code}'"
+    echo "Moodle could not be instantiated, exit code when checking database: '${exit_code}'"
     exit 1
   fi
 moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
