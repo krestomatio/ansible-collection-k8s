@@ -37,6 +37,14 @@ GIT_BRANCH ?= master
 GIT_ADD_FILES ?= Makefile
 CHANGELOG_FILE ?= CHANGELOG.md
 
+# Promote
+UPDATEBOT_M4E_ONLY_MSG := chore(m4e): bump image versions with updatebot
+ifeq (,$(shell git log -1 --pretty=%B | cat | grep -q "$(UPDATEBOT_M4E_ONLY_MSG)" && echo || echo 1))
+UPDATEBOT_CONFIG_FILE ?= .lighthouse/updatebot-m4e-only.yaml
+else
+UPDATEBOT_CONFIG_FILE ?= .lighthouse/updatebot.yaml
+endif
+
 all: sanity
 
 ##@ General
@@ -104,7 +112,7 @@ endif
 
 .PHONY: jx-updatebot
 jx-updatebot: ## Create PRs in downstream repos with new version using jx
-	jx-updatebot pr -c .lighthouse/updatebot.yaml \
+	jx-updatebot pr -c $(UPDATEBOT_CONFIG_FILE) \
 		--commit-title "chore(update): bump collection krestomatio.k8s $(VERSION)" \
 		--labels test_group \
 		--version $(VERSION)
