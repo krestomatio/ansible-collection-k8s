@@ -88,13 +88,13 @@ moodle_new_instance_job_command_snippet: |
   if [ $exit_code -eq 2 ]
   then
     php admin/cli/install_database.php \
-      --lang="{{ moodle_new_instance_lang }}" \
-      --fullname="{{ moodle_new_instance_fullname }}" \
-      --shortname="{{ moodle_new_instance_shortname }}" \
-      --summary="{{ moodle_new_instance_summary }}" \
-      --adminuser="{{ moodle_new_instance_adminuser }}" \
+      --lang={{ moodle_new_instance_lang | quote }} \
+      --fullname={{ moodle_new_instance_fullname | quote }} \
+      --shortname={{ moodle_new_instance_shortname | quote }} \
+      --summary={{ moodle_new_instance_summary | quote }} \
+      --adminuser={{ moodle_new_instance_adminuser | quote }} \
       --adminpass="${MOODLE_ADMINPASS}" \
-      --adminemail="{{ moodle_new_instance_adminmail }}" \
+      --adminemail={{ moodle_new_instance_adminmail | quote }} \
       --agree-license
   else
     echo "Moodle could not be instantiated, exit code when checking database: '${exit_code}'"
