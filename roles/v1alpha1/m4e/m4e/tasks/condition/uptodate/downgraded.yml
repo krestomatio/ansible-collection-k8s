@@ -1,0 +1,12 @@
+- name: set older code status
+  include_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_conditions:
+      - type: "UpToDate"
+        status: "False"
+        reason: "Downgraded"
+        message: "Moodle code is older than the version in the database"
+      - type: "Ready"
+        status: "False"
+        reason: "Downgraded"
+        message: "Moodle code is older than the version in the database"

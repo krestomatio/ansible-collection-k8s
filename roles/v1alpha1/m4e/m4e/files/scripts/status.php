@@ -44,28 +44,57 @@ function convertBytesToGiB($bytes) {
     return round($bytes / 1024 / 1024 / 1024,1);
 }
 
-# Whether upgrade is pending
-if (moodle_needs_upgrading()) {
-    $json['uptodate'] = "False";
-    $json['ready'] = "False";
-} else {
-    $json['uptodate'] = "True";
-}
-
 if($options['version']){
-    # save version properties in array
-    $version = array(
-        "version" => $CFG->version,
-        "release" => $CFG->release,
-        "allversionshash" => $CFG->allversionshash,
-        "branch" => $CFG->branch
+    # save current version properties in array
+    $version_current = array(
+        "version" => "$CFG->version",
+        "release" => "$CFG->release",
+        "allversionshash" => "$CFG->allversionshash",
+        "branch" => "$CFG->branch"
     );
+    $json['version'][] = $version_current;
 
-    if ($MOODLE_COMMIT){
-        $version['commit'] = $MOODLE_COMMIT;
+    # Whether a version update is pending
+    require("$CFG->dirroot/version.php");
+
+    $uptodate = "True";
+    $version_update_type = "minor";
+    $version_update_downgrade_error = "False";
+    $hash = $CFG->allversionshash;
+
+    # check if older version,
+    # then check if empty values, and
+    # finally check if inconsisten versions hash
+    if ($version < $CFG->version) {
+        $uptodate = "False";
+        $version_update_downgrade_error = "True";
+    } else if (empty($CFG->version) or empty($CFG->allversionshash)) {
+        $uptodate = "False";
+    } else {
+        $hash = core_component::get_all_versions_hash();
+        if($hash !== $CFG->allversionshash){
+            $uptodate = "False";
+            if($branch !== $CFG->branch){
+                $version_update_type = "major";
+            }
+        }
     }
 
-    $json['version'] = $version;
+    $json['uptodate'] = $uptodate;
+    $version_update = array();
+    if ($uptodate !== "True") {
+        $json['ready'] = "False";
+        $version_update = array(
+            "version" => "$version",
+            "release" => "$release",
+            "allversionshash" => "$hash",
+            "branch" => "$branch",
+            "update" => "pending",
+            "type" => "$version_update_type",
+            "downgrade_error" => "$version_update_downgrade_error"
+        );
+        $json['version'][] = $version_update;
+    }
 }
 
 if($options['usage']){

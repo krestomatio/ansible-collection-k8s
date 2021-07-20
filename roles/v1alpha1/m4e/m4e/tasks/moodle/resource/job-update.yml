@@ -1,7 +1,8 @@
 - name: moodle update
   when:
-    - moodle_update
-    - not (cr_status_properties.uptodate | default('True') | bool)
+    - status_version_update.type is defined
+    - (status_version_update.type == 'minor' and moodle_update_minor) or
+      (status_version_update.type == 'major' and moodle_update_major)
   vars:
     moodle_component: "job"
   block:

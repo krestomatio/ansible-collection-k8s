@@ -104,9 +104,10 @@ moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php',
 moodle_new_instance_job_tolerations: false
 
 # moodle auto update
-moodle_update: false
-moodle_update_job: "{{ moodle_appname }}-update-{{ cr_status_properties.version.allversionshash[:10]
-  if cr_status_properties.version.allversionshash | default(false) else
+moodle_update_minor: true
+moodle_update_major: false
+moodle_update_job: "{{ moodle_appname }}-update-{{ status_version_update.allversionshash[:10]
+  if status_version_update.allversionshash | default(false) else
   now(utc=False).timestamp() | int }}-job"
 moodle_update_job_ttl_seconds_after_finished: 604800
 moodle_update_job_wait_timeout: 900
@@ -123,7 +124,6 @@ moodle_update_job_tolerations: false
 
 # moodle status
 moodle_status_script: scripts/status.php
-moodle_status_version: true
 moodle_status_usage: true
 moodle_status_checks: critical,error
 
