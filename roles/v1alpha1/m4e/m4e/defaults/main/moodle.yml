@@ -146,14 +146,14 @@ moodle_cronjob_tolerations: false
 # moodle pvc
 moodle_pvc_moodledata: "{{ moodle_appname }}-moodledata-pvc"
 moodle_pvc_moodledata_size: 1Gi
-moodle_pvc_moodledata_storage_access_modes: ReadWriteMany
+moodle_pvc_moodledata_storage_access_mode: ReadWriteMany
 moodle_pvc_moodledata_storage_class_name: false
 moodle_pvc_moodledata_spec: |
   {% if moodle_pvc_moodledata_storage_class_name is defined and moodle_pvc_moodledata_storage_class_name %}
   storageClassName: {{ moodle_pvc_moodledata_storage_class_name }}
   {% endif %}
   accessModes:
-    - '{{ moodle_pvc_moodledata_storage_access_modes }}'
+    - '{{ moodle_pvc_moodledata_storage_access_mode }}'
   resources:
     requests:
       storage: '{{ moodle_pvc_moodledata_size }}'
