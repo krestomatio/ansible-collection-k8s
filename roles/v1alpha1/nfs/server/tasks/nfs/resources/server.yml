@@ -43,6 +43,22 @@
                 annotations: "{{ { cr_group + '/inventory_hostvars': annotation_inventory_hostvars |
                   to_json | indent(width=4) } }}"
 
+    - name: add common labels to nfs server
+      when:
+        - k8s_server is changed
+        - common_labels is defined and common_labels
+      k8s:
+        definition:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: "{{ server_appname }}"
+            namespace: "{{ meta_namespace }}"
+          spec:
+            template:
+              metadata:
+                labels: "{{ common_labels | from_yaml }}"
+
     - name: wait for nfs server sts
       retries: 6
       until:

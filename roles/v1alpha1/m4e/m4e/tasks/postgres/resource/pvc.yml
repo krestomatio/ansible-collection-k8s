@@ -4,6 +4,7 @@
     k8s_state: "{{ postgres_pvc_data_state | default(postgres_state) }}"
     template: "{{ pvc_template }}"
     metadata_name: "{{ postgres_pvc_data }}"
+    extra_labels: "{{ postgres_pvc_data_extra_labels | default(false) }}"
     pvc_spec: "{{ postgres_pvc_data_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
 

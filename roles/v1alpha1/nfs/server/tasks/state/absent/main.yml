@@ -8,6 +8,9 @@
     - name: handle initial status
       import_tasks: status/init.yml
 
+    - name: handle server pvcs
+      import_tasks: server-pvcs.yml
+
     - name: handle nfs
       import_tasks: nfs.yml
   rescue:

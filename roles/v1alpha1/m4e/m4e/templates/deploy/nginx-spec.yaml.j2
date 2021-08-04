@@ -7,6 +7,7 @@ template:
   {{ metadata() | indent(width=2) }}
   spec:
     terminationGracePeriodSeconds: {{ nginx_term_grace_period }}
+    automountServiceAccountToken: false
     containers:
     - name: '{{ nginx_container }}'
       image: '{{ nginx_image }}'

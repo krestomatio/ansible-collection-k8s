@@ -10,6 +10,7 @@ template:
   {{ metadata() | indent(width=2) }}
   spec:
     restartPolicy: Never
+    automountServiceAccountToken: false
 {% if k8s_distribution == 'k8s' %}
     initContainers:
     - name: 'data-dir-permissions'

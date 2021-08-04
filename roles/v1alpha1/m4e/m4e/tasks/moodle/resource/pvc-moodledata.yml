@@ -4,6 +4,7 @@
     k8s_state: "{{ moodle_pvc_state | default(moodle_state) }}"
     template: "{{ pvc_template }}"
     metadata_name: "{{ moodle_pvc_moodledata }}"
+    extra_labels: "{{ moodle_pvc_moodledata_extra_labels | default(false) }}"
     pvc_spec: "{{ moodle_pvc_moodledata_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
 
