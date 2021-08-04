@@ -10,6 +10,7 @@ jobTemplate:
       {{ metadata() | indent(width=6) }}
       spec:
         restartPolicy: Never
+        automountServiceAccountToken: false
         containers:
         - name: 'moodle-cronjob'
           image: '{{ moodle_image }}'

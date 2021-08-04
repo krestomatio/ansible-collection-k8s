@@ -9,6 +9,7 @@ template:
   {{ metadata() | indent(width=2) }}
   spec:
     terminationGracePeriodSeconds: {{ postgres_term_grace_period }}
+    automountServiceAccountToken: false
 {% if k8s_distribution == 'k8s' %}
     initContainers:
     - name: 'data-dir-permissions'
