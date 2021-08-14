@@ -9,6 +9,7 @@ meta_name: "{{ ansible_operator_meta.name }}"
 meta_namespace: "{{ ansible_operator_meta.namespace }}"
 pods_group: "{{ cr_kind }}__{{ meta_namespace.replace('-', '_') }}__{{ meta_name.replace('-', '_') }}__pods"
 pods_ready_group: "{{ pods_group }}_ready"
+meta_name_max_length: 63
 
 # general k8s state for resources: present or absent
 state: present

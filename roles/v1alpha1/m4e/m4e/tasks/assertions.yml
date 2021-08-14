@@ -1,0 +1,17 @@
+- name: common assertions
+  import_tasks: "{{ common_path }}/assertions.yml"
+
+- name: moodle license agreement
+  assert:
+    that: moodle_new_instance_agree_license
+    fail_msg: "Set the variable 'moodle_new_instance_agree_license: true' to accept the license agreement"
+    quiet: true
+
+- name: password hash format
+  when: moodle_new_adminpass_hash is defined
+  assert:
+    that:
+      - moodle_new_adminpass_hash | length == 60
+      - moodle_new_adminpass_hash is regex('^\$2[ayb]\$.{56}$')
+    fail_msg: "Wrong admin password hash format"
+    quiet: true
