@@ -6,6 +6,8 @@ cr_kind: Server
 # custom resource state: present, absent
 cr_state: present
 
+meta_name_max_length: 55
+
 # templates
 server_template: server.yaml.j2
 

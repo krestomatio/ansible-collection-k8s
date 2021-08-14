@@ -5,16 +5,6 @@
   vars:
     moodle_component: "job"
   block:
-    - name: Moodle license agreement
-      when: "'absent' not in moodle_new_instance_job_state | default(moodle_state)"
-      assert:
-        that: moodle_new_instance_agree_license
-        fail_msg: "Set the variable 'moodle_new_instance_agree_license: true' to accept the license agreement"
-
-    - name: end play if Moodle license agreement not accepted
-      when: not moodle_new_instance_agree_license
-      meta: end_play
-
     - name: include not instantiated status
       import_tasks: condition/instantiated/not-instantiated.yml
 

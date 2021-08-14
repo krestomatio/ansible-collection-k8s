@@ -1,0 +1,2 @@
+- name: common assertions
+  import_tasks: "{{ common_path }}/assertions.yml"

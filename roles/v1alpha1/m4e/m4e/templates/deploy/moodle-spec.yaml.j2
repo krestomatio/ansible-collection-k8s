@@ -83,7 +83,7 @@ template:
         claimName: '{{ moodle_pvc_moodledata }}'
     - name: config-php
       secret:
-        secretName: '{{ moodle_secret }}'
+        secretName: '{{ moodle_secret_config }}'
         items:
         - key: config.php
           path: config.php

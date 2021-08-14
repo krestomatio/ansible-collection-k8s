@@ -6,6 +6,8 @@ cr_kind: M4e
 # custom resource state: present, absent, suspended, inmaintenance
 cr_state: present
 
+meta_name_max_length: 26
+
 # expose
 expose_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
 expose_tls: false

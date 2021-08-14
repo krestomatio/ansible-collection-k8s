@@ -60,6 +60,7 @@ moodle_host: "{{ fqdn }}"
 moodle_protocol: "{{ 'https' if expose_tls else 'http' }}"
 moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
 moodle_config_autosync: true
+# moodle_new_adminpass_hash: $2b$10$zbRuwPil1wNWQUkvlkchwe3/rOljJvoheydndKH1X0bdIIigy0xim
 
 # moodle new instance
 moodle_new_instance: true
@@ -67,7 +68,6 @@ moodle_new_instance_fullname: Demo site
 moodle_new_instance_shortname: demo
 moodle_new_instance_summary: A demo site
 moodle_new_instance_adminuser: admin
-moodle_new_instance_adminpass: secret
 moodle_new_instance_adminmail: admin@example.com
 moodle_new_instance_lang: en
 moodle_new_instance_agree_license: false
@@ -87,15 +87,20 @@ moodle_new_instance_job_command_snippet: |
   exit_code=$?
   if [ $exit_code -eq 2 ]
   then
+    echo "Installing..."
     php admin/cli/install_database.php \
       --lang={{ moodle_new_instance_lang | quote }} \
       --fullname={{ moodle_new_instance_fullname | quote }} \
       --shortname={{ moodle_new_instance_shortname | quote }} \
       --summary={{ moodle_new_instance_summary | quote }} \
       --adminuser={{ moodle_new_instance_adminuser | quote }} \
-      --adminpass="${MOODLE_ADMINPASS}" \
+      --adminpass={{ lookup('password', '/dev/null length=15') }} \
       --adminemail={{ moodle_new_instance_adminmail | quote }} \
       --agree-license
+  {% if moodle_new_adminpass_hash is defined %}
+    echo "Setting admin password..."
+    php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
+  {% endif %}
   else
     echo "Moodle could not be instantiated, exit code when checking database: '${exit_code}'"
     exit 1
@@ -158,11 +163,13 @@ moodle_pvc_moodledata_spec: |
     requests:
       storage: '{{ moodle_pvc_moodledata_size }}'
 
-# moodle secret
-moodle_secret: "{{ moodle_appname }}-secret"
-moodle_secret_data: |
-  moodle_new_instance_adminpass: '{{ moodle_new_instance_adminpass | b64encode }}'
+# moodle secrets
+moodle_secret_config: "{{ moodle_appname }}-secret-config"
+moodle_secret_config_data: |
   config.php: '{{ lookup('template', moodle_config_template) | b64encode }}'
+moodle_secret_admin: "{{ moodle_appname }}-secret-admin"
+moodle_secret_admin_data: |
+  password_hash: '{{ moodle_new_adminpass_hash | b64encode }}'
 
 # moodle config.php
 moodle_config_dbhost: "{{ postgres_service }}"
