@@ -6,7 +6,7 @@ postgres_appname: "{{ meta_name }}-postgres"
 # postgres deploy
 ## postgres size is either 1 or 0. If > 1 it will be converted to 1
 postgres_size: 1
-postgres_image: quay.io/krestomatio/postgres@sha256:8dd698a5c41d673929090f173248450ecf7a2b6c0cf6f9b1a319d59dc8c27a70
+postgres_image: quay.io/krestomatio/postgres@sha256:03b42bb484506a85f7f0d8b8d8f4d3d0f1f689aba41c2c65676f3701427d092e
 postgres_image_pull_secret: "{{ image_pull_secret }}"
 postgres_deploy: "{{ postgres_appname }}-deploy"
 postgres_container: "moodle-postgres"
