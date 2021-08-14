@@ -1,0 +1,10 @@
+- name: reset admin hash pass
+  when:
+    - moodle_new_adminpass_hash is defined
+    - moodle_container_group in groups
+    - groups[moodle_container_group] | length > 0
+    - groups[moodle_container_group][0] in groups[pods_ready_group]
+  delegate_to: "{{ groups[moodle_container_group][0] }}"
+  run_once: true
+  register: reset_admin_pass_task
+  command: "php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'"

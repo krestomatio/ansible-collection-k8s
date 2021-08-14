@@ -2,8 +2,8 @@
   run_once: false
   when:
     - moodle_config_autosync
-    - hostvars['localhost'].k8s_moodle_secret is defined and
-      hostvars['localhost'].k8s_moodle_secret is changed
+    - hostvars['localhost'].k8s_moodle_secret_config is defined and
+      hostvars['localhost'].k8s_moodle_secret_config is changed
   template:
     src: "{{ moodle_config_template }}"
     dest: "{{ moodle_app }}/config.php"

@@ -35,11 +35,6 @@ template:
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
         value: '{{ php_fpm_config_process_control_timeout }}'
-      - name: MOODLE_ADMINPASS
-        valueFrom:
-          secretKeyRef:
-            name: {{ moodle_secret }}
-            key: moodle_new_instance_adminpass
       command:
       - '/bin/bash'
       - '-c'
@@ -78,7 +73,7 @@ template:
         claimName: '{{ moodle_pvc_moodledata }}'
     - name: config-php
       secret:
-        secretName: '{{ moodle_secret }}'
+        secretName: '{{ moodle_secret_config }}'
         items:
         - key: config.php
           path: config.php
