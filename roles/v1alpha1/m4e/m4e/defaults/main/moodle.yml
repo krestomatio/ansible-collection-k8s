@@ -85,8 +85,7 @@ moodle_new_instance_job_command_snippet: |
   echo "Instantiating moodle..."
   /usr/libexec/check-container-php -d
   exit_code=$?
-  if [ $exit_code -eq 2 ]
-  then
+  if [ $exit_code -eq 2 ]; then
     echo "Installing..."
     php admin/cli/install_database.php \
       --lang={{ moodle_new_instance_lang | quote }} \
@@ -97,14 +96,16 @@ moodle_new_instance_job_command_snippet: |
       --adminpass={{ lookup('password', '/dev/null length=15') }} \
       --adminemail={{ moodle_new_instance_adminmail | quote }} \
       --agree-license
-  {% if moodle_new_adminpass_hash is defined %}
-    echo "Setting admin password..."
-    php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
-  {% endif %}
+  elif [ $exit_code -eq 0 ]; then
+    echo "WARNING: database already instantiated"
   else
     echo "Moodle could not be instantiated, exit code when checking database: '${exit_code}'"
-    exit 1
+    exit ${exit_code}
   fi
+  {% if moodle_new_adminpass_hash is defined %}
+  echo "Setting admin password..."
+  php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
+  {% endif %}
 moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
 moodle_new_instance_job_tolerations: false
 
