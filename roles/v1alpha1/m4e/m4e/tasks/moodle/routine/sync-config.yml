@@ -1,5 +1,6 @@
 - name: keep config.php in sync
   run_once: false
+  no_log: true
   when:
     - moodle_config_autosync
     - hostvars['localhost'].k8s_moodle_secret_config is defined and

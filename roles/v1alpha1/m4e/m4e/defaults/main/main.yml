@@ -18,11 +18,6 @@ host: "m4e"
 domain: "krestomat.io"
 fqdn: "{{ host }}.{{ domain }}"
 
-# credentials. MUST CHANGED
-database_name: moodle
-database_user: user
-database_password: secret
-
 # templates
 moodle_config_template: moodle/config.php.j2
 postgres_deploy_spec_template: deploy/postgres-spec.yaml.j2

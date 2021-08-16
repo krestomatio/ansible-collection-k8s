@@ -174,9 +174,13 @@ moodle_secret_admin_data: |
 
 # moodle config.php
 moodle_config_dbhost: "{{ postgres_service }}"
-moodle_config_dbname: "{{ database_name }}"
-moodle_config_dbuser: "{{ database_user }}"
-moodle_config_dbpass: "{{ database_password }}"
+## by default, database credential will be read from postgres secret:
+moodle_config_dbname: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+  resource_name=postgres_secret).data.database_name | b64decode }}"
+moodle_config_dbuser: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+  resource_name=postgres_secret).data.database_user | b64decode }}"
+moodle_config_dbpass: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+  resource_name=postgres_secret).data.database_password  | b64decode }}"
 moodle_config_wwwroot: "{{ moodle_url }}"
 moodle_config_dataroot: "{{ moodle_data }}"
 # moodle_config_context_cache_max_size: 7500

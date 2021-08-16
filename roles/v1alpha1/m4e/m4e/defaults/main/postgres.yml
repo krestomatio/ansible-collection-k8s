@@ -37,8 +37,22 @@ postgres_tolerations: false
 
 # postgres secret
 postgres_secret: "{{ postgres_appname }}-secret"
+## postgres database credentials will be read or randomly generated if not found:
 postgres_secret_data: |
-  database_password: '{{ database_password | b64encode }}'
+  database_name: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_name |
+    default(database_name |
+    default(lookup('password', '/dev/null chars=ascii_lowercase length=8')) |
+    b64encode,true) }}
+  database_user: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_user |
+    default(database_user |
+    default(lookup('password', '/dev/null chars=ascii_lowercase length=8')) |
+    b64encode,true)  }}
+  database_password: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_password |
+    default((lookup('password', '/dev/null') |
+    b64encode),true) }}
 
 # postgres service
 postgres_service: "{{ postgres_appname }}-service"

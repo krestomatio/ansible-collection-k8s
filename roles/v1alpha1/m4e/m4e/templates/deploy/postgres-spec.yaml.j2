@@ -31,9 +31,15 @@ template:
       image: '{{ postgres_image }}'
       env:
         - name: POSTGRESQL_DATABASE
-          value: '{{ database_name }}'
+          valueFrom:
+            secretKeyRef:
+              name: '{{ postgres_secret }}'
+              key: database_name
         - name: POSTGRESQL_USER
-          value: '{{ database_user }}'
+          valueFrom:
+            secretKeyRef:
+              name: '{{ postgres_secret }}'
+              key: database_user
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:

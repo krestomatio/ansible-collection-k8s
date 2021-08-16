@@ -106,7 +106,7 @@ if($options['usage']){
 
     # get total database size in bytes
     $database_bytes_sql = "SELECT pg_database_size(?)";
-    $database_bytes = $DB->get_field_sql($database_bytes_sql,['moodle']);
+    $database_bytes = $DB->get_field_sql($database_bytes_sql,[$CFG->dbname]);
 
     # get registered users (minus delete ones, guest and admin)
     $registered_users_sql = "SELECT COUNT(id) FROM {user} WHERE deleted = 0 AND id > 2";
