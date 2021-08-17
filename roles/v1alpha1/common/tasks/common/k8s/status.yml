@@ -10,6 +10,7 @@
     namespace: "{{ k8s_status_namespace | default(meta_namespace) }}"
     status: "{{ k8s_status_properties | default(omit,true) }}"
     conditions: "{{ k8s_status_conditions | default(omit,true) }}"
+    replace_lists:  "{{ k8s_status_replace_lists | default(omit,true) }}"
 
 - name: set uid fact
   when: k8s_status_task.result.metadata.uid is defined
