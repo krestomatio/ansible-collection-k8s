@@ -23,6 +23,7 @@
   when: status_moodle_task.stdout | default(false, true)
   vars:
     k8s_status_properties: "{{ status_moodle_task.stdout | from_json }}"
+    k8s_status_replace_lists: true
   block:
     - name: set version update fact
       when: k8s_status_properties.version | default([]) |
