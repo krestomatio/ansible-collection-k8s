@@ -26,10 +26,6 @@ description:
   - Sets the status field on a Kubernetes API resource. Only should be used if you are using Ansible to
     implement a controller for the resource being modified.
 
-extends_documentation_fragment:
-    - operator_sdk.util.osdk_auth_options
-    - operator_sdk.util.osdk_name_options
-
 options:
   status:
     type: dict
@@ -170,11 +166,70 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils._text import to_native
 from ansible.module_utils.six import iteritems
 
-from ansible_collections.operator_sdk.util.plugins.module_utils.args_common import (
-    AUTH_ARG_SPEC,
-    NAME_ARG_SPEC,
-    AUTH_ARG_MAP,
-)
+AUTH_ARG_SPEC = {
+    'kubeconfig': {
+        'type': 'path',
+    },
+    'context': {},
+    'host': {},
+    'api_key': {
+        'no_log': True,
+    },
+    'username': {},
+    'password': {
+        'no_log': True,
+    },
+    'validate_certs': {
+        'type': 'bool',
+        'aliases': ['verify_ssl'],
+    },
+    'ca_cert': {
+        'type': 'path',
+        'aliases': ['ssl_ca_cert'],
+    },
+    'client_cert': {
+        'type': 'path',
+        'aliases': ['cert_file'],
+    },
+    'client_key': {
+        'type': 'path',
+        'aliases': ['key_file'],
+    },
+    'proxy': {
+        'type': 'str',
+    },
+    'persist_config': {
+        'type': 'bool',
+    },
+}
+
+
+# Map kubernetes-client parameters to ansible parameters
+AUTH_ARG_MAP = {
+    'kubeconfig': 'kubeconfig',
+    'context': 'context',
+    'host': 'host',
+    'api_key': 'api_key',
+    'username': 'username',
+    'password': 'password',
+    'verify_ssl': 'validate_certs',
+    'ssl_ca_cert': 'ca_cert',
+    'cert_file': 'client_cert',
+    'key_file': 'client_key',
+    'proxy': 'proxy',
+    'persist_config': 'persist_config',
+}
+
+NAME_ARG_SPEC = {
+    'kind': {'required': True},
+    'name': {'required': True},
+    'namespace': {},
+    'api_version': {
+        'default': 'v1',
+        'aliases': ['api', 'version'],
+    },
+}
+
 
 K8S_IMP_ERR = None
 try:
