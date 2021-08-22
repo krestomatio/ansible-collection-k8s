@@ -5,8 +5,6 @@
 * replace list in status (Job Céspedes Ortiz)
 * m4e: use randomly generated credentials for postgres db (Job Céspedes Ortiz)
 * do not log secret resources (Job Céspedes Ortiz)
-* m4e: renew admin user password using bcrypt compatible hash (Job Céspedes Ortiz)
-* add assertions (Job Céspedes Ortiz)
 
 ### Bug Fixes
 
@@ -23,5 +21,6 @@
 
 ### Chores
 
+* m4e: bump image versions with updatebot (krestomatio-cibot)
+* release: 0.0.29 (krestomatio-cibot)
 * add dependencies (Job Céspedes Ortiz)
-* release: 0.0.28 (krestomatio-cibot)
