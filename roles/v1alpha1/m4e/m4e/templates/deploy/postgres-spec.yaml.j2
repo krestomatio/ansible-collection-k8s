@@ -45,6 +45,10 @@ template:
             secretKeyRef:
               name: '{{ postgres_secret }}'
               key: database_password
+{% if postgres_upgrade %}
+        - name: POSTGRESQL_UPGRADE
+          value: "copy"
+{% endif %}
 {% if postgres_config_log_stderr %}
         - name: POSTGRESQL_LOG_STDERR
           value: "true"

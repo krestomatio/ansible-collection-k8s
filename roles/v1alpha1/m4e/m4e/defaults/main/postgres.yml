@@ -13,11 +13,11 @@ postgres_container: "moodle-postgres"
 postgres_container_group: "{{ postgres_container.replace('-', '_') }}"
 postgres_readiness_probe: true
 postgres_readiness_command: "['/usr/libexec/check-container-postgres']"
-postgres_readiness_initial: 5
-postgres_readiness_period: 10
+postgres_readiness_initial: "{{ 5 if not postgres_upgrade else 30 }}"
+postgres_readiness_period: "{{ 10 if not postgres_upgrade else 60 }}"
 postgres_readiness_timeout: 1
 postgres_readiness_success: 1
-postgres_readiness_failure: 3
+postgres_readiness_failure: "{{ 3 if not postgres_upgrade else postgres_upgrade_readiness_failure }}"
 postgres_liveness_probe: true
 postgres_liveness_command: "['/usr/libexec/check-container-postgres', '--live']"
 postgres_liveness_initial: 120
@@ -81,6 +81,10 @@ postgres_pvc_data_spec: |
   resources:
     requests:
       storage: '{{ postgres_pvc_data_size }}'
+
+# set to true to allow a postgres version upgrade with a new image
+postgres_upgrade: false
+postgres_upgrade_readiness_failure: 10
 
 # postgres config
 postgres_config_log_stderr: true
