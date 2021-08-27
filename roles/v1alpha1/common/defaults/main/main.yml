@@ -4,6 +4,7 @@ cr_version: v1alpha1
 # cr_group: sample.krestomat.io
 cr_api_version: "{{ cr_group }}/{{ cr_version }}"
 # cr_kind: Sample
+cr_object: "{{ lookup('vars', ('_' + cr_group + '_' + cr_kind) | lower | regex_replace('(\\.|\\-)','_')) }}"
 
 meta_name: "{{ ansible_operator_meta.name }}"
 meta_namespace: "{{ ansible_operator_meta.namespace }}"

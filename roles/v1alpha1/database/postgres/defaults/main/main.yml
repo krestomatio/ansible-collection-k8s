@@ -1,8 +1,4 @@
 ---
-# defaults file for database
-cr_group: database.krestomat.io
-cr_kind: Postgres
-
 # custom resource state: present, absent
 cr_state: present
 
