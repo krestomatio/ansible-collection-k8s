@@ -1,7 +1,7 @@
 - name: nginx route resource definition
   when:
-    - expose_type is defined and expose_type
-    - "(expose_type | lower) == 'route'"
+    - nginx_ingress_type is defined and nginx_ingress_type
+    - "(nginx_ingress_type | lower) == 'route'"
   vars:
     k8s_kind: Route
     k8s_state: "{{ nginx_route_state | default(nginx_state) }}"

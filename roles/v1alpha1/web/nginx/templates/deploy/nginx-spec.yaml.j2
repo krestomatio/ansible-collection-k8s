@@ -11,11 +11,10 @@ template:
     containers:
     - name: '{{ nginx_container }}'
       image: '{{ nginx_image }}'
+{% if nginx_envvars is defined and nginx_envvars %}
       env:
-        - name: MOODLE_CHECK_HOST
-          value: '{{ nginx_host }}'
-        - name: PHP_FPM_HOST
-          value: '{{ moodle_service }}'
+      {{ nginx_envvars | to_nice_yaml(indent=2) | indent(6) }}
+{% endif %}
       ports:
       - containerPort: {{ nginx_port }}
       imagePullPolicy: IfNotPresent
@@ -65,13 +64,26 @@ template:
       securityContext:
         runAsUser: {{ nginx_run_as_user }}
 {% endif %}
+{% if nginx_volumes is defined and nginx_volumes %}
       volumeMounts:
-      - mountPath: '{{ moodle_data }}'
-        name: moodledata
+{%   for volume in nginx_volumes %}
+      - name: '{{ volume.name }}'
+        mountPath: '{{ volume.mount_path }}'
+{%     if volume.read_only is defined and volume.read_only %}
+        readOnly: true
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{% if nginx_volumes is defined and nginx_volumes %}
     volumes:
-    - name: moodledata
+{%   for volume in nginx_volumes %}
+    - name: '{{ volume.name }}'
+{%     if volume.persistentVolumeClaim is defined and volume.persistentVolumeClaim %}
       persistentVolumeClaim:
-        claimName: '{{ moodle_pvc_moodledata }}'
+        {{ volume.persistentVolumeClaim | to_nice_yaml(indent=2) | indent(8) }}
+{%     endif %}
+{%   endfor %}
+{% endif %}
 {% if nginx_tolerations %}
     tolerations:
     {{ nginx_tolerations | to_nice_yaml(indent=2) | indent(4) }}

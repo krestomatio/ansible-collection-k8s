@@ -33,6 +33,7 @@ moodle_resource_limits_cpu: 1
 moodle_resource_limits_memory: 1Gi
 moodle_term_grace_period: 30
 moodle_tolerations: false
+moodle_connects_to: "{{ moodle_database_appname }}"
 
 # moodle service
 moodle_service: "{{ moodle_appname }}-service"
@@ -56,8 +57,8 @@ moodle_service_spec: |
 moodle_app: /var/www/html
 moodle_data: /var/moodledata
 moodle_config_path: /config
-moodle_host: "{{ fqdn }}"
-moodle_protocol: "{{ 'https' if expose_tls else 'http' }}"
+moodle_host: "m4e.krestomat.io"
+moodle_protocol: http
 moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
 moodle_config_autosync: true
 # moodle_new_adminpass_hash: $2b$10$zbRuwPil1wNWQUkvlkchwe3/rOljJvoheydndKH1X0bdIIigy0xim
@@ -216,7 +217,7 @@ moodle_config_dataroot: "{{ moodle_data }}"
 #   session_redis_host: "redis"
 #   session_redis_prefix: "m1_"
 #   session_redis_auth: "secret"
-moodle_config_sslproxy: "{{ true if expose_tls else false }}"
+moodle_config_sslproxy: "{{ true if moodle_protocol == 'https' else false }}"
 # moodle_config_profilingenabled:
 #   earlyprofilingenabled: 'true'
 #   profilingautofrec: '100'

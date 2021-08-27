@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Role to handle Moodle with Ansible Operator SDK
+Role to handle Nginx with Ansible Operator SDK
 
 Requirements
 ------------
@@ -12,10 +12,7 @@ Role Variables
 --------------
 
 - See [`defaults/main.yml`](defaults/main.yml)
-- See [`defaults/moodle.yml`](defaults/moodle.yml)
-- See [`defaults/php-fpm.yml`](defaults/php-fpm.yml)
-- See [`defaults/nginx.yml`](../../web/nginx/defaults/main/nginx.yml)
-- See [`defaults/postgres.yml`](../../database/postgres/defaults/main/postgres.yml)
+- See [`defaults/nginx.yml`](defaults/postgres.yml)
 
 Dependencies
 ------------
@@ -35,7 +32,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "m4e"
+        name: "nginx"
 ```
 License
 -------

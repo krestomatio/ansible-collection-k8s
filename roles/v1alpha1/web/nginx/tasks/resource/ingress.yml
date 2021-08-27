@@ -1,7 +1,7 @@
 - name: nginx ingress
   when:
-    - expose_type is defined and expose_type
-    - "(expose_type | lower) == 'ingress'"
+    - nginx_ingress_type is defined and nginx_ingress_type
+    - "(nginx_ingress_type | lower) == 'ingress'"
   block:
     - name: nginx ingress resource definition
       vars:
@@ -36,7 +36,7 @@
 
         - name: wait for nginx ingress uri to be accesible
           vars:
-            _moodle_host_ip: "{{ (nginx_ingress_ip_task.resources |
+            _nginx_host_ip: "{{ (nginx_ingress_ip_task.resources |
               first).status.loadBalancer.ingress | map(attribute='ip') | first }}"
           register: nginx_ingress_uri_task
           check_mode: false
@@ -44,10 +44,10 @@
           retries: 6
           delay: 30
           uri:
-            url: "{{ moodle_protocol }}://{{ _moodle_host_ip }}"
+            url: "{{ nginx_ingress_protocol }}://{{ _nginx_host_ip }}"
             status_code: 200
             headers:
-              host: "{{ moodle_host }}"
+              host: "{{ nginx_ingress_host }}"
 
         - name: set nginx ingress ip status
           import_tasks: "{{ common_path }}/k8s/status.yml"

@@ -5,13 +5,13 @@ nginx_appname: "{{ meta_name }}-nginx"
 
 # nginx deploy
 nginx_size: 1
-nginx_image: "{{ moodle_image }}"
+nginx_image: quay.io/krestomatio/nginx@sha256:ef14942fd15230ac347724c508df3c81e16dfbc58b166f26bfe4f2f55d1c8319
 nginx_image_pull_secret: "{{ image_pull_secret }}"
 nginx_deploy: "{{ nginx_appname }}-deploy"
 nginx_port: 8080
-nginx_host: "{{ fqdn }}"
+nginx_host: "{{ nginx_ingress_host }}"
 nginx_args: "['nginx']"
-nginx_container: "moodle-nginx"
+nginx_container: "nginx"
 nginx_container_group: "{{ nginx_container.replace('-', '_') }}"
 nginx_readiness_probe: true
 nginx_readiness_path: "/login/index.php"
@@ -36,6 +36,15 @@ nginx_resource_limits_memory: 1Gi
 nginx_term_grace_period: 30
 nginx_run_as_user: 999
 nginx_tolerations: false
+nginx_connects_to: false
+# nginx_envvars:
+#   - name: PHP_FPM_HOST
+#     value: php-service
+# nginx_volumes:
+#   - name: html
+#     mount_path: /var/www/html
+#     persistentVolumeClaim:
+#       claimName: html-pvc
 
 # nginx service
 nginx_service: "{{ nginx_appname }}-service"
@@ -58,8 +67,11 @@ nginx_service_spec: |
 
 # nginx ingress
 nginx_ingress: "{{ nginx_appname }}-ingress"
-nginx_ingress_tls: "{{ expose_tls }}"
-nginx_ingress_tls_secret_name: "{{ expose_tls_secret_name }}"
+nginx_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
+nginx_ingress_tls: "{{ true if nginx_ingress_protocol == 'https' else false }}"
+nginx_ingress_tls_secret_name: false
+nginx_ingress_protocol: "http"
+nginx_ingress_host: "example.krestomat.io"
 nginx_ingress_spec: |
   {% if nginx_ingress_tls %}
   tls:
@@ -80,7 +92,7 @@ nginx_ingress_spec: |
 
 # nginx router
 nginx_route: "{{ nginx_appname }}-route"
-nginx_route_tls: "{{ expose_tls }}"
+nginx_route_tls: "{{ nginx_ingress_tls }}"
 nginx_route_annotations: |
   haproxy.router.openshift.io/rate-limit-connections: 'true'
   haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'
