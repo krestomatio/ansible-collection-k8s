@@ -1,0 +1,12 @@
+---
+# defaults file for database
+cr_group: database.krestomat.io
+cr_kind: Postgres
+
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 55
+
+# templates
+postgres_deploy_spec_template: deploy/postgres-spec.yaml.j2

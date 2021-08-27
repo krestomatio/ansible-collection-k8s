@@ -30,6 +30,9 @@ route_template: "{{ common_path }}/route.yaml.j2"
 ingress_template: "{{ common_path }}/ingress.yaml.j2"
 sc_template: "{{ common_path }}/sc.yaml.j2"
 
+# images
+image_pull_secret: false
+
 # inventory
 inventory_include: false
 inventory_refresh_task: not-refresh

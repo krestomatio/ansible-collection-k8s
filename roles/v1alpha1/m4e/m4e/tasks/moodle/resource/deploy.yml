@@ -16,7 +16,7 @@
     template: "{{ deploy_template }}"
     metadata_name: "{{ moodle_deploy }}"
     annotations: "{{ moodle_deploy_annotations | default(false) }}"
-    connects_to: "{{ postgres_appname }}"
+    connects_to: "{{ moodle_database_appname | default(false) }}"
     runtime: php
     deploy_spec: "{{ moodle_deploy_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"

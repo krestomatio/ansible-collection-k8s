@@ -172,15 +172,28 @@ moodle_secret_admin: "{{ moodle_appname }}-secret-admin"
 moodle_secret_admin_data: |
   password_hash: '{{ moodle_new_adminpass_hash | b64encode }}'
 
+# database
+## deploy own database for moodle using postgres
+moodle_database_deploy: true
+moodle_database_appname: "{{ postgres_appname | default(meta_name + '-postgres') }}"
+moodle_database_service: "{{ postgres_service | default(moodle_database_appname + '-service') }}"
+moodle_database_secret: "{{ postgres_secret | default(moodle_database_appname + '-secret') }}"
+moodle_database_secret_dbname_key: database_name
+moodle_database_secret_dbuser_key: database_user
+moodle_database_secret_dbpass_key: database_password
+
 # moodle config.php
-moodle_config_dbhost: "{{ postgres_service }}"
+moodle_config_dbhost: "{{ moodle_database_service }}"
 ## by default, database credential will be read from postgres secret:
 moodle_config_dbname: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-  resource_name=postgres_secret).data.database_name | b64decode }}"
+  resource_name=moodle_database_secret).data[moodle_database_secret_dbname_key] |
+  default('') | b64decode }}"
 moodle_config_dbuser: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-  resource_name=postgres_secret).data.database_user | b64decode }}"
+  resource_name=moodle_database_secret).data[moodle_database_secret_dbuser_key] |
+  default('') | b64decode }}"
 moodle_config_dbpass: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-  resource_name=postgres_secret).data.database_password  | b64decode }}"
+  resource_name=moodle_database_secret).data[moodle_database_secret_dbpass_key] |
+  default('') | b64decode }}"
 moodle_config_wwwroot: "{{ moodle_url }}"
 moodle_config_dataroot: "{{ moodle_data }}"
 # moodle_config_context_cache_max_size: 7500

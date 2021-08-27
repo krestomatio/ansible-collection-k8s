@@ -1,0 +1,2 @@
+- name: import state tasks
+  import_tasks: "{{ cr_state }}.yml"

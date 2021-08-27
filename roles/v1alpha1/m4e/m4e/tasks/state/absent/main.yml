@@ -14,7 +14,7 @@
     - name: handle moodle removal
       import_tasks: moodle.yml
 
-    - name: handle postgres removal
+    - name: handle postgres
       import_tasks: postgres.yml
   rescue:
     - name: include rescue tasks

@@ -9,7 +9,7 @@ postgres_size: 1
 postgres_image: quay.io/krestomatio/postgres@sha256:d58e072a5b6084639a9d7180fa702471accd7d17bbf2059635a1b49d359ff929
 postgres_image_pull_secret: "{{ image_pull_secret }}"
 postgres_deploy: "{{ postgres_appname }}-deploy"
-postgres_container: "moodle-postgres"
+postgres_container: "postgres"
 postgres_container_group: "{{ postgres_container.replace('-', '_') }}"
 postgres_readiness_probe: true
 postgres_readiness_command: "['/usr/libexec/check-container-postgres']"
