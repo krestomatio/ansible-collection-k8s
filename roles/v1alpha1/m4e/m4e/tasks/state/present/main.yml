@@ -1,7 +1,8 @@
 - name: import tasks
   block:
-    - name: handle initial status
-      import_tasks: status/init.yml
+    - name: include not created status
+      when: not (cr_status_properties.created | default('False') | bool)
+      import_tasks: condition/created/not-created.yml
 
     - name: make assertions
       import_tasks: "assertions.yml"

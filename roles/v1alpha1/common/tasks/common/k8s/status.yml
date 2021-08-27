@@ -13,25 +13,6 @@
     conditions: "{{ k8s_status_conditions | default(omit,true) }}"
     replace_lists:  "{{ k8s_status_replace_lists | default(omit,true) }}"
 
-- name: set uid fact
-  when: k8s_status_task.result.metadata.uid is defined
-  set_fact:
-    cr_uid: "{{ k8s_status_task.result.metadata.uid }}"
-
-- name: set status facts
-  vars:
-    _cr_status: "{{ k8s_status_task.result.status | default({},true) }}"
-  set_fact:
-    cr_status_conditions: "{{ _cr_status.conditions | default([]) }}"
-    cr_status_properties:
-      "{% set copy=_cr_status.copy() %}{% if copy.conditions is defined %}{% set
-      removed=copy.pop('conditions') %}{% endif %}{{ copy }}"
-
-- name: set ready fact
-  set_fact:
-    cr_status_ready: "{{ true if cr_status_properties.ready is defined and
-      cr_status_properties.ready == 'True' else false }}"
-
 - name: notify status
   when:
     - k8s_status_task is defined and k8s_status_task is changed

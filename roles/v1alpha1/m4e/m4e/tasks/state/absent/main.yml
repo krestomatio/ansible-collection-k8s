@@ -5,9 +5,6 @@
 
 - name: import tasks
   block:
-    - name: handle initial status
-      import_tasks: status/init.yml
-
     - name: handle nginx removal
       import_tasks: nginx.yml
 
