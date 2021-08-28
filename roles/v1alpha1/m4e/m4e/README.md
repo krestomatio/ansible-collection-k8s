@@ -11,11 +11,13 @@ None
 Role Variables
 --------------
 
-- See [`defaults/main.yml`](defaults/main.yml)
-- See [`defaults/moodle.yml`](defaults/moodle.yml)
-- See [`defaults/php-fpm.yml`](defaults/php-fpm.yml)
-- See [`defaults/nginx.yml`](../../web/nginx/defaults/main/nginx.yml)
-- See [`defaults/postgres.yml`](../../database/postgres/defaults/main/postgres.yml)
+- See [`defaults/main/main.yml`](defaults/main/main.yml)
+- See [`defaults/main/moodle.yml`](defaults/main/moodle.yml)
+- See [`defaults/main/php-fpm.yml`](defaults/main/php-fpm.yml)
+- See [`defaults/main/nginx.yml`](../../web/nginx/defaults/main/nginx.yml)
+- See [`vars/main/nginx.yml`](vars/main/nginx.yml)
+- See [`defaults/main/postgres.yml`](../../database/postgres/defaults/main/postgres.yml)
+- See [`vars/main/postgres.yml`](vars/main/postgres.yml)
 
 Dependencies
 ------------

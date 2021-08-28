@@ -11,8 +11,8 @@ None
 Role Variables
 --------------
 
-- See [`defaults/main.yml`](defaults/main.yml)
-- See [`defaults/postgres.yml`](defaults/postgres.yml)
+- See [`defaults/main/main.yml`](defaults/main/main.yml)
+- See [`defaults/main/postgres.yml`](defaults/main/postgres.yml)
 
 Dependencies
 ------------
