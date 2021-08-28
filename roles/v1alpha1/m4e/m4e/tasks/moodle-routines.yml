@@ -1,1 +1,1 @@
-- import_tasks: moodle/routine/sync-config.yml
+- import_tasks: routine/sync-config.yml

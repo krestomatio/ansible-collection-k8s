@@ -35,4 +35,4 @@
         k8s_moodle_update_job: "{{ k8s_object_task }}"
 
     - name: import moodle status
-      import_tasks: moodle/routine/status.yml
+      import_tasks: routine/status.yml
