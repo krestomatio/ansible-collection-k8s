@@ -1,0 +1,90 @@
+---
+# postgres
+postgres_state: "{{ state }}"
+postgres_appname: "{{ meta_name }}-postgres"
+
+# postgres deploy
+## postgres size is either 1 or 0. If > 1 it will be converted to 1
+postgres_size: 1
+postgres_image: quay.io/krestomatio/postgres@sha256:d58e072a5b6084639a9d7180fa702471accd7d17bbf2059635a1b49d359ff929
+postgres_image_pull_secret: "{{ image_pull_secret }}"
+postgres_deploy: "{{ postgres_appname }}-deploy"
+postgres_container: "postgres"
+postgres_container_group: "{{ postgres_container.replace('-', '_') }}"
+postgres_readiness_probe: true
+postgres_readiness_command: "['/usr/libexec/check-container-postgres']"
+postgres_readiness_initial: "{{ 5 if not postgres_upgrade else 30 }}"
+postgres_readiness_period: "{{ 10 if not postgres_upgrade else 60 }}"
+postgres_readiness_timeout: 1
+postgres_readiness_success: 1
+postgres_readiness_failure: "{{ 3 if not postgres_upgrade else postgres_upgrade_readiness_failure }}"
+postgres_liveness_probe: true
+postgres_liveness_command: "['/usr/libexec/check-container-postgres', '--live']"
+postgres_liveness_initial: 120
+postgres_liveness_period: 10
+postgres_liveness_timeout: 10
+postgres_liveness_success: 1
+postgres_liveness_failure: 3
+postgres_resource_requests: true
+postgres_resource_requests_cpu: 150m
+postgres_resource_requests_memory: 256Mi
+postgres_resource_limits: false
+postgres_resource_limits_cpu: 1
+postgres_resource_limits_memory: 1Gi
+postgres_term_grace_period: 30
+postgres_data: /var/lib/pgsql/data
+postgres_tolerations: false
+
+# postgres secret
+postgres_secret: "{{ postgres_appname }}-secret"
+## postgres database credentials will be read or randomly generated if not found:
+postgres_secret_data: |
+  database_name: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_name |
+    default(database_name |
+    default(lookup('password', '/dev/null chars=ascii_lowercase length=8')) |
+    b64encode,true) }}
+  database_user: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_user |
+    default(database_user |
+    default(lookup('password', '/dev/null chars=ascii_lowercase length=8')) |
+    b64encode,true)  }}
+  database_password: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_password |
+    default((lookup('password', '/dev/null') |
+    b64encode),true) }}
+
+# postgres service
+postgres_service: "{{ postgres_appname }}-service"
+postgres_service_spec: |
+  selector:
+    app: '{{ postgres_appname }}'
+  clusterIP: None
+  ports:
+    - name: postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  sessionAffinity: ClientIP
+
+# postgres pvc
+postgres_pvc_data: "{{ postgres_appname }}-data-pvc"
+postgres_pvc_data_size: 1Gi
+postgres_pvc_data_storage_access_mode: ReadWriteOnce
+postgres_pvc_data_storage_class_name: false
+postgres_pvc_data_spec: |
+  {% if postgres_pvc_data_storage_class_name is defined and postgres_pvc_data_storage_class_name %}
+  storageClassName: {{ postgres_pvc_data_storage_class_name }}
+  {% endif %}
+  accessModes:
+    - '{{ postgres_pvc_data_storage_access_mode }}'
+  resources:
+    requests:
+      storage: '{{ postgres_pvc_data_size }}'
+
+# set to true to allow a postgres version upgrade with a new image
+postgres_upgrade: false
+postgres_upgrade_readiness_failure: 10
+
+# postgres config
+postgres_config_log_stderr: true

@@ -5,16 +5,13 @@
 
 - name: import tasks
   block:
-    - name: handle initial status
-      import_tasks: status/init.yml
-
     - name: handle nginx removal
       import_tasks: nginx.yml
 
     - name: handle moodle removal
       import_tasks: moodle.yml
 
-    - name: handle postgres removal
+    - name: handle postgres
       import_tasks: postgres.yml
   rescue:
     - name: include rescue tasks

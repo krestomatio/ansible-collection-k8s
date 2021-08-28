@@ -1,9 +1,18 @@
 ---
-# defaults file for m4e
-cr_version: v1alpha1
-# cr_group: sample.krestomat.io
-cr_api_version: "{{ cr_group }}/{{ cr_version }}"
-# cr_kind: Sample
+# defaults file
+cr_api_version: "{{ cr_object['apiVersion'] }}"
+cr_version: "{{ cr_api_version.split('/')[1] }}"
+
+## CR object and status
+cr_object: "{{ lookup('vars', ('_' + cr_group + '_' + cr_kind) | lower | regex_replace('(\\.|\\-)','_'),
+  default=false) }}"
+cr_uid: "{{ cr_object.metadata.uid | default(false) }}"
+cr_status: "{{ k8s_status_task.result.status | default(cr_object.status,true) | default({},true) }}"
+cr_status_ready: "{{ cr_status_properties.ready | default(false) | bool }}"
+cr_status_conditions: "{{ cr_status.conditions | default([]) }}"
+cr_status_properties:
+  "{% set copy=cr_status.copy() %}{% if copy.conditions is defined %}{% set
+  removed=copy.pop('conditions') %}{% endif %}{{ copy }}"
 
 meta_name: "{{ ansible_operator_meta.name }}"
 meta_namespace: "{{ ansible_operator_meta.namespace }}"
@@ -29,6 +38,9 @@ service_template: "{{ common_path }}/service.yaml.j2"
 route_template: "{{ common_path }}/route.yaml.j2"
 ingress_template: "{{ common_path }}/ingress.yaml.j2"
 sc_template: "{{ common_path }}/sc.yaml.j2"
+
+# images
+image_pull_secret: false
 
 # inventory
 inventory_include: false

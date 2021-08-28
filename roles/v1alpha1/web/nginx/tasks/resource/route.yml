@@ -1,0 +1,16 @@
+- name: nginx route resource definition
+  when:
+    - nginx_ingress_type is defined and nginx_ingress_type
+    - "(nginx_ingress_type | lower) == 'route'"
+  vars:
+    k8s_kind: Route
+    k8s_state: "{{ nginx_route_state | default(nginx_state) }}"
+    template: "{{ route_template }}"
+    metadata_name: "{{ nginx_route }}"
+    annotations: "{{ nginx_route_annotations | default(false) }}"
+    route_spec: "{{ nginx_route_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save nginx route resource definition task
+  set_fact:
+    k8s_nginx_route: "{{ k8s_object_task }}"

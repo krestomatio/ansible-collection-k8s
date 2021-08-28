@@ -1,15 +1,3 @@
----
-- name: nginx resource definitions
-  vars:
-    name: nginx
-    k8s_state: "{{ nginx_state }}"
-    component: nginx
-    metadata_app: "{{ nginx_appname }}"
-  block:
-    - import_tasks: nginx/resource/deploy.yml
-
-    - import_tasks: nginx/resource/service.yml
-
-    - import_tasks: nginx/resource/route.yml
-
-    - import_tasks: nginx/resource/ingress.yml
+- name: handle nginx
+  include_role:
+    name: "{{ cr_version }}/web/nginx"

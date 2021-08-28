@@ -1,0 +1,94 @@
+{% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
+replicas: {{ nginx_size }}
+selector:
+  matchLabels:
+    app: '{{ nginx_appname }}'
+template:
+  {{ metadata() | indent(width=2) }}
+  spec:
+    terminationGracePeriodSeconds: {{ nginx_term_grace_period }}
+    automountServiceAccountToken: false
+    containers:
+    - name: '{{ nginx_container }}'
+      image: '{{ nginx_image }}'
+{% if nginx_envvars is defined and nginx_envvars %}
+      env:
+      {{ nginx_envvars | to_nice_yaml(indent=2) | indent(6) }}
+{% endif %}
+      ports:
+      - containerPort: {{ nginx_port }}
+      imagePullPolicy: IfNotPresent
+      args: {{ nginx_args }}
+{% if nginx_readiness_probe %}
+      readinessProbe:
+        httpGet:
+          path: '{{ nginx_readiness_path }}'
+          port: {{ nginx_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ nginx_host }}'
+        initialDelaySeconds: {{ nginx_readiness_initial }}
+        periodSeconds: {{ nginx_readiness_period }}
+        timeoutSeconds: {{ nginx_readiness_timeout }}
+        successThreshold: {{ nginx_readiness_success }}
+        failureThreshold: {{ nginx_readiness_failure }}
+{% endif %}
+{% if nginx_liveness_probe %}
+      livenessProbe:
+        httpGet:
+          path: '{{ nginx_liveness_path }}'
+          port: {{ nginx_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ nginx_host }}'
+        initialDelaySeconds: {{ nginx_liveness_initial }}
+        periodSeconds: {{ nginx_liveness_period }}
+        timeoutSeconds: {{ nginx_liveness_timeout }}
+        successThreshold: {{ nginx_liveness_success }}
+        failureThreshold: {{ nginx_liveness_failure }}
+{% endif %}
+{% if nginx_resource_requests or nginx_resource_limits %}
+      resources:
+{% if nginx_resource_requests %}
+        requests:
+          cpu: '{{ nginx_resource_requests_cpu }}'
+          memory: '{{ nginx_resource_requests_memory }}'
+{% endif %}
+{% if nginx_resource_limits %}
+        limits:
+          cpu: '{{ nginx_resource_limits_cpu }}'
+          memory: '{{ nginx_resource_limits_memory }}'
+{% endif %}
+{% endif %}
+{% if k8s_distribution == 'k8s' %}
+      securityContext:
+        runAsUser: {{ nginx_run_as_user }}
+{% endif %}
+{% if nginx_volumes is defined and nginx_volumes %}
+      volumeMounts:
+{%   for volume in nginx_volumes %}
+      - name: '{{ volume.name }}'
+        mountPath: '{{ volume.mount_path }}'
+{%     if volume.read_only is defined and volume.read_only %}
+        readOnly: true
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{% if nginx_volumes is defined and nginx_volumes %}
+    volumes:
+{%   for volume in nginx_volumes %}
+    - name: '{{ volume.name }}'
+{%     if volume.persistentVolumeClaim is defined and volume.persistentVolumeClaim %}
+      persistentVolumeClaim:
+        {{ volume.persistentVolumeClaim | to_nice_yaml(indent=2) | indent(8) }}
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{% if nginx_tolerations %}
+    tolerations:
+    {{ nginx_tolerations | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
+{% if nginx_image_pull_secret  %}
+    imagePullSecrets:
+    - name: {{ nginx_image_pull_secret }}
+{% endif %}

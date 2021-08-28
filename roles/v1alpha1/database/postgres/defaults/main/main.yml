@@ -1,0 +1,8 @@
+---
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 55
+
+# templates
+postgres_deploy_spec_template: deploy/postgres-spec.yaml.j2
