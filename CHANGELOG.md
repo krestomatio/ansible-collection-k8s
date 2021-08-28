@@ -14,5 +14,5 @@
 
 ### Chores
 
-* release: 0.0.32 (krestomatio-cibot)
 * m4e: bump image versions with updatebot (krestomatio-cibot)
+* release: 0.0.33 (krestomatio-cibot)
