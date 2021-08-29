@@ -11,7 +11,10 @@
 
     - import_tasks: resource/secret-config.yml
 
-    - import_tasks: resource/job-new-instance.yml
+    - include_tasks: resource/job-new-instance.yml
+      when:
+      - moodle_new_instance | bool
+      - not (cr_status_properties.instantiated | default('False') | bool)
 
     - import_tasks: resource/deploy.yml
 
@@ -19,6 +22,10 @@
 
     - import_tasks: resource/cronjob.yml
 
-    - import_tasks: resource/job-update.yml
+    - include_tasks: resource/job-update.yml
+      when:
+        - status_version_update.type is defined
+        - (status_version_update.type == 'minor' and moodle_update_minor) or
+          (status_version_update.type == 'major' and moodle_update_major)
 
     - import_tasks: resource/service.yml

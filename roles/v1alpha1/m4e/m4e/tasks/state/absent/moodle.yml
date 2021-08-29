@@ -7,8 +7,6 @@
   block:
     - import_tasks: resource/service.yml
 
-    - import_tasks: resource/job-new-instance.yml
-
     - import_tasks: resource/cronjob.yml
 
     - import_tasks: cleanup-jobs.yml

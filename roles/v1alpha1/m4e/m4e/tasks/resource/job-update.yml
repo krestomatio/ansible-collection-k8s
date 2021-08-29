@@ -1,8 +1,4 @@
 - name: moodle update
-  when:
-    - status_version_update.type is defined
-    - (status_version_update.type == 'minor' and moodle_update_minor) or
-      (status_version_update.type == 'major' and moodle_update_major)
   vars:
     moodle_component: "job"
   block:
@@ -28,11 +24,11 @@
         template: "{{ job_template }}"
         metadata_name: "{{ moodle_update_job }}"
         job_spec: "{{ moodle_update_job_spec }}"
-      import_tasks: "{{ common_path }}/k8s/object.yml"
+      include_tasks: "{{ common_path }}/k8s/object.yml"
 
     - name: save moodle update job resource definition task
       set_fact:
         k8s_moodle_update_job: "{{ k8s_object_task }}"
 
     - name: import moodle status
-      import_tasks: routine/status.yml
+      include_tasks: routine/status.yml
