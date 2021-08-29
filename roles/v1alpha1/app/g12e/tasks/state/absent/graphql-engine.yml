@@ -1,0 +1,12 @@
+- name: graphql-engine resource definitions
+  vars:
+    name: graphql-engine
+    k8s_state: "{{ graphql_engine_state }}"
+    component: graphql-engine
+    metadata_app: "{{ graphql_engine_appname }}"
+  block:
+    - import_tasks: "resource/{{ graphql_engine_ingress_type }}.yml"
+
+    - import_tasks: resource/service.yml
+
+    - import_tasks: resource/deploy.yml

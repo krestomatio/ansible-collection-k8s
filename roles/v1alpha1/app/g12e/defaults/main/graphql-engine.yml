@@ -1,0 +1,126 @@
+---
+# graphql-engine
+graphql_engine_state: "{{ state }}"
+graphql_engine_appname: "{{ meta_name }}-graphql-engine"
+
+# graphql-engine deploy
+graphql_engine_size: 1
+graphql_engine_image: quay.io/krestomatio/graphql-engine@sha256:915ca08eeb757884f86b0ffe6c6ebad4782ac2f09e045db62d1d13427914d738
+graphql_engine_image_pull_secret: "{{ image_pull_secret }}"
+graphql_engine_deploy: "{{ graphql_engine_appname }}-deploy"
+graphql_engine_port: 8080
+graphql_engine_host: "{{ graphql_engine_ingress_host }}"
+graphql_engine_args: "['graphql-engine','serve']"
+graphql_engine_container: "graphql-engine"
+graphql_engine_container_group: "{{ graphql_engine_container.replace('-', '_') }}"
+graphql_engine_readiness_probe: true
+graphql_engine_readiness_path: "/healthz"
+graphql_engine_readiness_initial: 5
+graphql_engine_readiness_period: 30
+graphql_engine_readiness_timeout: 3
+graphql_engine_readiness_success: 1
+graphql_engine_readiness_failure: 6
+graphql_engine_liveness_probe: true
+graphql_engine_liveness_path: "/healthz"
+graphql_engine_liveness_initial: 5
+graphql_engine_liveness_period: 10
+graphql_engine_liveness_timeout: 3
+graphql_engine_liveness_success: 1
+graphql_engine_liveness_failure: 3
+graphql_engine_resource_requests: true
+graphql_engine_resource_requests_cpu: 75m
+graphql_engine_resource_requests_memory: 128Mi
+graphql_engine_resource_limits: false
+graphql_engine_resource_limits_cpu: 1
+graphql_engine_resource_limits_memory: 1Gi
+graphql_engine_term_grace_period: 30
+graphql_engine_run_as_user: 1001
+graphql_engine_tolerations: false
+graphql_engine_connects_to: "{{ graphql_engine_database_appname if graphql_engine_database_deploy else false }}"
+# graphql_engine_envvars:
+#   - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
+#     value: startup, http-log, webhook-log, websocket-log, query-log
+# graphql_engine_volumes:
+#   - name: metadata
+#     mount_path: /metadata
+#     source: |
+#       persistentVolumeClaim:
+#         claimName: metadata-pvc
+
+# graphql-engine service
+graphql_engine_service: "{{ graphql_engine_appname }}-service"
+graphql_engine_service_type: ClusterIP
+graphql_engine_service_spec: |
+  type: {{ graphql_engine_service_type }}
+  sessionAffinity: {{ graphql_engine_service_session_affinity | default('None') }}
+  {% if graphql_engine_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ graphql_engine_service_session_affinity_timeout }}
+  {% endif %}
+  ports:
+  - name: http
+    port: {{ graphql_engine_port }}
+    protocol: TCP
+    targetPort: {{ graphql_engine_port }}
+  selector:
+    app: '{{ graphql_engine_appname }}'
+
+# graphql-engine ingress
+graphql_engine_ingress: "{{ graphql_engine_appname }}-ingress"
+graphql_engine_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
+graphql_engine_ingress_tls: "{{ true if graphql_engine_ingress_protocol == 'https' else false }}"
+graphql_engine_ingress_tls_secret_name: false
+graphql_engine_ingress_protocol: "http"
+graphql_engine_ingress_host: "example.krestomat.io"
+graphql_engine_ingress_spec: |
+  {% if graphql_engine_ingress_tls %}
+  tls:
+  - hosts:
+    - '{{ graphql_engine_host }}'
+  {% if graphql_engine_ingress_tls_secret_name is defined and graphql_engine_ingress_tls_secret_name %}
+    secretName: {{ graphql_engine_ingress_tls_secret_name }}
+  {% endif %}
+  {% endif %}
+  rules:
+  - host: '{{ graphql_engine_host }}'
+    http:
+      paths:
+      - path: {{ graphql_engine_ingress_path | default('/') }}
+        backend:
+          serviceName: '{{ graphql_engine_service }}'
+          servicePort: {{ graphql_engine_port }}
+
+# graphql-engine router
+graphql_engine_route: "{{ graphql_engine_appname }}-route"
+graphql_engine_route_tls: "{{ graphql_engine_ingress_tls }}"
+graphql_engine_route_annotations: |
+  haproxy.router.openshift.io/rate-limit-connections: 'true'
+  haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'
+  haproxy.router.openshift.io/rate-limit-connections.rate-http: '100'
+  haproxy.router.openshift.io/rate-limit-connections.rate-tcp: '100'
+graphql_engine_route_spec: |
+  host: '{{ graphql_engine_host }}'
+  to:
+    kind: Service
+    name: '{{ graphql_engine_service }}'
+    weight: 100
+  port:
+    targetPort: http
+  {% if graphql_engine_route_tls %}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  {% endif %}
+  wildcardPolicy: None
+
+# database
+## deploy own database for graphql-engine using postgres
+graphql_engine_database_deploy: true
+graphql_engine_database_appname: "{{ postgres_appname | default(meta_name + '-postgres') }}"
+graphql_engine_database_service: "{{ postgres_service | default(graphql_engine_database_appname + '-service') }}"
+graphql_engine_database_secret: "{{ postgres_secret | default(graphql_engine_database_appname + '-secret') }}"
+graphql_engine_database_secret_dbname_key: database_name
+graphql_engine_database_secret_dbuser_key: database_user
+graphql_engine_database_secret_dbpass_key: database_password
+graphql_engine_database_secret_dburl_key: database_url

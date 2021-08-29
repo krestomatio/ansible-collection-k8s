@@ -1,0 +1,4 @@
+- name: handle postgres
+  when: graphql_engine_database_deploy | bool
+  include_role:
+    name: "{{ cr_version }}/database/postgres"

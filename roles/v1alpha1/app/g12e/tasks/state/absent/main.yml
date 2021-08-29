@@ -1,0 +1,15 @@
+- name: set state absent
+  set_fact:
+    state: absent
+    k8s_wait: true
+
+- name: import tasks
+  block:
+    - name: handle graphql-engine removal
+      import_tasks: graphql-engine.yml
+
+    - name: handle postgres removal
+      import_tasks: postgres.yml
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"
