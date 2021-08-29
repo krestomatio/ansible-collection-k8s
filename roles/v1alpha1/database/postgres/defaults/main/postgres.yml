@@ -34,25 +34,32 @@ postgres_resource_limits_memory: 1Gi
 postgres_term_grace_period: 30
 postgres_data: /var/lib/pgsql/data
 postgres_tolerations: false
+postgres_port: 5432
 
 # postgres secret
 postgres_secret: "{{ postgres_appname }}-secret"
+postgres_database_name: "{{ lookup('password', '/dev/null chars=ascii_lowercase length=8') }}"
+postgres_database_user: "{{ lookup('password', '/dev/null chars=ascii_lowercase length=8') }}"
+postgres_database_password: "{{ lookup('password', '/dev/null') }}"
 ## postgres database credentials will be read or randomly generated if not found:
 postgres_secret_data: |
   database_name: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_name |
-    default(database_name |
-    default(lookup('password', '/dev/null chars=ascii_lowercase length=8')) |
+    default(postgres_database_name |
     b64encode,true) }}
   database_user: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_user |
-    default(database_user |
-    default(lookup('password', '/dev/null chars=ascii_lowercase length=8')) |
-    b64encode,true)  }}
+    default(postgres_database_user |
+    b64encode,true) }}
   database_password: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_password |
-    default((lookup('password', '/dev/null') |
-    b64encode),true) }}
+    default(postgres_database_password |
+    b64encode,true) }}
+  database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=postgres_secret).data.database_url |
+    default(('postgres://' + postgres_database_user + ':' + postgres_database_password
+    + '@' + postgres_service + ':' + postgres_port | string + '/' + postgres_database_name) |
+    b64encode,true) }}
 
 # postgres service
 postgres_service: "{{ postgres_appname }}-service"
@@ -62,9 +69,9 @@ postgres_service_spec: |
   clusterIP: None
   ports:
     - name: postgresql
-      port: 5432
+      port: {{ postgres_port }}
       protocol: TCP
-      targetPort: 5432
+      targetPort: {{ postgres_port }}
   sessionAffinity: ClientIP
 
 # postgres pvc

@@ -54,7 +54,7 @@ template:
           value: "true"
 {% endif %}
       ports:
-      - containerPort: 5432
+      - containerPort: {{ postgres_port }}
         name: postgresql
       imagePullPolicy: IfNotPresent
 {% if postgres_readiness_probe %}
