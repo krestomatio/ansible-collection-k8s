@@ -1,7 +1,4 @@
 - name: nginx route resource definition
-  when:
-    - nginx_ingress_type is defined and nginx_ingress_type
-    - "(nginx_ingress_type | lower) == 'route'"
   vars:
     k8s_kind: Route
     k8s_state: "{{ nginx_route_state | default(nginx_state) }}"

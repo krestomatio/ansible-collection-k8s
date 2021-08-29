@@ -9,6 +9,4 @@
 
     - import_tasks: resource/service.yml
 
-    - import_tasks: resource/route.yml
-
-    - import_tasks: resource/ingress.yml
+    - import_tasks: "resource/{{ nginx_ingress_type }}.yml"

@@ -43,8 +43,9 @@ nginx_connects_to: false
 # nginx_volumes:
 #   - name: html
 #     mount_path: /var/www/html
-#     persistentVolumeClaim:
-#       claimName: html-pvc
+#     source: |
+#       persistentVolumeClaim:
+#         claimName: metadata-pvc
 
 # nginx service
 nginx_service: "{{ nginx_appname }}-service"
