@@ -1,4 +1,0 @@
-# hack for not refresing ansible inventory
-- name: not refreshing inventory
-  debug:
-    msg: "not refreshing inventory..."

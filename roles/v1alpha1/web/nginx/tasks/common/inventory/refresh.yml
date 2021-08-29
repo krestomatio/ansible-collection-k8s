@@ -1,6 +1,0 @@
-- name: refreshing inventory
-  debug:
-    msg: "refreshing inventory..."
-
-- name: refresh dynamic inventory
-  meta: refresh_inventory
