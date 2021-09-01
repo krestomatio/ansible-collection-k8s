@@ -1,0 +1,20 @@
+- name: server ingress resource definition
+  vars:
+    k8s_kind: Ingress
+    k8s_state: "{{ server_ingress_state | default(server_state) }}"
+    template: "{{ ingress_template }}"
+    metadata_name: "{{ server_ingress }}"
+    annotations: "{{ server_ingress_annotations | default(false) }}"
+    ingress_spec: "{{ server_ingress_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save server ingress resource definition task
+  set_fact:
+    k8s_server_ingress: "{{ k8s_object_task }}"
+
+- name: wait for server ingress
+  when:
+    - _server_ingress_wait_for_ip | default(server_ingress_wait_for_ip) | default(false)
+    - k8s_server_ingress is changed
+    - "'absent' not in server_ingress_state | default(server_state)"
+  include_tasks: "{{ common_path }}/ingress-wait.yml"

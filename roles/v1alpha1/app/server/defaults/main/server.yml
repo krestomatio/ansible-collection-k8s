@@ -1,0 +1,139 @@
+---
+# server
+server_state: "{{ state }}"
+server_appname: "{{ meta_name }}-server"
+
+# server deploy
+server_size: 1
+server_image: hasura/k8s-stack-event-triggers:6c3a63c
+server_image_pull_secret: "{{ image_pull_secret }}"
+server_deploy: "{{ server_appname }}-deploy"
+server_port: 3000
+server_host: "{{ server_ingress_host }}"
+server_args: "['npm', 'run', 'start-prod']"
+server_container: "server"
+server_container_group: "{{ server_container.replace('-', '_') }}"
+server_readiness_probe: false
+server_readiness_path: "/healthz"
+server_readiness_initial: 5
+server_readiness_period: 30
+server_readiness_timeout: 3
+server_readiness_success: 1
+server_readiness_failure: 6
+server_liveness_probe: false
+server_liveness_path: "/healthz"
+server_liveness_initial: 5
+server_liveness_period: 10
+server_liveness_timeout: 3
+server_liveness_success: 1
+server_liveness_failure: 3
+server_resource_requests: true
+server_resource_requests_cpu: 75m
+server_resource_requests_memory: 128Mi
+server_resource_limits: false
+server_resource_limits_cpu: 1
+server_resource_limits_memory: 1Gi
+server_term_grace_period: 30
+server_run_as_user: 1001
+server_tolerations: false
+server_connects_to: "{{ server_database_appname if server_database_deploy else false }}"
+# server_envvars:
+#   - name: ENV1
+#     value: value1
+# server_volumes:
+#   - name: volume1
+#     mount_path: /path
+#     source: |
+#       persistentVolumeClaim:
+#         claimName: metadata-pvc
+## add environment variables from this list of secrets:
+# server_secret_envfrom:
+#   - secretName1
+#   - secretName2
+server_automount_service_account_token: false
+
+# server service
+server_service: "{{ server_appname }}-service"
+server_service_type: ClusterIP
+server_service_spec: |
+  type: {{ server_service_type }}
+  sessionAffinity: {{ server_service_session_affinity | default('None') }}
+  {% if server_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ server_service_session_affinity_timeout }}
+  {% endif %}
+  ports:
+  - name: http
+    port: {{ server_port }}
+    protocol: TCP
+    targetPort: {{ server_port }}
+  selector:
+    app: '{{ server_appname }}'
+
+# server ingress
+server_ingress: "{{ server_appname }}-ingress"
+## whether to deploy/add an ingress or not
+server_ingress_deploy: false
+server_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
+server_ingress_tls: "{{ true if server_ingress_protocol == 'https' else false }}"
+server_ingress_tls_secret_name: false
+server_ingress_protocol: "http"
+server_ingress_host: "example.krestomat.io"
+# server_ingress_annotations: |
+#   app.krestomat.io/annotation: value1
+#   app.krestomat.io/other_annotation: value2
+server_ingress_spec: |
+  {% if server_ingress_tls %}
+  tls:
+  - hosts:
+    - '{{ server_host }}'
+  {% if server_ingress_tls_secret_name is defined and server_ingress_tls_secret_name %}
+    secretName: {{ server_ingress_tls_secret_name }}
+  {% endif %}
+  {% endif %}
+  rules:
+  - host: '{{ server_host }}'
+    http:
+      paths:
+      - path: {{ server_ingress_path | default('/') }}
+        backend:
+          serviceName: '{{ server_service }}'
+          servicePort: {{ server_port }}
+
+# server router
+server_route: "{{ server_appname }}-route"
+server_route_tls: "{{ server_ingress_tls }}"
+server_route_annotations: |
+  haproxy.router.openshift.io/rate-limit-connections: 'true'
+  haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'
+  haproxy.router.openshift.io/rate-limit-connections.rate-http: '100'
+  haproxy.router.openshift.io/rate-limit-connections.rate-tcp: '100'
+server_route_spec: |
+  host: '{{ server_host }}'
+  to:
+    kind: Service
+    name: '{{ server_service }}'
+    weight: 100
+  port:
+    targetPort: http
+  {% if server_route_tls %}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  {% endif %}
+  wildcardPolicy: None
+
+# secret handler from a graphql-engine resource
+server_secret_handler: false
+
+# database
+## deploy own database for server using postgres
+server_database_deploy: false
+server_database_appname: "{{ postgres_appname | default(meta_name + '-postgres') }}"
+server_database_service: "{{ postgres_service | default(server_database_appname + '-service') }}"
+server_database_secret: "{{ postgres_secret | default(server_database_appname + '-secret') if server_database_deploy else false }}"
+server_database_secret_dbname_key: database_name
+server_database_secret_dbuser_key: database_user
+server_database_secret_dbpass_key: database_password
+server_database_secret_dburl_key: database_url
