@@ -77,6 +77,9 @@ graphql_engine_ingress_tls: "{{ true if graphql_engine_ingress_protocol == 'http
 graphql_engine_ingress_tls_secret_name: false
 graphql_engine_ingress_protocol: "http"
 graphql_engine_ingress_host: "example.krestomat.io"
+# graphql_engine_ingress_annotations: |
+#   app.krestomat.io/annotation: value1
+#   app.krestomat.io/other_annotation: value2
 graphql_engine_ingress_spec: |
   {% if graphql_engine_ingress_tls %}
   tls:
