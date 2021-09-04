@@ -5,6 +5,8 @@
     component: graphql-engine
     metadata_app: "{{ graphql_engine_appname }}"
   block:
+    - import_tasks: resource/secret-handler.yml
+
     - import_tasks: resource/deploy.yml
 
     - import_tasks: resource/service.yml

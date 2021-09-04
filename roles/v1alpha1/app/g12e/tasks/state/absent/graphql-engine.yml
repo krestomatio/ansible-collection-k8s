@@ -10,3 +10,5 @@
     - import_tasks: resource/service.yml
 
     - import_tasks: resource/deploy.yml
+
+    - import_tasks: resource/secret-handler.yml

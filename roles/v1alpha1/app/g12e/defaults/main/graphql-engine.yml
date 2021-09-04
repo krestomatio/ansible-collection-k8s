@@ -46,6 +46,10 @@ graphql_engine_connects_to: "{{ graphql_engine_database_appname if graphql_engin
 #     source: |
 #       persistentVolumeClaim:
 #         claimName: metadata-pvc
+## add environment variables from this list of secrets:
+# graphql_engine_secret_envfrom:
+#   - secretName1
+#   - secretName2
 
 # graphql-engine service
 graphql_engine_service: "{{ graphql_engine_appname }}-service"
@@ -113,6 +117,13 @@ graphql_engine_route_spec: |
     insecureEdgeTerminationPolicy: Redirect
   {% endif %}
   wildcardPolicy: None
+
+# graphql-engine secrets
+graphql_engine_secret_handler: "{{ graphql_engine_appname }}-secret-handler"
+graphql_engine_secret_handler_key: GRAPHQL_ENGINE_HANDLER_SECRET
+graphql_engine_secret_handler_data: |
+  {{ graphql_engine_secret_handler_key }}: {{ lookup('k8s', api_version='v1', kind='Secret',
+  namespace=meta_namespace, resource_name=graphql_engine_secret_handler).data[graphql_engine_secret_handler_key] | default(lookup('password', '/dev/null') | b64encode,true) }}
 
 # database
 ## deploy own database for graphql-engine using postgres

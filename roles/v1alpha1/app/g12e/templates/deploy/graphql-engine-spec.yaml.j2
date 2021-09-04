@@ -11,18 +11,28 @@ template:
     containers:
     - name: '{{ graphql_engine_container }}'
       image: '{{ graphql_engine_image }}'
-{% if graphql_engine_envvars is defined and graphql_engine_envvars or graphql_engine_database_secret is defined and graphql_engine_database_secret %}
       env:
-{%   if graphql_engine_database_secret is defined and graphql_engine_database_secret %}
+      - name: {{ graphql_engine_secret_handler_key | upper }}
+        valueFrom:
+          secretKeyRef:
+            name: '{{ graphql_engine_secret_handler }}'
+            key: {{ graphql_engine_secret_handler_key }}
+{% if graphql_engine_database_secret is defined and graphql_engine_database_secret %}
       - name: HASURA_GRAPHQL_DATABASE_URL
         valueFrom:
           secretKeyRef:
             name: '{{ graphql_engine_database_secret }}'
             key: {{ graphql_engine_database_secret_dburl_key }}
-{%   endif %}
-{%   if graphql_engine_envvars is defined and graphql_engine_envvars %}
+{% endif %}
+{% if graphql_engine_envvars is defined and graphql_engine_envvars %}
       {{ graphql_engine_envvars | to_nice_yaml(indent=2) | indent(6) }}
-{%   endif %}
+{% endif %}
+{% if graphql_engine_secret_envfrom is defined and graphql_engine_secret_envfrom %}
+      envFrom:
+{%   for secret_ref in graphql_engine_secret_envfrom %}
+      - secretRef:
+          name: {{ secret_ref }}
+{%   endfor %}
 {% endif %}
       ports:
       - containerPort: {{ graphql_engine_port }}
