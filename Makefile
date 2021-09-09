@@ -125,7 +125,7 @@ endif
 
 .PHONY: jx-updatebot
 jx-updatebot: ## Create PRs in downstream repos with new version using jx
-	jx-updatebot pr -c $(UPDATEBOT_CONFIG_FILE) \
+	jx-updatebot pr -c .lighthouse/$(UPDATEBOT_CONFIG_FILE) \
 		--commit-title "chore(update): bump collection krestomatio.k8s $(VERSION)" \
 		--labels test_group \
 		--version $(VERSION)
