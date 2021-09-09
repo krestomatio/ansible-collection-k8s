@@ -38,11 +38,24 @@ GIT_ADD_FILES ?= Makefile
 CHANGELOG_FILE ?= CHANGELOG.md
 
 # Promote
-UPDATEBOT_M4E_ONLY_MSG := chore(m4e): bump image versions with updatebot
-ifeq (,$(shell git log -1 --pretty=%B | cat | grep -q "$(UPDATEBOT_M4E_ONLY_MSG)" && echo || echo 1))
-UPDATEBOT_CONFIG_FILE ?= .lighthouse/updatebot-m4e-only.yaml
+UPDATEBOT_ALL_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} 2>/dev/null | wc -l)
+UPDATEBOT_M4E_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/m4e roles/v1alpha1/web/nginx/ 2>/dev/null | wc -l )
+UPDATEBOT_G12E_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/app 2>/dev/null | wc -l )
+UPDATEBOT_NFS_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/nfs 2>/dev/null | wc -l )
+UPDATEBOT_M4E_G12E_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/m4e roles/v1alpha1/web/nginx/ roles/v1alpha1/app roles/v1alpha1/database/postgres 2>/dev/null | wc -l )
+
+ifneq ($(UPDATEBOT_ALL_MODIFY_FILES),0)
+ifeq ($(shell test $(UPDATEBOT_M4E_MODIFY_FILES) -eq $(UPDATEBOT_ALL_MODIFY_FILES); echo $$?),0)
+UPDATEBOT_CONFIG_FILE ?= updatebot-m4e-only.yaml
+else ifeq ($(shell test $(UPDATEBOT_G12E_MODIFY_FILES) -eq $(UPDATEBOT_ALL_MODIFY_FILES); echo $$?),0)
+UPDATEBOT_CONFIG_FILE ?= updatebot-g12e-only.yaml
+else ifeq ($(shell test $(UPDATEBOT_NFS_MODIFY_FILES) -eq $(UPDATEBOT_ALL_MODIFY_FILES); echo $$?),0)
+UPDATEBOT_CONFIG_FILE ?= updatebot-nfs-only.yaml
+else ifeq ($(shell test $(UPDATEBOT_M4E_G12E_MODIFY_FILES) -eq $(UPDATEBOT_ALL_MODIFY_FILES); echo $$?),0)
+UPDATEBOT_CONFIG_FILE ?= updatebot-m4e-g12e-only.yaml
 else
-UPDATEBOT_CONFIG_FILE ?= .lighthouse/updatebot.yaml
+UPDATEBOT_CONFIG_FILE ?= updatebot.yaml
+endif
 endif
 
 all: sanity
