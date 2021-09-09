@@ -1,0 +1,32 @@
+- name: wait for ingress ip
+  register: ingress_ip_task
+  until: (ingress_ip_task.resources | first).status.loadBalancer.ingress is defined
+  retries: 6
+  delay: 30
+  k8s_info:
+    api_version: networking.k8s.io/v1beta1
+    kind: Ingress
+    namespace: "{{ meta_namespace }}"
+    name: "{{ metadata_name }}"
+
+- name: wait for ingress uri to be accesible
+  vars:
+    _host_ip: "{{ (ingress_ip_task.resources |
+      first).status.loadBalancer.ingress | map(attribute='ip') | first }}"
+  register: ingress_uri_task
+  check_mode: false
+  until: ingress_uri_task.status == 200
+  retries: 6
+  delay: 30
+  uri:
+    url: "{{ ingress_protocol }}://{{ _host_ip }}"
+    status_code: 200
+    headers:
+      host: "{{ ingress_host }}"
+
+- name: set ingress ip status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_properties:
+      ip: "{{ (ingress_ip_task.resources | first).status.loadBalancer.ingress |
+        map(attribute='ip') | first }}"

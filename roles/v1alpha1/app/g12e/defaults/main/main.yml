@@ -1,0 +1,11 @@
+---
+cr_group: app.krestomat.io
+cr_kind: G12e
+
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 55
+
+# templates
+graphql_engine_deploy_spec_template: deploy/graphql-engine-spec.yaml.j2

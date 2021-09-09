@@ -5,10 +5,10 @@
     component: postgres
     metadata_app: "{{ postgres_appname }}"
   block:
-    - import_tasks: postgres/resource/secret.yml
+    - import_tasks: resource/secret.yml
 
-    - import_tasks: postgres/resource/deploy.yml
+    - import_tasks: resource/deploy.yml
 
-    - import_tasks: postgres/resource/service.yml
+    - import_tasks: resource/service.yml
 
-    - import_tasks: postgres/resource/pvc.yml
+    - import_tasks: resource/pvc.yml

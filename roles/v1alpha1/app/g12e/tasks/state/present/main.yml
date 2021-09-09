@@ -1,0 +1,13 @@
+- name: import tasks
+  block:
+    - name: handle postgres removal
+      import_tasks: postgres.yml
+      
+    - name: handle graphql-engine removal
+      import_tasks: graphql-engine.yml
+
+    - name: include successful status
+      import_tasks: "{{ common_path }}/condition/ready/successful.yml"
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"

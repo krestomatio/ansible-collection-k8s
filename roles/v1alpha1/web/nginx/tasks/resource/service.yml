@@ -1,7 +1,7 @@
 - name: nginx service resource definition
   vars:
     k8s_kind: Service
-    k8s_state: "{{ nginx_pvc_state | default(nginx_state) }}"
+    k8s_state: "{{ nginx_service_state | default(nginx_state) }}"
     template: "{{ service_template }}"
     metadata_name: "{{ nginx_service }}"
     service_spec: "{{ nginx_service_spec }}"

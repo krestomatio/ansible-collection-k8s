@@ -1,0 +1,13 @@
+- name: server resource definitions
+  vars:
+    name: server
+    k8s_state: "{{ server_state }}"
+    component: server
+    metadata_app: "{{ server_appname }}"
+  block:
+    - import_tasks: "resource/{{ server_ingress_type }}.yml"
+      when: server_ingress_deploy | bool
+
+    - import_tasks: resource/service.yml
+
+    - import_tasks: resource/deploy.yml

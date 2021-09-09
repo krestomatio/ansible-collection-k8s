@@ -1,8 +1,0 @@
-- name: set expansion not required status
-  import_tasks: "{{ common_path }}/k8s/status.yml"
-  vars:
-    k8s_status_conditions:
-      - type: "{{ condition_expand_keyname }}Expansion"
-        status: "False"
-        reason: "NotRequired"
-        message: "Storage/PVC '{{ condition_expand_keyname }}' does not require expansion"

@@ -1,5 +1,5 @@
 - name: set instantiated status
-  import_tasks: "{{ common_path }}/k8s/status.yml"
+  include_tasks: "{{ common_path }}/k8s/status.yml"
   vars:
     last_transition_time: "{{ now(utc=True).isoformat(timespec='seconds') + 'Z' }}"
     k8s_status_properties:

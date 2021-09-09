@@ -1,5 +1,0 @@
-- name: assert cr name max length
-  assert:
-    that: meta_name | length <= meta_name_max_length
-    fail_msg: "'{{ meta_name }}' above max length for this '{{ cr_kind }}'"
-    quiet: true

@@ -78,9 +78,8 @@ template:
     volumes:
 {%   for volume in nginx_volumes %}
     - name: '{{ volume.name }}'
-{%     if volume.persistentVolumeClaim is defined and volume.persistentVolumeClaim %}
-      persistentVolumeClaim:
-        {{ volume.persistentVolumeClaim | to_nice_yaml(indent=2) | indent(8) }}
+{%     if volume.source is defined and volume.source %}
+      {{ volume.source | indent(6) }}
 {%     endif %}
 {%   endfor %}
 {% endif %}
