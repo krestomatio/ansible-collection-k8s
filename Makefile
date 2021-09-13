@@ -9,7 +9,7 @@ BUILD_ID ?= 0
 
 # Build
 ifeq ($(JOB_NAME),release)
-BUILD_VERSION ?= $(shell git rev-parse HEAD^2 &>/dev/null && git rev-parse HEAD^2 || echo)
+BUILD_VERSION ?= $(shell git rev-parse HEAD^2 2>\&1 >/dev/null && git rev-parse HEAD^2 || echo)
 else
 BUILD_VERSION ?= $(shell git rev-parse HEAD 2> /dev/null  || echo)
 endif
@@ -156,7 +156,7 @@ release: galaxy-version galaxy-publish ## Run release tasks
 .PHONY: promote
 promote: jx-updatebot git ## Promote release
 
-## else if not SKIP_PIPELINE
+## else if SKIP_PIPELINE
 else
 $(info SKIP_PIPELINE set:)
 ## Pull request
