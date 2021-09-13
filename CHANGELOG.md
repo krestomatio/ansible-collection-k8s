@@ -1,7 +1,9 @@
 ## Changes
 
+### Code Refactoring
+
+* m4e: set moodledata pvc as rwo as default (Job Céspedes Ortiz)
+
 ### Chores
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
-* ci: update catalog ref (Job Céspedes Ortiz)
-* release: 0.0.37 (krestomatio-cibot)
+* release: 0.0.39 (krestomatio-cibot)
