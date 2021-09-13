@@ -153,7 +153,7 @@ moodle_cronjob_tolerations: false
 # moodle pvc
 moodle_pvc_moodledata: "{{ moodle_appname }}-moodledata-pvc"
 moodle_pvc_moodledata_size: 1Gi
-moodle_pvc_moodledata_storage_access_mode: ReadWriteMany
+moodle_pvc_moodledata_storage_access_mode: ReadWriteOnce
 moodle_pvc_moodledata_storage_class_name: false
 moodle_pvc_moodledata_spec: |
   {% if moodle_pvc_moodledata_storage_class_name is defined and moodle_pvc_moodledata_storage_class_name %}
