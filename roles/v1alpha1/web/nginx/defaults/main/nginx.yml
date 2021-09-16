@@ -90,9 +90,12 @@ nginx_ingress_spec: |
     http:
       paths:
       - path: {{ nginx_ingress_path | default('/') }}
+        pathType: {{ nginx_ingress_path_type | default('ImplementationSpecific') }}
         backend:
-          serviceName: '{{ nginx_service }}'
-          servicePort: {{ nginx_port }}
+          service:
+            name: '{{ nginx_service }}'
+            port:
+              number: {{ nginx_port }}
 
 # nginx router
 nginx_route: "{{ nginx_appname }}-route"

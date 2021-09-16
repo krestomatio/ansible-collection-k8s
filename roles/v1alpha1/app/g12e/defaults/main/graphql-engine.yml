@@ -94,9 +94,12 @@ graphql_engine_ingress_spec: |
     http:
       paths:
       - path: {{ graphql_engine_ingress_path | default('/') }}
+        pathType: {{ graphql_engine_ingress_path_type | default('ImplementationSpecific') }}
         backend:
-          serviceName: '{{ graphql_engine_service }}'
-          servicePort: {{ graphql_engine_port }}
+          service:
+            name: '{{ graphql_engine_service }}'
+            port:
+              number: {{ graphql_engine_port }}
 
 # graphql-engine router
 graphql_engine_route: "{{ graphql_engine_appname }}-route"
