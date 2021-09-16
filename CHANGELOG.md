@@ -2,8 +2,8 @@
 
 ### Code Refactoring
 
-* m4e: set moodledata pvc as rwo as default (Job Céspedes Ortiz)
+* common: update k8s network api version (Job Céspedes Ortiz)
 
 ### Chores
 
-* release: 0.0.39 (krestomatio-cibot)
+* release: 0.0.40 (krestomatio-cibot)
