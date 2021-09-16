@@ -97,9 +97,12 @@ server_ingress_spec: |
     http:
       paths:
       - path: {{ server_ingress_path | default('/') }}
+        pathType: {{ server_ingress_path_type | default('ImplementationSpecific') }}
         backend:
-          serviceName: '{{ server_service }}'
-          servicePort: {{ server_port }}
+          service:
+            name: '{{ server_service }}'
+            port:
+              number: {{ server_port }}
 
 # server router
 server_route: "{{ server_appname }}-route"
