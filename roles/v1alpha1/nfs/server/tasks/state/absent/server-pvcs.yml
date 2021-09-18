@@ -13,6 +13,7 @@
     path: "/{{ server_pvc }}"
     file_type: directory
     depth: 1
+    excludes: "{{ pvc_subdir_check_excludes | default('lost+found') }}"
 
 - name: fail if any pv's data still present
   fail:
