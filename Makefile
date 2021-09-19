@@ -25,11 +25,7 @@ ifeq ($(BUILD_VERSION),)
 SKIP_PIPELINE = true
 $(info BUILD_VERSION not set, skipping...)
 endif
-ifeq ($(origin PULL_BASE_SHA),undefined)
-CHANGELOG_FROM ?= HEAD~1
-else
-CHANGELOG_FROM ?= $(PULL_BASE_SHA)
-endif
+LAST_TAG ?= $(shell git describe --tags --abbrev=0 2> /dev/null || echo)
 
 # Release
 GIT_REMOTE ?= origin
@@ -38,11 +34,11 @@ GIT_ADD_FILES ?= Makefile
 CHANGELOG_FILE ?= CHANGELOG.md
 
 # Promote
-UPDATEBOT_ALL_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} 2>/dev/null | wc -l)
-UPDATEBOT_M4E_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/m4e roles/v1alpha1/web/nginx/ 2>/dev/null | wc -l )
-UPDATEBOT_G12E_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/app 2>/dev/null | wc -l )
-UPDATEBOT_NFS_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/nfs 2>/dev/null | wc -l )
-UPDATEBOT_M4E_G12E_MODIFY_FILES := $(shell git diff --name-only $${PULL_BASE_SHA:-HEAD~1} roles/v1alpha1/m4e roles/v1alpha1/web/nginx/ roles/v1alpha1/app roles/v1alpha1/database/postgres 2>/dev/null | wc -l )
+UPDATEBOT_ALL_MODIFY_FILES := $(shell git diff --name-only $${LAST_TAG:-HEAD~1} 2>/dev/null | wc -l)
+UPDATEBOT_M4E_MODIFY_FILES := $(shell git diff --name-only $${LAST_TAG:-HEAD~1} roles/v1alpha1/m4e roles/v1alpha1/web/nginx/ 2>/dev/null | wc -l )
+UPDATEBOT_G12E_MODIFY_FILES := $(shell git diff --name-only $${LAST_TAG:-HEAD~1} roles/v1alpha1/app 2>/dev/null | wc -l )
+UPDATEBOT_NFS_MODIFY_FILES := $(shell git diff --name-only $${LAST_TAG:-HEAD~1} roles/v1alpha1/nfs 2>/dev/null | wc -l )
+UPDATEBOT_M4E_G12E_MODIFY_FILES := $(shell git diff --name-only $${LAST_TAG:-HEAD~1} roles/v1alpha1/m4e roles/v1alpha1/web/nginx/ roles/v1alpha1/app roles/v1alpha1/database/postgres 2>/dev/null | wc -l )
 
 ifneq ($(UPDATEBOT_ALL_MODIFY_FILES),0)
 ifeq ($(shell test $(UPDATEBOT_M4E_MODIFY_FILES) -eq $(UPDATEBOT_ALL_MODIFY_FILES); echo $$?),0)
@@ -120,7 +116,11 @@ ifeq (0, $(shell test -d  "charts/$(REPO_NAME)"; echo $$?))
 else
 	echo no charts
 endif
-	jx changelog create --verbose --version=$(VERSION) --rev=$(CHANGELOG_FROM) --output-markdown=$(CHANGELOG_FILE) --update-release=false
+ifneq ($(LAST_TAG),)
+	jx changelog create --verbose --version=$(VERSION) --previous-rev=$(LAST_TAG) --rev=$${PULL_BASE_SHA:-HEAD} --output-markdown=$(CHANGELOG_FILE) --update-release=false
+else
+	jx changelog create --verbose --version=$(VERSION) --rev=$${PULL_BASE_SHA:-HEAD} --output-markdown=$(CHANGELOG_FILE) --update-release=false
+endif
 	git add $(CHANGELOG_FILE)
 
 .PHONY: jx-updatebot
