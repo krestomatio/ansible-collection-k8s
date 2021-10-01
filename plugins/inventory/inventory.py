@@ -225,8 +225,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
                 self.inventory.add_group(pod_group_name)
                 self.inventory.add_child(default_group_name, pod_group_name)
 
-                if 'conditions' not in pod['status']:
-                    ready = [c for c in pod['status']['conditions'] if c['type'] == 'Ready']
+                if pod.status.conditions:
+                    ready = [c for c in pod.status.conditions if c.type == 'Ready']
                     if ready and ready[0]['status'] == 'True':
                         self.inventory.add_child(ready_group_name, pod_group_name)
 
