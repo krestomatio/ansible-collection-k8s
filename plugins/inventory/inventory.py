@@ -20,9 +20,13 @@ DOCUMENTATION = '''
 
     options:
       plugin:
-         description: token that ensures this is a source file for the 'k8s' plugin.
+         description: token that ensures this is a source file for the 'inventory' plugin.
          required: True
          choices: ['krestomatio.k8s.inventory']
+      cr_cwd:
+         description: custom resource directory where ansible run is stored
+         env:
+            - name: INVENTORY_CR_CWD
       connection:
           description:
           - Optional dict of cluster connection settings. If no connection are provided, the default
@@ -111,7 +115,7 @@ from ansible_collections.community.kubernetes.plugins.module_utils.common import
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable, Cacheable
 
 try:
-    from openshift.dynamic.exceptions import DynamicApiError
+    from openshift.dynamic.exceptions import DynamicApiError, ResourceNotFoundError
 except ImportError:
     pass
 
@@ -136,30 +140,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
 
     transport = 'kubectl'
 
-    # get current directory (playbook) to infer CR meta from it, to later filter inventory
-    # /tmp/ansible-operator/runner/<group>/<version>/<Kind>/<namespace>/<cr_name>/project
-    # https://github.com/operator-framework/operator-sdk/blob/f298f7c92ee154a0e8123fb13398a7f21720cf0e/internal/ansible/runner/runner.go#L203
-    try:
-        cwd = os.getcwd()
-        if "INVENTORY_CR_PLAY_DIR" in os.environ:
-            cwd = os.getenv('INVENTORY_CR_PLAY_DIR')
-        dir_parts = cwd.split(os.path.sep)
-        cr_name = dir_parts[-2]
-        cr_namespace = dir_parts[-3]
-        cr_kind = dir_parts[-4]
-        cr_version = dir_parts[-5]
-        cr_group = dir_parts[-6]
-    except Exception as cwd_exc:
-        raise InventoryException('Error getting CR info from cwd: %s' % cwd_exc)
-
-    inventory_uuid = to_uuid(cr_group + cr_version + cr_kind + cr_namespace + cr_name)
-
-    label_selector = '{0}/inventory={1}'.format(
-        cr_group,
-        inventory_uuid
-    )
-
-    annotation_inventory_hostvars = cr_group + '/inventory_hostvars'
+    cr_cwd = None
+    annotation_inventory_extra_cr_cwd = 'krestomat.io/inventory-extra-cr-cwd'
 
     def parse(self, inventory, loader, path, cache=True):
         super(InventoryModule, self).parse(inventory, loader, path)
@@ -168,8 +150,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
         self.setup(config_data, cache, cache_key)
 
     def setup(self, config_data, cache, cache_key):
-        connection = config_data.get('connection')
-
         if not HAS_K8S_MODULE_HELPER:
             raise InventoryException(
                 "This module requires the OpenShift Python client. Try `pip install openshift`. Detail: {0}".format(k8s_import_exception)
@@ -183,20 +163,79 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
                 pass
 
         if not source_data:
-            self.fetch_objects(connection)
+            connection = config_data.get('connection')
 
-    def fetch_objects(self, connection):
-        if connection:
-            if not isinstance(connection, dict):
-                raise InventoryException("Expecting connection to be a dictionary.")
-            client = self.get_api_client(**connection)
-        else:
-            client = self.get_api_client()
+            if connection:
+                if not isinstance(connection, dict):
+                    raise InventoryException("Expecting connection to be a dictionary.")
+                self.client = self.get_api_client(**connection)
+            else:
+                self.client = self.get_api_client()
 
-        self.get_pods(client)
+            # get cr info
+            self.get_cr_info()
 
-    def get_pods(self, client):
-        v1_pod = client.resources.get(api_version='v1', kind='Pod')
+            # get inventory
+            self.get_pods()
+
+            # add another cr inventory if set in annotation
+            self.add_extra_inventory()
+
+    # get current directory (playbook) to infer CR meta from it, to later filter inventory
+    # /tmp/ansible-operator/runner/<group>/<version>/<Kind>/<namespace>/<cr_name>/project
+    # https://github.com/operator-framework/operator-sdk/blob/f298f7c92ee154a0e8123fb13398a7f21720cf0e/internal/ansible/runner/runner.go#L203
+    def get_cr_info(self):
+        try:
+            # Preference order: cr_cwd variable > inventory.yml > environment variable > cwd
+            if self.cr_cwd is not None:
+                cwd = self.cr_cwd
+            elif self.get_option("cr_cwd") is not None:
+                cwd = self.get_option("cr_cwd")
+            elif "INVENTORY_CR_CWD" in os.environ:
+                cwd = os.getenv('INVENTORY_CR_CWD')
+            else:
+                cwd = os.getcwd()
+
+            dir_parts = cwd.split(os.path.sep)
+            self.cr_name = dir_parts[-2]
+            self.cr_namespace = dir_parts[-3]
+            self.cr_kind = dir_parts[-4]
+            self.cr_version = dir_parts[-5]
+            self.cr_group = dir_parts[-6]
+            self.api_version = self.cr_group + '/' + self.cr_version
+        except Exception as cwd_exc:
+            raise InventoryException('Error getting CR from cwd: %s' % cwd_exc)
+
+        inventory_uuid = to_uuid(self.cr_group + self.cr_version + self.cr_kind + self.cr_namespace + self.cr_name)
+
+        self.label_selector = '{0}/inventory={1}'.format(
+            self.cr_group,
+            inventory_uuid
+        )
+
+        self.annotation_inventory_hostvars = self.cr_group + '/inventory-hostvars'
+
+    def add_extra_inventory(self):
+        try:
+            cr_api = self.client.resources.get(api_version=self.api_version, kind=self.cr_kind)
+        except ResourceNotFoundError as notFound:
+            raise InventoryException('CR %s not found: %s' % (self.cr_name, notFound))
+
+        try:
+            obj = cr_api.get(name=self.cr_name, namespace=self.cr_namespace)
+        except DynamicApiError as exc:
+            self.display.debug(exc)
+            raise InventoryException('Error fetching CR %s: %s' % (self.cr_name, format_dynamic_api_exc(exc)))
+
+        cr_annotations = {} if not obj.metadata.annotations else dict(obj.metadata.annotations)
+
+        if self.annotation_inventory_extra_cr_cwd in cr_annotations:
+            self.cr_cwd = cr_annotations[self.annotation_inventory_extra_cr_cwd]
+            self.get_cr_info()
+            self.get_pods()
+
+    def get_pods(self):
+        v1_pod = self.client.resources.get(api_version='v1', kind='Pod')
         try:
             obj = v1_pod.get(label_selector=self.label_selector)
         except DynamicApiError as exc:
