@@ -42,7 +42,7 @@ metadata:
     app.openshift.io/connects-to: '{{ connects_to }}'
 {% endif %}
 {% if annotation_inventory_hostvars | default(false) != false and inventory_include %}
-    {{ cr_group }}/inventory_hostvars: '{{ annotation_inventory_hostvars | to_json | indent( width=4) }}'
+    {{ cr_group }}/inventory-hostvars: '{{ annotation_inventory_hostvars | to_json | indent( width=4) }}'
 {% endif %}
 {% if annotations | default(false) != false %}
     {{ annotations | indent( width=4) }}

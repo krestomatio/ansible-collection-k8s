@@ -129,9 +129,33 @@ moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
 moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
 moodle_update_job_tolerations: false
 
+# moodle routine
+moodle_routine: "{{ moodle_appname }}-routine"
+moodle_routine_spec: |
+  k8s_status_api_version: '{{ cr_api_version }}'
+  k8s_status_kind: '{{ cr_kind }}'
+  k8s_status_name: '{{ meta_name }}'
+  k8s_status_namespace: '{{ meta_namespace }}'
+  {% if notify_status is defined and notify_status %}
+  notify_status:
+    {{ notify_status | to_nice_yaml | indent(4) }}
+  {% endif %}
+  pods_ready_group: '{{ pods_ready_group }}'
+  moodle_container_group: '{{ moodle_container_group }}'
+  moodle_secret_config: '{{ moodle_secret_config }}'
+  moodle_config_autosync: {{ moodle_config_autosync }}
+  moodle_app: '{{ moodle_app }}'
+  moodle_status_script: '{{ moodle_status_script }}'
+  moodle_status_usage: {{ moodle_status_usage }}
+  {% if moodle_status_checks is defined and moodle_status_checks %}
+  moodle_status_checks: '{{ moodle_status_checks }}'
+  {% endif %}
+  moodle_status_version: false
+
 # moodle status
 moodle_status_script: scripts/status.php
-moodle_status_usage: true
+moodle_status_version: true
+moodle_status_usage: false
 moodle_status_checks: critical,error
 
 # moodle cronjob

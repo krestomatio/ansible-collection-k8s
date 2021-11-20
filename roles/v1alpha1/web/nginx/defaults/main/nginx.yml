@@ -75,7 +75,7 @@ nginx_ingress_protocol: "http"
 nginx_ingress_host: "example.krestomat.io"
 # nginx_ingress_annotations: |
 #   krestomat.io/annotation: value1
-#   krestomat.io/other_annotation: value2
+#   krestomat.io/other-annotation: value2
 nginx_ingress_spec: |
   {% if nginx_ingress_tls %}
   tls:

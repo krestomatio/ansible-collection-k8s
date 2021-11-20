@@ -29,3 +29,5 @@
           (status_version_update.type == 'major' and moodle_update_major)
 
     - import_tasks: resource/service.yml
+
+    - import_tasks: resource/routine.yml
