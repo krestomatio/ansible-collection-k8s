@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Chores
 
-* inventory: set ready status (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
