@@ -5,8 +5,8 @@
     component: nfs
     metadata_app: "{{ server_appname }}"
   block:
-    - import_tasks: nfs/resources/sc.yml
+    - import_tasks: resource/sc.yml
 
-    - import_tasks: nfs/resources/server.yml
+    - import_tasks: resource/server.yml
 
-    - import_tasks: nfs/resources/pvc.yml
+    - import_tasks: resource/pvc.yml
