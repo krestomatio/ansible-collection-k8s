@@ -12,7 +12,7 @@ Role Variables
 --------------
 
 - See [`defaults/main/main.yml`](defaults/main/main.yml)
-- See [`defaults/main/moodle.yml`](defaults/main/server.yml)
+- See [`defaults/main/server.yml`](defaults/main/server.yml)
 
 Dependencies
 ------------

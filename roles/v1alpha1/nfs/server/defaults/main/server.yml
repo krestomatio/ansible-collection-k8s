@@ -45,3 +45,23 @@ server_sc_provisioner: "nfs.rook.io/{{ server_appname }}-provisioner"
 server_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
 server_sc_reclaim_policy: Delete
 server_sc_volume_binding_mode: Immediate
+
+# routine
+server_routine: "{{ server_appname }}-routine"
+server_routine_spec: |
+  k8s_status_api_version: '{{ cr_api_version }}'
+  k8s_status_kind: '{{ cr_kind }}'
+  k8s_status_name: '{{ meta_name }}'
+  k8s_status_namespace: '{{ meta_namespace }}'
+  {% if notify_status is defined and notify_status %}
+  notify_status:
+    {{ notify_status | to_nice_yaml | indent(4) }}
+  {% endif %}
+  pods_ready_group: '{{ pods_ready_group }}'
+  condition_expand_keyname: '{{ condition_expand_keyname }}'
+  pvc_info_keyname: '{{ pvc_info_keyname }}'
+  pvc_info_container_group: '{{ pvc_info_container_group }}'
+  pvc_info_name: '{{ pvc_info_name }}'
+  pvc_info_autoexpansion: {{ pvc_info_autoexpansion }}
+  pvc_info_increment_gib: {{ pvc_info_increment_gib }}
+  pvc_info_cap_gib: {{ pvc_info_increment_gib }}

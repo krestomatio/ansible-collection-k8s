@@ -15,8 +15,8 @@
   block:
     - import_tasks: resource/pvc.yml
 
-    - import_tasks: "{{ common_path }}/pvc-info.yml"
-
     - import_tasks: resource/server.yml
 
     - import_tasks: resource/sc.yml
+
+    - import_tasks: resource/routine.yml
