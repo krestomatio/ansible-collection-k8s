@@ -167,7 +167,8 @@ import re
 import copy
 import traceback
 
-from ansible.module_utils.basic import AnsibleModule, missing_required_lib
+from ansible_collections.krestomatio.k8s.plugins.module_utils.ansiblemodule import AnsibleModule
+from ansible.module_utils.basic import missing_required_lib
 from ansible.module_utils._text import to_native
 from ansible.module_utils.six import iteritems
 
