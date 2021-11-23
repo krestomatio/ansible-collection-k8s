@@ -61,5 +61,5 @@ dependencies:
   # if you add dependencies to this list.
   - krestomatio.k8s.v1alpha1.common
 collections:
+  - kubernetes.core
   - operator_sdk.util
-  - community.kubernetes

@@ -111,7 +111,7 @@ import os
 import json
 
 from ansible.plugins.filter.core import to_uuid
-from ansible_collections.community.kubernetes.plugins.module_utils.common import K8sAnsibleMixin, HAS_K8S_MODULE_HELPER, k8s_import_exception
+from ansible_collections.kubernetes.core.plugins.module_utils.common import K8sAnsibleMixin, HAS_K8S_MODULE_HELPER, k8s_import_exception, get_api_client
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable, Cacheable
 
 try:
@@ -168,9 +168,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
             if connection:
                 if not isinstance(connection, dict):
                     raise InventoryException("Expecting connection to be a dictionary.")
-                self.client = self.get_api_client(**connection)
+                self.client = get_api_client(**connection)
             else:
-                self.client = self.get_api_client()
+                self.client = get_api_client()
 
             # get cr info
             self.get_cr_info()
