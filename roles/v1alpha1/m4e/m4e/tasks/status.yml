@@ -1,1 +1,4 @@
 - import_tasks: routine/status.yml
+
+- when: k8s_status_task is defined and k8s_status_task is changed
+  import_tasks: "{{ common_path }}/reconcile-trigger.yml"
