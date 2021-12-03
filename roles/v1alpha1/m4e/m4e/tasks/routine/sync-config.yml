@@ -3,10 +3,13 @@
   no_log: true
   when:
     - moodle_config_autosync
-    - hostvars['localhost'].k8s_moodle_secret_config is defined and
-      hostvars['localhost'].k8s_moodle_secret_config is changed
-  template:
-    src: "{{ moodle_config_template }}"
+    - sync_config_php is defined and sync_config_php
+  vars:
+    sync_config_php: "{{ lookup('k8s', kind='Secret', namespace=meta_namespace,
+      resource_name=moodle_secret_config ).data['config.php'] |
+      default('') | b64decode }}"
+  copy:
+    content: "{{ sync_config_php }}"
     dest: "{{ moodle_app }}/config.php"
     mode: 0400
     validate: /usr/bin/php -l %s

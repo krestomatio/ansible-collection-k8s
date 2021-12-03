@@ -11,12 +11,12 @@
     namespace: "{{ k8s_status_namespace | default(meta_namespace) }}"
     status: "{{ k8s_status_properties | default(omit,true) }}"
     conditions: "{{ k8s_status_conditions | default(omit,true) }}"
-    replace_lists:  "{{ k8s_status_replace_lists | default(omit,true) }}"
+    replace_lists: "{{ k8s_status_replace_lists | default(omit,true) }}"
 
 - name: notify status
   when:
     - k8s_status_task is defined and k8s_status_task is changed
-    - notify_status is defined
+    - notify_status is defined and notify_status
   failed_when: "{{ notify_status_failed_when | default(true) }}"
   register: notify_status_task
   uri:

@@ -79,7 +79,7 @@ graphql_engine_ingress_protocol: "http"
 graphql_engine_ingress_host: "example.krestomat.io"
 # graphql_engine_ingress_annotations: |
 #   app.krestomat.io/annotation: value1
-#   app.krestomat.io/other_annotation: value2
+#   app.krestomat.io/other-annotation: value2
 graphql_engine_ingress_spec: |
   {% if graphql_engine_ingress_tls %}
   tls:
@@ -129,7 +129,8 @@ graphql_engine_secret_handler: "{{ graphql_engine_appname }}-secret-handler"
 graphql_engine_secret_handler_key: GRAPHQL_ENGINE_HANDLER_SECRET
 graphql_engine_secret_handler_data: |
   {{ graphql_engine_secret_handler_key }}: {{ lookup('k8s', api_version='v1', kind='Secret',
-  namespace=meta_namespace, resource_name=graphql_engine_secret_handler).data[graphql_engine_secret_handler_key] | default(lookup('password', '/dev/null') | b64encode,true) }}
+  namespace=meta_namespace, resource_name=graphql_engine_secret_handler).data[graphql_engine_secret_handler_key]
+  | default(lookup('password', '/dev/null') | b64encode,true) }}
 
 # database
 ## deploy own database for graphql-engine using postgres

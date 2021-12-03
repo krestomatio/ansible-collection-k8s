@@ -50,6 +50,8 @@ tags:
 # range specifiers can be set and are separated by ','
 dependencies:
   community.kubernetes: "==1.2.1"
+  kubernetes.core: "==2.2.0"
+  cloud.common: "==2.0.4"
   operator_sdk.util: "==0.2.0"
 
 # The URL of the originating SCM repository

@@ -82,7 +82,7 @@ server_ingress_protocol: "http"
 server_ingress_host: "example.krestomat.io"
 # server_ingress_annotations: |
 #   app.krestomat.io/annotation: value1
-#   app.krestomat.io/other_annotation: value2
+#   app.krestomat.io/other-annotation: value2
 server_ingress_spec: |
   {% if server_ingress_tls %}
   tls:
@@ -135,7 +135,8 @@ server_secret_handler: false
 server_database_deploy: false
 server_database_appname: "{{ postgres_appname | default(meta_name + '-postgres') }}"
 server_database_service: "{{ postgres_service | default(server_database_appname + '-service') }}"
-server_database_secret: "{{ postgres_secret | default(server_database_appname + '-secret') if server_database_deploy else false }}"
+server_database_secret: "{{ postgres_secret | default(server_database_appname + '-secret')
+  if server_database_deploy else false }}"
 server_database_secret_dbname_key: database_name
 server_database_secret_dbuser_key: database_user
 server_database_secret_dbpass_key: database_password

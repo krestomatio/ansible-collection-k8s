@@ -12,14 +12,14 @@ Role Variables
 --------------
 
 - See [`defaults/main/main.yml`](defaults/main/main.yml)
-- See [`defaults/main/moodle.yml`](defaults/main/server.yml)
+- See [`defaults/main/server.yml`](defaults/main/server.yml)
 
 Dependencies
 ------------
 
 collections:
+- kubernetes.core
 - operator_sdk.util
-- community.kubernetes
 
 Example Playbook
 ----------------
@@ -28,7 +28,7 @@ Example Playbook
 - hosts: localhost
   gather_facts: no
   collections:
-    - community.kubernetes
+    - kubernetes.core
     - operator_sdk.util
   tasks:
     - import_role:
