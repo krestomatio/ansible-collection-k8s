@@ -5,7 +5,6 @@ spec:
     - urls:
         - https://github.com/krestomatio/m4e-operator
         - https://github.com/krestomatio/nfs-operator
-        - https://github.com/krestomatio/g12e-operator
       changes:
         - regex:
             pattern: "COLLECTION_VERSION \\?= (.*)"
