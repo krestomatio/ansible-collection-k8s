@@ -13,7 +13,8 @@ cr_status_conditions: "{{ cr_status.conditions | default([]) }}"
 cr_status_properties:
   "{% set copy=cr_status.copy() %}{% if copy.conditions is defined %}{% set
   removed=copy.pop('conditions') %}{% endif %}{{ copy }}"
-cr_cwd: "/tmp/ansible-operator/runner/{{ cr_group }}/{{ cr_version }}/{{ cr_kind }}/{{ meta_namespace }}/{{ meta_name }}/project"
+cr_cwd: "{{ '/tmp/ansible-operator/runner/' +
+  '/'.join([cr_group, cr_version, cr_kind, meta_namespace, meta_name, 'project']) }}"
 
 meta_name: "{{ ansible_operator_meta.name }}"
 meta_namespace: "{{ ansible_operator_meta.namespace }}"

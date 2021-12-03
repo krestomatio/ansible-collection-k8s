@@ -2,7 +2,7 @@
   block:
     - name: handle postgres removal
       import_tasks: postgres.yml
-      
+
     - name: handle graphql-engine removal
       import_tasks: graphql-engine.yml
 

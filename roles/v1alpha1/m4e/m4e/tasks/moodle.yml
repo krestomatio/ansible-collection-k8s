@@ -13,8 +13,8 @@
 
     - include_tasks: resource/job-new-instance.yml
       when:
-      - moodle_new_instance | bool
-      - not (cr_status_properties.instantiated | default('False') | bool)
+        - moodle_new_instance | bool
+        - not (cr_status_properties.instantiated | default('False') | bool)
 
     - import_tasks: resource/deploy.yml
 
