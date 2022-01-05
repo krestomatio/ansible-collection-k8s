@@ -2,6 +2,9 @@
 # tasks file for m4e
 - name: "resource definitions for {{ name }} in state: {{ k8s_state }},
     kind: {{ k8s_kind }}"
+  environment:
+    ENABLE_TURBO_MODE: "{{ 'false' if k8s_wait | default(false) | bool
+      else lookup('env','ENABLE_TURBO_MODE') | default('false',true) }}"
   k8s:
     state: "{{ k8s_state }}"
     definition: "{{ lookup('template', template) | from_yaml if template is defined else k8s_definition }}"
