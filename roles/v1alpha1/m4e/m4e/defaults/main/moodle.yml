@@ -39,7 +39,7 @@ moodle_connects_to: "{{ moodle_database_appname }}"
 moodle_service: "{{ moodle_appname }}-service"
 moodle_service_spec: |
   type: {{ moodle_service_type | default('ClusterIP') }}
-  sessionAffinity: {{ moodle_service_session_affinity | default('ClientIP') }}
+  sessionAffinity: {{ moodle_service_session_affinity | default('None') }}
   {% if moodle_service_session_affinity_timeout is defined %}
   sessionAffinityConfig:
     clientIP:
