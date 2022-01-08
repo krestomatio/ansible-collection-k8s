@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### Chores
 
-* m4e: do not use session affinity in moodle service by default (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
