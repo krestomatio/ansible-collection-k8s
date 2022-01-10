@@ -72,7 +72,12 @@ postgres_service_spec: |
       port: {{ postgres_port }}
       protocol: TCP
       targetPort: {{ postgres_port }}
-  sessionAffinity: ClientIP
+  sessionAffinity: {{ postgres_service_session_affinity | default('None') }}
+  {% if postgres_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ postgres_service_session_affinity_timeout }}
+  {% endif %}
 
 # postgres pvc
 postgres_pvc_data: "{{ postgres_appname }}-data-pvc"
