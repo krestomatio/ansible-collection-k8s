@@ -1,9 +1,9 @@
 - name: import tasks
   block:
-    - name: handle postgres removal
+    - name: handle postgres
       import_tasks: "{{  role_path }}/tasks/postgres.yml"
 
-    - name: handle server removal
+    - name: handle server
       import_tasks: "{{  role_path }}/tasks/server.yml"
 
     - name: include successful status
