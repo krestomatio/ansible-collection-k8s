@@ -1,0 +1,35 @@
+- name: set keydb volume claim template
+  vars:
+    metadata_name: "{{ keydb_pvc_data }}"
+    annotations: "{{ keydb_pvc_data_annotations | default(false) }}"
+    extra_labels: "{{ keydb_pvc_data_extra_labels | default(false) }}"
+    namespaced: false
+    pvc_spec: "{{ keydb_pvc_data_spec }}"
+  set_fact:
+    keydb_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
+
+- name: set keydb statefulset spec
+  when: keydb_sts_spec is not defined
+  vars:
+    annotations: "{{ keydb_sts_spec_annotations | default(false) }}"
+    extra_labels: "{{ keydb_sts_spec_extra_labels | default(false) }}"
+    inventory_include: true
+  set_fact:
+    keydb_sts_spec: "{{ lookup('template', keydb_sts_spec_template) }}"
+
+- name: keydb statefulset resource definition
+  vars:
+    k8s_kind: StatefulSet
+    k8s_state: "{{ keydb_sts_state | default(keydb_state) }}"
+    k8s_wait: "{{ keydb_sts_wait | default(true) }}"
+    k8s_wait_timeout: "{{ keydb_sts_wait_timeout | default(200) }}"
+    template: "{{ sts_template }}"
+    metadata_name: "{{ keydb_sts }}"
+    annotations: "{{ keydb_sts_annotations | default(false) }}"
+    runtime: keydb
+    sts_spec: "{{ keydb_sts_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save keydb statefulset resource definition task output
+  set_fact:
+    k8s_keydb_sts: "{{ k8s_object_task }}"

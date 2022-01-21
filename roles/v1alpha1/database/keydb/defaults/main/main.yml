@@ -1,0 +1,16 @@
+---
+# defaults file for m4e
+cr_group: keydb.krestomat.io
+cr_kind: Keydb
+
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 55
+
+# templates
+keydb_sts_spec_template: sts/keydb-spec.yaml.j2
+
+# common labels
+meta_app_part_of: keydb
+meta_app_created_by: keydb-operator
