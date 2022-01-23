@@ -1,0 +1,12 @@
+- name: set state absent
+  set_fact:
+    state: absent
+    k8s_wait: true
+
+- name: import tasks
+  block:
+    - name: handle keydb
+      import_tasks: keydb.yml
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"

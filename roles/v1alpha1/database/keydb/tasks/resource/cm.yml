@@ -1,0 +1,12 @@
+- name: keydb config map resource definition
+  vars:
+    k8s_kind: ConfigMap
+    k8s_state: "{{ keydb_cm_state | default(keydb_state) }}"
+    template: "{{ cm_template }}"
+    metadata_name: "{{ keydb_cm }}"
+    cm_data: "{{ keydb_cm_data }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save keydb config map resource definition task
+  set_fact:
+    k8s_keydb_cm: "{{ k8s_object_task }}"

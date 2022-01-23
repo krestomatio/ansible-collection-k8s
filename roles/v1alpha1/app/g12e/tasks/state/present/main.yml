@@ -1,9 +1,9 @@
 - name: import tasks
   block:
-    - name: handle postgres removal
+    - name: handle postgres
       import_tasks: postgres.yml
 
-    - name: handle graphql-engine removal
+    - name: handle graphql-engine
       import_tasks: graphql-engine.yml
 
     - name: include successful status

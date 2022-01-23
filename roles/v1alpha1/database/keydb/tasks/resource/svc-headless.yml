@@ -1,0 +1,12 @@
+- name: keydb headless service resource definition
+  vars:
+    k8s_kind: Service
+    k8s_state: "{{ keydb_service_headless_tate | default(keydb_state) }}"
+    template: "{{ service_template }}"
+    metadata_name: "{{ keydb_service_headless }}"
+    service_spec: "{{ keydb_service_headless_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save keydb headless service resource definition task
+  set_fact:
+    k8s_keydb_service_headless: "{{ k8s_object_task }}"

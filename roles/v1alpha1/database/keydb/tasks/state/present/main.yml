@@ -1,10 +1,10 @@
 - name: import tasks
   block:
-    - name: handle postgres
-      import_tasks: "{{  role_path }}/tasks/postgres.yml"
+    - name: make assertions
+      import_tasks: "{{ role_path }}/tasks/assertions.yml"
 
-    - name: handle server
-      import_tasks: "{{  role_path }}/tasks/server.yml"
+    - name: handle keydb
+      import_tasks: "{{ role_path }}/tasks/keydb.yml"
 
     - name: include successful status
       import_tasks: "{{ common_path }}/condition/ready/successful.yml"

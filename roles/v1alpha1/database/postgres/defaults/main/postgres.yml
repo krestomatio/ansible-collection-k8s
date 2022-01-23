@@ -6,7 +6,7 @@ postgres_appname: "{{ meta_name }}-postgres"
 # postgres deploy
 ## postgres size is either 1 or 0. If > 1 it will be converted to 1
 postgres_size: 1
-postgres_image: quay.io/krestomatio/postgres@sha256:61099141ea83293fb8aa1c3b32f4d4fd1539061a79ac2487fdb35c79794b8566
+postgres_image: quay.io/krestomatio/postgres@sha256:7dd907d93a996590523bb87d5e87cef14b1ace4d7df39228d7ba89d4ba3be732
 postgres_image_pull_secret: "{{ image_pull_secret }}"
 postgres_deploy: "{{ postgres_appname }}-deploy"
 postgres_container: "postgres"
@@ -72,7 +72,12 @@ postgres_service_spec: |
       port: {{ postgres_port }}
       protocol: TCP
       targetPort: {{ postgres_port }}
-  sessionAffinity: ClientIP
+  sessionAffinity: {{ postgres_service_session_affinity | default('None') }}
+  {% if postgres_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ postgres_service_session_affinity_timeout }}
+  {% endif %}
 
 # postgres pvc
 postgres_pvc_data: "{{ postgres_appname }}-data-pvc"

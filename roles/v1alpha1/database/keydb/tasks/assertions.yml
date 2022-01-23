@@ -1,0 +1,15 @@
+- name: common assertions
+  import_tasks: "{{ common_path }}/assertions.yml"
+
+- name: keydb mode
+  assert:
+    that: "keydb_mode in ['standalone', 'multimaster', 'custom']"
+    fail_msg: "Keydb mode should be one of 'standalone', 'multimaster', 'custom'"
+    quiet: true
+
+- name: number of replicas if multimaster
+  when: keydb_mode == 'multimaster'
+  assert:
+    that: "keydb_size | int > 1"
+    fail_msg: "number of replicas should be 2 or more when keydb mode = 'multimaster'"
+    quiet: true

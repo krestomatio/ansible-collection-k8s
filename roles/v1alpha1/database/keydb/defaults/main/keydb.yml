@@ -1,0 +1,185 @@
+keydb_state: "{{ state }}"
+keydb_appname: "{{ meta_name }}-keydb"
+# keydb_mode: one of 'standalone', 'multimaster', 'custom'
+keydb_mode: 'standalone'
+
+# keydb sts
+keydb_size: 1
+keydb_image: quay.io/krestomatio/keydb@sha256:ad2e72c45ddd4514960d6b4db75c07d43dc11b19c1a8a05fbc159c47b4d795d2
+keydb_image_pull_secret: "{{ image_pull_secret }}"
+keydb_sts: "{{ keydb_appname }}-sts"
+keydb_args:
+  - --requirepass "$(KEYDB_PASSWORD)"
+keydb_container: "keydb"
+keydb_container_group: "{{ keydb_container.replace('-', '_') }}"
+keydb_startup_probe: true
+keydb_startup_command: "['/usr/libexec/check-container-keydb', '-r']"
+keydb_startup_initial: 0
+keydb_startup_period: 15
+keydb_startup_timeout: 3
+keydb_startup_success: 1
+keydb_startup_failure: 12
+keydb_readiness_probe: true
+keydb_readiness_command: "['/usr/libexec/check-container-keydb', '-r']"
+keydb_readiness_initial: 0
+keydb_readiness_period: 15
+keydb_readiness_timeout: 3
+keydb_readiness_success: 1
+keydb_readiness_failure: 3
+keydb_liveness_probe: true
+keydb_liveness_command: "['/usr/libexec/check-container-keydb', '-l']"
+keydb_liveness_initial: 0
+keydb_liveness_period: 15
+keydb_liveness_timeout: 3
+keydb_liveness_success: 1
+keydb_liveness_failure: 6
+keydb_resource_requests: true
+keydb_resource_requests_cpu: 50m
+keydb_resource_requests_memory: 128Mi
+keydb_resource_limits: false
+keydb_resource_limits_cpu: 1
+keydb_resource_limits_memory: 1Gi
+keydb_term_grace_period: 30
+keydb_data: /data
+keydb_tolerations: false
+keydb_port: 6379
+
+# keydb services
+keydb_service: "{{ keydb_appname }}-service"
+keydb_service_spec: |
+  type: {{ keydb_service_type | default('ClusterIP') }}
+  selector:
+    app: '{{ keydb_appname }}'
+  ports:
+    - name: keydb
+      port: {{ keydb_port }}
+      protocol: TCP
+      targetPort: {{ keydb_port }}
+  sessionAffinity: {{ keydb_service_session_affinity | default('None') }}
+  {% if keydb_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ keydb_service_session_affinity_timeout }}
+  {% endif %}
+keydb_service_headless: "{{ keydb_appname }}-headless"
+keydb_service_headless_spec: |
+  selector:
+    app: '{{ keydb_appname }}'
+  clusterIP: None
+  ports:
+    - name: keydb
+      port: {{ keydb_port }}
+      protocol: TCP
+      targetPort: {{ keydb_port }}
+  sessionAffinity: {{ keydb_service_session_affinity | default('None') }}
+  {% if keydb_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ keydb_service_session_affinity_timeout }}
+  {% endif %}
+
+# keydb pvc
+keydb_pvc_data: "{{ keydb_appname }}-data-pvc"
+keydb_pvc_data_size: 1Gi
+keydb_pvc_data_storage_access_mode: ReadWriteOnce
+keydb_pvc_data_storage_class_name: false
+keydb_pvc_data_spec: |
+  {% if keydb_pvc_data_storage_class_name is defined and keydb_pvc_data_storage_class_name %}
+  storageClassName: {{ keydb_pvc_data_storage_class_name }}
+  {% endif %}
+  accessModes:
+    - '{{ keydb_pvc_data_storage_access_mode }}'
+  resources:
+    requests:
+      storage: '{{ keydb_pvc_data_size }}'
+
+# keydb secret
+keydb_secret: "{{ keydb_appname }}-secret"
+keydb_password: "{{ lookup('password', '/dev/null') }}"
+## keydb database credentials will be read or randomly generated if not found:
+keydb_secret_data: |
+  keydb_password: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=keydb_secret).data.keydb_password |
+    default(keydb_password |
+    b64encode,true) }}
+
+# keydb config map
+keydb_cm: "{{ keydb_appname }}-cm"
+keydb_cm_data_config: |
+  port {{ keydb_port }}
+  dir {{ keydb_data }}
+  server-threads {{ keydb_config_server_threads | default('2') }}
+  tcp-keepalive 60
+  save 900 1
+  save 300 10
+  {% if keydb_extra_config is defined and keydb_extra_config %}
+  # keydb extra config
+  {{ keydb_extra_config }}
+  {% endif %}
+  {% if keydb_mode_config is defined and keydb_mode_config %}
+  # keydb mode: {{ keydb_mode }}
+  {{ keydb_mode_config }}
+  {% endif %}
+keydb_cm_data: |
+  keydb.conf: |
+    {{ keydb_cm_data_config | indent(2) }}
+
+# keydb ingress
+keydb_ingress: "{{ keydb_appname }}-ingress"
+## whether to deploy/add an ingress or not
+keydb_ingress_deploy: false
+keydb_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
+keydb_ingress_tls: false
+keydb_ingress_tls_secret_name: false
+keydb_ingress_host: "example.krestomat.io"
+# keydb_ingress_annotations: |
+#   app.krestomat.io/annotation: value1
+#   app.krestomat.io/other-annotation: value2
+keydb_ingress_spec: |
+  {% if keydb_ingress_tls %}
+  tls:
+  - hosts:
+    - '{{ keydb_ingress_host }}'
+  {% if keydb_ingress_tls_secret_name is defined and keydb_ingress_tls_secret_name %}
+    secretName: {{ keydb_ingress_tls_secret_name }}
+  {% endif %}
+  {% endif %}
+  rules:
+  - host: '{{ keydb_ingress_host }}'
+    http:
+      paths:
+      - path: {{ keydb_ingress_path | default('/') }}
+        pathType: {{ keydb_ingress_path_type | default('ImplementationSpecific') }}
+        backend:
+          service:
+            name: '{{ keydb_service }}'
+            port:
+              number: {{ keydb_port }}
+
+# keydb router
+keydb_route: "{{ keydb_appname }}-route"
+keydb_route_tls: "{{ keydb_ingress_tls }}"
+keydb_route_annotations: |
+  haproxy.router.openshift.io/rate-limit-connections: 'true'
+  haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'
+  haproxy.router.openshift.io/rate-limit-connections.rate-http: '100'
+  haproxy.router.openshift.io/rate-limit-connections.rate-tcp: '100'
+keydb_route_spec: |
+  host: '{{ keydb_ingress_host }}'
+  to:
+    kind: Service
+    name: '{{ keydb_service }}'
+    weight: 100
+  port:
+    targetPort: http
+  {% if keydb_route_tls %}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  {% endif %}
+  wildcardPolicy: None
+
+# keydb sysctls
+# keydb_sysctls:
+#   - name: net.core.somaxconn
+#     value: "{{ keydb_sysctls_somaxconn | default('1024') }}"
