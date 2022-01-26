@@ -143,7 +143,7 @@ template:
         items:
         - key: keydb.conf
           path: keydb.conf
-{% if keydb_tolerations | bool %}
+{% if keydb_tolerations is defined and keydb_tolerations %}
     tolerations:
     {{ keydb_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
