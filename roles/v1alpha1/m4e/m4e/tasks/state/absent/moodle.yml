@@ -13,6 +13,8 @@
 
     - import_tasks: resource/deploy.yml
 
+    - import_tasks: resource/cm-scripts.yml
+
     - import_tasks: resource/secret-admin.yml
 
     - import_tasks: resource/secret-config.yml

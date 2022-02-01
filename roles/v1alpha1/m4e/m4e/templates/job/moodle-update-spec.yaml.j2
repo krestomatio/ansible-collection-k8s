@@ -67,6 +67,8 @@ template:
         name: config-php
         subPath: config.php
         readOnly: true
+      - mountPath: {{ moodle_scripts_path }}
+        name: scripts
     volumes:
     - name: moodledata
       persistentVolumeClaim:
@@ -77,6 +79,10 @@ template:
         items:
         - key: config.php
           path: config.php
+    - name: scripts
+      configMap:
+        name: '{{ moodle_cm_scripts }}'
+        defaultMode: 0555
 {% if moodle_update_job_tolerations %}
     tolerations:
     {{ moodle_update_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}

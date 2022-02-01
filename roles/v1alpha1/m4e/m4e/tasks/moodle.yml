@@ -11,6 +11,8 @@
 
     - import_tasks: resource/secret-config.yml
 
+    - import_tasks: resource/cm-scripts.yml
+
     - include_tasks: resource/job-new-instance.yml
       when:
         - moodle_new_instance | bool
