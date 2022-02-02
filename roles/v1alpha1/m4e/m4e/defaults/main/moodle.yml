@@ -154,7 +154,7 @@ moodle_routine_spec: |
   moodle_status_version: false
 
 # moodle status
-moodle_status_script: scripts/status.php
+moodle_status_script: "{{ moodle_scripts_path }}/status.php"
 moodle_status_version: true
 moodle_status_usage: false
 moodle_status_checks: critical,error
@@ -203,6 +203,8 @@ moodle_cm_scripts: "{{ moodle_appname }}-cm-scripts"
 moodle_cm_scripts_data: |
   muc-store.php: |-
     {{ lookup('template', moodle_script_muc_store_template) | indent(2) }}
+  status.php: |-
+    {{ lookup('template', moodle_script_status_template) | indent(2) }}
 
 # database
 ## deploy own database for moodle using postgres
