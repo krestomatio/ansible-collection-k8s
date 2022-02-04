@@ -1,1 +1,3 @@
 - import_tasks: routine/sync-config.yml
+
+- import_tasks: routine/redis-muc-store.yml

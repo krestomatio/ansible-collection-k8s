@@ -37,17 +37,24 @@ $CFG->xsendfile = '{{ moodle_config_xsendfile }}';
 {% if moodle_config_yuislasharguments is defined %}
 $CFG->yuislasharguments = {{ moodle_config_yuislasharguments }};
 {% endif %}
-{% if moodle_config_db_sessions is defined %}
+{% if moodle_config_db_session is defined %}
 $CFG->session_handler_class = '\core\session\database';
 $CFG->session_database_acquire_lock_timeout = 120;
 {% endif %}
-{% if moodle_config_redis_sessions is defined %}
+{% if moodle_config_session_redis %}
+/**** redis session store ****/
 $CFG->session_handler_class = '\core\session\redis';
-$CFG->session_redis_host = '{{ moodle_config_redis_sessions.session_redis_host if moodle_config_redis_sessions.session_redis_host is defined else '127.0.0.1' }}';
-$CFG->session_redis_port = {{ moodle_config_redis_sessions.session_redis_port if moodle_config_redis_sessions.session_redis_port is defined else '6379' }};  // Optional.
-{{ '$CFG->session_redis_database = ' + moodle_config_redis_sessions.session_redis_database + ';  // Optional, default is db 0.' if moodle_config_redis_sessions.session_redis_database is defined else '//      $CFG->session_redis_database = 0;  // Optional, default is db 0.' }}
-{{ '$CFG->session_redis_auth = ' + "'" + moodle_config_redis_sessions.session_redis_auth + "'" + ';  // Optional, default is db 0.' if moodle_config_redis_sessions.session_redis_auth is defined else "//      $CFG->session_redis_auth = ''; // Optional, default is don't set one." }}
-{{ '$CFG->session_redis_prefix = ' + "'" + moodle_config_redis_sessions.session_redis_prefix + "'" + ';  // Optional, default is db 0.' if moodle_config_redis_sessions.session_redis_prefix is defined else "//      $CFG->session_redis_prefix = ''; // Optional, default is don't set one." }}
+$CFG->session_redis_host = '{{ moodle_config_session_redis_host if moodle_config_session_redis_host is defined else '127.0.0.1' }}';
+{{ '$CFG->session_redis_database = ' + moodle_config_session_redis_port | string + ';  // Optional.' if moodle_config_session_redis_port is defined else '//      $CFG->session_redis_port = 6379;  // Optional.' }}
+{{ '$CFG->session_redis_database = ' + moodle_config_session_redis_database + ';  // Optional, default is db 0.' if moodle_config_session_redis_database is defined else '//      $CFG->session_redis_database = 0;  // Optional, default is db 0.' }}
+{{ '$CFG->session_redis_auth = ' + "'" + moodle_config_session_redis_auth + "'" + '; // Optional, default is don\'t set one.' if moodle_config_session_redis_auth else "//      $CFG->session_redis_auth = ''; // Optional, default is don't set one." }}
+{{ '$CFG->session_redis_prefix = ' + "'" + moodle_config_session_redis_prefix + "'" + "; // Optional, default is don't set one." if moodle_config_session_redis_prefix is defined else "//      $CFG->session_redis_prefix = ''; // Optional, default is don't set one." }}
+{{ '$CFG->session_redis_acquire_lock_timeout = ' + moodle_config_session_redis_acquire_lock_timeout | string + ';' if moodle_config_session_redis_acquire_lock_timeout is defined else "//      $CFG->session_redis_acquire_lock_timeout = 120;" }}
+{{ '$CFG->session_redis_lock_expire = ' + moodle_config_session_redis_lock_expire | string + ';' if moodle_config_session_redis_lock_expire is defined else "//      $CFG->session_redis_lock_expire = 7200;" }}
+{{ '$CFG->session_redis_lock_retry = ' + moodle_config_session_redis_lock_retry  | string + ';' if moodle_config_session_redis_lock_retry is defined else "//      $CFG->session_redis_lock_retry = 100; // Optional wait between lock attempts in ms, default is 100." }}
+{{ '$CFG->session_redis_serializer_use_igbinary = ' +  moodle_config_session_redis_serializer_use_igbinary | string | lower + '; // Optional, default is PHP builtin serializer.' if moodle_config_session_redis_serializer_use_igbinary is defined and moodle_config_session_redis_serializer_use_igbinary | bool else "//      $CFG->session_redis_serializer_use_igbinary = false; // Optional, default is PHP builtin serializer." }}
+{{ '$CFG->session_redis_compressor = ' + "'" + moodle_config_session_redis_compressor + "'" + "; // Optional, possible values are: 'gzip', 'zstd'" if moodle_config_session_redis_compressor is defined and moodle_config_session_redis_compressor != 'none' else "//      $CFG->session_redis_compressor = 'none'; // Optional, possible values are: 'gzip', 'zstd'" }}
+
 {% endif %}
 {% if moodle_config_sslproxy is defined and moodle_config_sslproxy %}
 $CFG->sslproxy = true;
