@@ -2,7 +2,7 @@
   vars:
     routine_annotation_inventory_extra_cr_cwd: |
       krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
-    k8s_kind: Status
+    k8s_kind: Routine
     k8s_state: "{{ moodle_routine_state | default(moodle_state) }}"
     template: "{{ routine_template }}"
     metadata_name: "{{ moodle_routine }}"

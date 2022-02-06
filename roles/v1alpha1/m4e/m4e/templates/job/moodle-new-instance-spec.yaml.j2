@@ -63,20 +63,34 @@ template:
       volumeMounts:
       - mountPath: '{{ moodle_data }}'
         name: moodledata
+{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
+      - mountPath: '{{ moodle_config_localcachedir }}'
+        name: localcache
+{% endif %}
       - mountPath: '{{ moodle_app }}/config.php'
         name: config-php
         subPath: config.php
         readOnly: true
+      - mountPath: {{ moodle_scripts_path }}
+        name: scripts
     volumes:
     - name: moodledata
       persistentVolumeClaim:
         claimName: '{{ moodle_pvc_moodledata }}'
+{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
+    - name: localcache
+      emptyDir: {}
+{% endif %}
     - name: config-php
       secret:
         secretName: '{{ moodle_secret_config }}'
         items:
         - key: config.php
           path: config.php
+    - name: scripts
+      configMap:
+        name: '{{ moodle_cm_scripts }}'
+        defaultMode: 0555
 {% if moodle_new_instance_job_tolerations %}
     tolerations:
     {{ moodle_new_instance_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}

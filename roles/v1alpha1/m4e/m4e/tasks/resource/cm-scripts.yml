@@ -1,0 +1,12 @@
+- name: moodle scripts config map resource definition
+  vars:
+    k8s_kind: ConfigMap
+    k8s_state: "{{ moodle_cm_scripts_state | default(moodle_state) }}"
+    template: "{{ cm_template }}"
+    metadata_name: "{{ moodle_cm_scripts }}"
+    cm_data: "{{ moodle_cm_scripts_data }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save moodle scripts config map resource definition task
+  set_fact:
+    k8s_moodle_cm_scripts: "{{ k8s_object_task }}"

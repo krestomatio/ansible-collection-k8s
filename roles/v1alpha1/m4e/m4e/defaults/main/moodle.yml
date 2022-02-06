@@ -57,6 +57,7 @@ moodle_service_spec: |
 moodle_app: /var/www/html
 moodle_data: /var/moodledata
 moodle_config_path: /config
+moodle_scripts_path: "{{ moodle_config_path }}/scripts"
 moodle_host: "m4e.krestomat.io"
 moodle_protocol: http
 moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
@@ -94,7 +95,7 @@ moodle_new_instance_job_command_snippet: |
       --shortname={{ moodle_new_instance_shortname | quote }} \
       --summary={{ moodle_new_instance_summary | quote }} \
       --adminuser={{ moodle_new_instance_adminuser | quote }} \
-      --adminpass={{ lookup('password', '/dev/null length=15') }} \
+      --adminpass={{ moodle_new_adminpass | default(lookup('password', '/dev/null length=15')) }} \
       --adminemail={{ moodle_new_instance_adminmail | quote }} \
       --agree-license
   elif [ $exit_code -eq 0 ]; then
@@ -106,6 +107,10 @@ moodle_new_instance_job_command_snippet: |
   {% if moodle_new_adminpass_hash is defined %}
   echo "Setting admin password..."
   php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
+  {% endif %}
+  {% if moodle_redis_muc_store %}
+  echo "Setting redis MUC store"
+  {{ moodle_redis_muc_store_script }}
   {% endif %}
 moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
 moodle_new_instance_job_tolerations: false
@@ -151,9 +156,28 @@ moodle_routine_spec: |
   moodle_status_checks: '{{ moodle_status_checks }}'
   {% endif %}
   moodle_status_version: false
+  {% if moodle_redis_muc_store | bool and moodle_redis_muc_store_routine | bool %}
+  moodle_redis_host: '{{ moodle_redis_host }}'
+  moodle_redis_secret_auth_secret: '{{ moodle_redis_secret_auth_secret }}'
+  moodle_redis_secret_auth_key: '{{ moodle_redis_secret_auth_key }}'
+  {%    if moodle_redis_secret_auth_secret | string == 'False' %}
+  moodle_redis_password: '{{ moodle_redis_password }}'
+  {%    endif %}
+  {%    if moodle_redis_muc_store_routine_script != moodle_redis_muc_store_script %}
+  moodle_redis_muc_store_routine_script: '{{ moodle_redis_muc_store_routine_script }}'
+  {%    else %}
+  moodle_redis_muc_store: {{ moodle_redis_muc_store }}
+  moodle_redis_muc_store_routine: {{ moodle_redis_muc_store_routine }}
+  moodle_redis_muc_store_overwrite: true
+  moodle_redis_muc_store_reset: {{ moodle_redis_muc_store_reset }}
+  moodle_redis_muc_store_plugin: '{{ moodle_redis_muc_store_plugin }}'
+  moodle_redis_muc_store_name: '{{ moodle_redis_muc_store_name }}'
+  moodle_redis_muc_store_script_extra_config: '{{ moodle_redis_muc_store_script_extra_config }}'
+  {%    endif %}
+  {% endif %}
 
 # moodle status
-moodle_status_script: scripts/status.php
+moodle_status_script: "{{ moodle_scripts_path }}/status.php"
 moodle_status_version: true
 moodle_status_usage: false
 moodle_status_checks: critical,error
@@ -197,6 +221,14 @@ moodle_secret_admin: "{{ moodle_appname }}-secret-admin"
 moodle_secret_admin_data: |
   password_hash: '{{ moodle_new_adminpass_hash | b64encode }}'
 
+# moodle config map
+moodle_cm_scripts: "{{ moodle_appname }}-cm-scripts"
+moodle_cm_scripts_data: |
+  muc-store.php: |-
+    {{ lookup('template', moodle_script_muc_store_template) | indent(2) }}
+  status.php: |-
+    {{ lookup('template', moodle_script_status_template) | indent(2) }}
+
 # database
 ## deploy own database for moodle using postgres
 moodle_database_deploy: true
@@ -206,6 +238,53 @@ moodle_database_secret: "{{ postgres_secret | default(moodle_database_appname + 
 moodle_database_secret_dbname_key: database_name
 moodle_database_secret_dbuser_key: database_user
 moodle_database_secret_dbpass_key: database_password
+
+# redis
+moodle_redis_host: "127.0.0.1"
+## whether redis will be used as session store
+moodle_redis_session_store: false
+## whether redis will be used as muc store
+moodle_redis_muc_store: false
+## whether redis muc store config will be enforce in periodic routine
+moodle_redis_muc_store_routine: false
+## secret name to get auth from
+moodle_redis_secret_auth_secret: false
+moodle_redis_secret_auth_key: redis_password
+moodle_redis_password:
+  "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+      resource_name=moodle_redis_secret_auth_secret).data
+      [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode
+    if
+      moodle_redis_secret_auth_secret | string != 'False' and (moodle_config_session_redis | bool or moodle_redis_muc_store | bool)
+    else
+      false }}"
+## muc store
+moodle_redis_muc_store_script: >-
+  {{ moodle_scripts_path }}/muc-store.php
+  {% if moodle_redis_muc_store_reset %}
+  -r
+  {% endif %}
+  {% if moodle_redis_muc_store_overwrite %}
+  -o
+  {% endif %}
+  -p='{{ moodle_redis_muc_store_plugin }}'
+  -n='{{ moodle_redis_muc_store_name }}'
+  -s='{{ moodle_redis_host }}'
+  -a='{{ moodle_redis_password }}'
+  -m='application,session'
+  -e='{{ moodle_redis_muc_store_script_extra_config }}'
+moodle_redis_muc_store_routine_script: "{{ moodle_redis_muc_store_script }}"
+moodle_redis_muc_store_overwrite: false
+moodle_redis_muc_store_reset: false
+moodle_redis_muc_store_plugin: redis
+moodle_redis_muc_store_name: redis
+moodle_redis_muc_store_prefix: ''
+moodle_redis_muc_store_serializer: 1
+moodle_redis_muc_store_compressor: 0
+moodle_redis_muc_store_script_extra_config:
+  "{{ 'prefix=' + moodle_redis_muc_store_prefix +
+  ',serializer=' + moodle_redis_muc_store_serializer | string +
+  ',compressor=' + moodle_redis_muc_store_compressor | string }}"
 
 # moodle config.php
 moodle_config_dbhost: "{{ moodle_database_service }}"
@@ -236,11 +315,19 @@ moodle_config_dataroot: "{{ moodle_data }}"
 # moodle_config_defaultblocks_override: "' '"
 # moodle_config_xsendfile: "X-Sendfile"
 # moodle_config_yuislasharguments: 1
-# moodle_config_db_sessions: true
-# moodle_config_redis_sessions:
-#   session_redis_host: "redis"
-#   session_redis_prefix: "m1_"
-#   session_redis_auth: "secret"
+# moodle_config_db_session: true
+moodle_config_session_redis: "{{ moodle_redis_session_store }}"
+moodle_config_session_redis_host: '{{ moodle_redis_host }}'
+# moodle_config_session_redis_port: 6379
+# moodle_config_session_redis_database: 0
+moodle_config_session_redis_auth: "{{ moodle_redis_password | default('') }}"
+# moodle_config_session_redis_prefix: ''
+moodle_config_session_redis_acquire_lock_timeout: 120
+moodle_config_session_redis_lock_expire: 7200
+# moodle_config_session_redis_lock_retry: 100
+# moodle_config_session_redis_serializer_use_igbinary: 'false'
+# 'gzip', 'zstd'
+# moodle_config_session_redis_compressor: 'none'
 moodle_config_sslproxy: "{{ true if moodle_protocol == 'https' else false }}"
 # moodle_config_profilingenabled:
 #   earlyprofilingenabled: 'true'
@@ -250,7 +337,7 @@ moodle_config_sslproxy: "{{ true if moodle_protocol == 'https' else false }}"
 #   profilingallowall: 'true'
 #   profilinglifetime: 1440
 #   pathtodot: '/usr/bin/dot'
-# moodle_config_localcachedir: /var/moodledata-localcache
+moodle_config_localcachedir: /var/localcache
 # moodle_config_extramemorylimit: 256M
 moodle_config_disableupdateautodeploy: true
 # moodle_config_tool_lockstats: true
