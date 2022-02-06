@@ -63,6 +63,10 @@ template:
       volumeMounts:
       - mountPath: '{{ moodle_data }}'
         name: moodledata
+{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
+      - mountPath: '{{ moodle_config_localcachedir }}'
+        name: localcache
+{% endif %}
       - mountPath: '{{ moodle_app }}/config.php'
         name: config-php
         subPath: config.php
@@ -73,6 +77,10 @@ template:
     - name: moodledata
       persistentVolumeClaim:
         claimName: '{{ moodle_pvc_moodledata }}'
+{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
+    - name: localcache
+      emptyDir: {}
+{% endif %}
     - name: config-php
       secret:
         secretName: '{{ moodle_secret_config }}'

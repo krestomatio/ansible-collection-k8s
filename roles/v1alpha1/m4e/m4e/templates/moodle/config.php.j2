@@ -70,7 +70,7 @@ $CFG->pathtodot = '{{ moodle_config_profilingenabled.pathtodot | default('/usr/b
 {{ "$CFG->profilingallowall = true;" if moodle_config_profilingenabled.profilingallowall is defined and moodle_config_profilingenabled.profilingallowall else '' }}
 {{ "$CFG->profilingexcluded = '" + moodle_config_profilingenabled.profilingexcluded + "';" if moodle_config_profilingenabled.profilingexcluded is defined else '' }}
 {% endif %}
-{% if moodle_config_localcachedir is defined %}
+{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
 $CFG->localcachedir = '{{ moodle_config_localcachedir }}';      // Intended for local node caching.
 {% endif %}
 {% if moodle_config_extramemorylimit is defined %}
