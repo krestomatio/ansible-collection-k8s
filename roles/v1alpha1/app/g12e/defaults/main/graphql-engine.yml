@@ -5,7 +5,7 @@ graphql_engine_appname: "{{ meta_name }}-graphql-engine"
 
 # graphql-engine deploy
 graphql_engine_size: 1
-graphql_engine_image: quay.io/krestomatio/graphql-engine@sha256:88c737ae78d16200b4e87c3efe7bb82b81b6891e54a17a4e73c7af3143261621
+graphql_engine_image: quay.io/krestomatio/graphql-engine@sha256:bae92ba7380e091d0e9796660d891b9e2ed0774df4e504a700536fd548220613
 graphql_engine_image_pull_secret: "{{ image_pull_secret }}"
 graphql_engine_deploy: "{{ graphql_engine_appname }}-deploy"
 graphql_engine_port: 8080
