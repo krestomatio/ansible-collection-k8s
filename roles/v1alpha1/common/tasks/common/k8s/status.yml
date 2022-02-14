@@ -18,6 +18,14 @@
     - k8s_status_task is defined and k8s_status_task is changed
     - notify_status is defined and notify_status
   failed_when: "{{ notify_status_failed_when | default(true) }}"
+  vars:
+    notify_status_header_auth_token:
+      "{{ notify_status.header_auth_token |
+        default(lookup('env','NOTIFY_STATUS_AUTH_TOKEN') |
+        default('',true)) }}"
+    notify_status_header_auth_header:
+      Authorization:
+        "{{ notify_status.header_auth_type | default('Bearer') }} {{ notify_status_header_auth_token }}"
   register: notify_status_task
   uri:
     body: "{{ k8s_status_task.result if (notify_status_object | default(false))
@@ -26,13 +34,20 @@
     client_cert: "{{ notify_status.client_cert | default(omit) }}"
     client_key: "{{ notify_status.client_key | default(omit) }}"
     force_basic_auth: "{{ notify_status.force_basic_auth | default(omit) }}"
-    headers: "{{ notify_status.headers | default(omit) }}"
+    headers:
+      "{{
+          notify_status.headers | default({}) | combine(notify_status_header_auth_header)
+        if
+          notify_status_header_auth_token != ''
+        else
+          notify_status.headers | default(omit)
+      }}"
     method: "{{ notify_status.method | default('POST') }}"
     return_content: "{{ notify_status.return_content | default(omit) }}"
     status_code: "{{ notify_status.status_code | default([200]) }}"
     timeout: "{{ notify_status.timeout | default(omit) }}"
     url: "{{ notify_status.url }}"
-    url_password: "{{ notify_status.url_password | default(omit) }}"
-    url_username: "{{ notify_status.url_username | default(omit) }}"
     user: "{{ notify_status.user | default(omit) }}"
+    password:
+      "{{ notify_status.password | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
     validate_certs: "{{ notify_status.validate_certs | default(omit) }}"
