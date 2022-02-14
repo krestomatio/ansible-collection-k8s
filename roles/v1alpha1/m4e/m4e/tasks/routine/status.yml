@@ -15,7 +15,7 @@
   changed_when: false
   run_once: true
   register: status_moodle_task
-  command: "{{ moodle_status_script }} {{ '-v' if
+  command: "{{ moodle_status_script }} -l {{ '-v' if
     moodle_status_version else '' }} {{ '-u' if
     moodle_status_usage else '' }}{% if moodle_status_checks is defined and
     moodle_status_checks %} -c={{ moodle_status_checks | quote }}{% endif %}"

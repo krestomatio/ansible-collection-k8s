@@ -5,6 +5,12 @@
 
 - name: import tasks
   block:
+    - name: set terminating state
+      vars:
+        k8s_status_properties:
+          state: Terminating
+      import_tasks: "{{ common_path }}/k8s/status.yml"
+
     - name: handle server pvcs
       import_tasks: server-pvcs.yml
 

@@ -4,6 +4,7 @@
     k8s_status_properties:
       ready: "True"
       created: "True"
+      state: Ready
     k8s_status_conditions:
       - type: "Ready"
         status: "True"

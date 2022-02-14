@@ -5,6 +5,7 @@
     k8s_status_properties:
       created: "False"
       ready: "False"
+      state: Creating
     k8s_status_conditions:
       - type: "Created"
         status: "False"
