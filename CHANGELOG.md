@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### New Features
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* m4e: get auth token from env var for status notification (Job Céspedes Ortiz)
