@@ -24,7 +24,7 @@ template:
         - '/bin/bash'
         - '-c'
         - |
-          chown ${CTR_USER_ID}:${CTR_USER_ID} '{{ keydb_data }}'
+          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ keydb_data }}'
           chmod 0700 '{{ keydb_data }}'
       volumeMounts:
       - mountPath: '{{ keydb_data }}'
