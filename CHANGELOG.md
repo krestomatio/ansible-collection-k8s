@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### Code Refactoring
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* fix pvc group id (Job Céspedes Ortiz)
