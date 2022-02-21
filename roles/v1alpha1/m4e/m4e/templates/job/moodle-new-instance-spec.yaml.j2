@@ -21,7 +21,7 @@ template:
         - '/bin/bash'
         - '-c'
         - |
-          chown ${CTR_USER_ID}:${CTR_USER_ID} '{{ moodle_data }}'
+          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ moodle_data }}'
           chmod 0740 {{ moodle_data }}
       volumeMounts:
       - mountPath: '{{ moodle_data }}'

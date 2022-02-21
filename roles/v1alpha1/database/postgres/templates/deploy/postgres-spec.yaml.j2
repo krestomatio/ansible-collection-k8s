@@ -20,7 +20,7 @@ template:
         - '/bin/bash'
         - '-c'
         - |
-          chown ${CTR_USER_ID}:${CTR_USER_ID} '{{ postgres_data }}'
+          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ postgres_data }}'
           chmod 0700 '{{ postgres_data }}'
       volumeMounts:
       - mountPath: '{{ postgres_data }}'
