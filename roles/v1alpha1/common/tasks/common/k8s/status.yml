@@ -17,7 +17,7 @@
   when:
     - k8s_status_task is defined and k8s_status_task is changed
     - notify_status is defined and notify_status
-  failed_when: "{{ notify_status_failed_when | default(true) }}"
+  failed_when: "{{ notify_status_failed_when | default(omit) }}"
   vars:
     notify_status_header_auth_token:
       "{{ notify_status.header_auth_token |
