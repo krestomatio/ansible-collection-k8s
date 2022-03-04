@@ -2,4 +2,4 @@
 
 ### Code Refactoring
 
-* fix pvc group id (Job Céspedes Ortiz)
+* common: omit failure on notify status by default (Job Céspedes Ortiz)
