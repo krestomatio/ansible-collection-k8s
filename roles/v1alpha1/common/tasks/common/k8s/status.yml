@@ -24,7 +24,7 @@
       "{{
           {'uuid': notify_status_uuid}
         if
-          lookup('env','UUID_TOKEN_SECRET') and notify_status_uuid is defined and notify_status_uuid
+          lookup('env','JWT_TOKEN_SECRET') and notify_status_uuid is defined and notify_status_uuid
         else
           false }}"
     notify_status_header_auth_token:
