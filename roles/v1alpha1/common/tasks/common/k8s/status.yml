@@ -19,8 +19,14 @@
     - notify_status is defined and notify_status
   failed_when: "{{ notify_status_failed_when | default(omit) }}"
   vars:
-    notify_status_uuid: "{{ k8s_status_name | default(meta_name) }}"
-    notify_status_jwt_payload: "{{ {'uuid': notify_status_uuid} if lookup('env','UUID_TOKEN_SECRET') else false }}"
+    notify_status_uuid: "{{ cr_uid }}"
+    notify_status_jwt_payload:
+      "{{
+          {'uuid': notify_status_uuid}
+        if
+          lookup('env','UUID_TOKEN_SECRET') and notify_status_uuid is defined and notify_status_uuid
+        else
+          false }}"
     notify_status_header_auth_token:
       "{{
           notify_status_jwt_payload | krestomatio.k8s.jwt_token
