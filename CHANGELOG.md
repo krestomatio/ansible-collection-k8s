@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### New Features
 
-* common: omit failure on notify status by default (Job Céspedes Ortiz)
+* add jwt token generator (Job Céspedes Ortiz)
