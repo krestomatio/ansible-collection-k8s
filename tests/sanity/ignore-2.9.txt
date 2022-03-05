@@ -1,3 +1,4 @@
 roles/v1alpha1/m4e/m4e/templates/moodle/muc-store.php.j2 shebang
 roles/v1alpha1/m4e/m4e/templates/moodle/status.php.j2 shebang
 plugins/modules/k8s_status.py validate-modules!skip
+plugins/module_utils/jwt.py pylint:ansible-bad-module-import
