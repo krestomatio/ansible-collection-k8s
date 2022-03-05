@@ -1,5 +1,5 @@
 ## Changes
 
-### New Features
+### Bug Fixes
 
-* add jwt token generator (Job Céspedes Ortiz)
+* use cr uid by default when notify status (Job Céspedes Ortiz)
