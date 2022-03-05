@@ -19,10 +19,15 @@
     - notify_status is defined and notify_status
   failed_when: "{{ notify_status_failed_when | default(omit) }}"
   vars:
+    notify_status_uuid: "{{ k8s_status_name | default(meta_name) }}"
+    notify_status_jwt_payload: "{{ {'uuid': notify_status_uuid} if lookup('env','UUID_TOKEN_SECRET') else false }}"
     notify_status_header_auth_token:
-      "{{ notify_status.header_auth_token |
-        default(lookup('env','NOTIFY_STATUS_AUTH_TOKEN') |
-        default('',true)) }}"
+      "{{
+          notify_status_jwt_payload | krestomatio.k8s.jwt_token
+        if
+          notify_status_jwt_payload is defined and notify_status_jwt_payload
+        else
+          notify_status.header_auth_token | default('') }}"
     notify_status_header_auth_header:
       Authorization:
         "{{ notify_status.header_auth_type | default('Bearer') }} {{ notify_status_header_auth_token }}"
