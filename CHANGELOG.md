@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Code Refactoring
 
-* use cr uid by default when notify status (Job Céspedes Ortiz)
+* change token env var name (Job Céspedes Ortiz)
