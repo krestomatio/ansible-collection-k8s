@@ -19,7 +19,7 @@
     - notify_status is defined and notify_status
   failed_when: false
   vars:
-    notify_status_uuid: "{{ cr_uid }}"
+    notify_status_uuid: "{{ notify_status.uuid | default(cr_uid) }}"
     notify_status_jwt_payload:
       "{{
           {'uuid': notify_status_uuid}
