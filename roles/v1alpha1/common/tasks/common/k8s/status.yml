@@ -59,7 +59,7 @@
         method: "{{ notify_status.method | default('POST') }}"
         return_content: "{{ notify_status.return_content | default(omit) }}"
         status_code: "{{ notify_status.status_code | default([200]) }}"
-        timeout: "{{ notify_status.timeout | default(omit) }}"
+        timeout: "{{ notify_status.timeout | default(5) }}"
         url: "{{ notify_status.url }}"
         user: "{{ notify_status.user | default(omit) }}"
         password:
