@@ -143,7 +143,7 @@ moodle_routine_spec: |
   k8s_status_namespace: '{{ meta_namespace }}'
   {% if notify_status is defined and notify_status %}
   notify_status:
-    {{ notify_status | to_nice_yaml | indent(4) }}
+    {{ notify_status | to_nice_yaml | indent(2) }}
   {% endif %}
   pods_ready_group: '{{ pods_ready_group }}'
   moodle_container_group: '{{ moodle_container_group }}'
