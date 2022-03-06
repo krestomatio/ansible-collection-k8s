@@ -17,7 +17,6 @@
   when:
     - k8s_status_task is defined and k8s_status_task is changed
     - notify_status is defined and notify_status
-  failed_when: false
   vars:
     notify_status_uuid: "{{ notify_status.uuid | default(cr_uid) }}"
     notify_status_jwt_payload:
@@ -37,33 +36,40 @@
     notify_status_header_auth_header:
       Authorization:
         "{{ notify_status.header_auth_type | default('Bearer') }} {{ notify_status_header_auth_token }}"
-  register: notify_status_task
-  uri:
-    body: "{{ k8s_status_task.result if (notify_status_object | default(false))
-      else k8s_status_task.result.status }}"
-    body_format: "{{ notify_status.body_format | default('json') }}"
-    client_cert: "{{ notify_status.client_cert | default(omit) }}"
-    client_key: "{{ notify_status.client_key | default(omit) }}"
-    force_basic_auth: "{{ notify_status.force_basic_auth | default(omit) }}"
-    headers:
-      "{{
-          notify_status.headers | default({}) | combine(notify_status_header_auth_header)
-        if
-          notify_status_header_auth_token != ''
-        else
-          notify_status.headers | default(omit)
-      }}"
-    method: "{{ notify_status.method | default('POST') }}"
-    return_content: "{{ notify_status.return_content | default(omit) }}"
-    status_code: "{{ notify_status.status_code | default([200]) }}"
-    timeout: "{{ notify_status.timeout | default(omit) }}"
-    url: "{{ notify_status.url }}"
-    user: "{{ notify_status.user | default(omit) }}"
-    password:
-      "{{ notify_status.password | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
-    validate_certs: "{{ notify_status.validate_certs | default(omit) }}"
+  block:
+    - name: notify status
+      failed_when: false
+      register: notify_status_task
+      uri:
+        body: "{{ k8s_status_task.result if (notify_status_object | default(false))
+          else k8s_status_task.result.status }}"
+        body_format: "{{ notify_status.body_format | default('json') }}"
+        client_cert: "{{ notify_status.client_cert | default(omit) }}"
+        client_key: "{{ notify_status.client_key | default(omit) }}"
+        force_basic_auth: "{{ notify_status.force_basic_auth | default(omit) }}"
+        headers:
+          "{{
+              notify_status.headers | default({}) | combine(notify_status_header_auth_header)
+            if
+              notify_status_header_auth_token != ''
+            else
+              notify_status.headers | default(omit)
+          }}"
+        method: "{{ notify_status.method | default('POST') }}"
+        return_content: "{{ notify_status.return_content | default(omit) }}"
+        status_code: "{{ notify_status.status_code | default([200]) }}"
+        timeout: "{{ notify_status.timeout | default(omit) }}"
+        url: "{{ notify_status.url }}"
+        user: "{{ notify_status.user | default(omit) }}"
+        password:
+          "{{ notify_status.password | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
+        validate_certs: "{{ notify_status.validate_certs | default(omit) }}"
 
-- name: show notify status error
-  when: notify_status_task is failed
-  debug:
-    msg: "Could not notify status to endpoint {{ notify_status.url }}"
+    - name: show notify status error
+      when: notify_status_task.status not in notify_status.status_code | default([200])
+      debug:
+        msg: |
+          Could not notify status to endpoint {{ notify_status.url }}
+          {%  if notify_status_task.msg is defined %}
+          {{ notify_status_task.msg }}
+          {% endif %}
