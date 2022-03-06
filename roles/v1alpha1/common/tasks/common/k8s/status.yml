@@ -15,7 +15,8 @@
 
 - name: notify status
   when:
-    - k8s_status_task is defined and k8s_status_task is changed
+    - k8s_status_task is defined
+    - k8s_status_task is changed or notify_status_force | default(false)
     - notify_status is defined and notify_status
   vars:
     notify_status_uuid: "{{ notify_status.uuid | default(cr_uid) }}"
