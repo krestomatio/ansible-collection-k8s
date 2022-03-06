@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### New Features
 
-* moodle: fix notify status in routine (Job Céspedes Ortiz)
+* common: add option to force notify status (Job Céspedes Ortiz)
