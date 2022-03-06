@@ -1,6 +1,7 @@
 - name: set successful status
   import_tasks: "{{ common_path }}/k8s/status.yml"
   vars:
+    notify_status_force: true
     k8s_status_properties:
       ready: "True"
       state: Ready
