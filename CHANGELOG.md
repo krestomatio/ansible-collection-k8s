@@ -1,9 +1,5 @@
 ## Changes
 
-### Bug Fixes
-
-* status: do not failed when notifying status, just show a message (Job Céspedes Ortiz)
-
 ### Code Refactoring
 
-* status: set uuid inside notify_status (Job Céspedes Ortiz)
+* status: fix notify status error message (Job Céspedes Ortiz)
