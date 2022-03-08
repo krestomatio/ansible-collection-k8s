@@ -17,7 +17,7 @@ from ansible.errors import AnsibleFilterError, AnsibleFilterTypeError
 from ansible.module_utils.six import string_types, integer_types
 
 
-def jwt_token(payload, expiration_time=30, algorithms="HS256", key_env_name="JWT_TOKEN_SECRET"):
+def jwt_token(payload, key_env_name="JWT_TOKEN_SECRET", expiration_time=30, algorithms="HS256"):
     '''Generate a JWT token with a payload'''
     if jwt_not_found:
         raise AnsibleFilterError("pyjwt module not installed")
