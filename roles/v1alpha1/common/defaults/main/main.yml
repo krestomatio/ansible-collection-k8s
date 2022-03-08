@@ -54,3 +54,6 @@ annotation_inventory_hostvars:
   ansible_remote_tmp: /var/tmp/.ansible
   ansible_python_interpreter: /usr/libexec/platform-python
   ansible_ssh_pipelining: true
+
+# status
+notify_status_jwt_secret_env_name: JWT_TOKEN_SECRET

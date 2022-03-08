@@ -24,12 +24,12 @@
       "{{
           {'uuid': notify_status_uuid}
         if
-          lookup('env','JWT_TOKEN_SECRET') and notify_status_uuid is defined and notify_status_uuid
+          lookup('env',notify_status_jwt_secret_env_name) and notify_status_uuid is defined and notify_status_uuid
         else
           false }}"
     notify_status_header_auth_token:
       "{{
-          notify_status_jwt_payload | krestomatio.k8s.jwt_token
+          notify_status_jwt_payload | krestomatio.k8s.jwt_token(notify_status_jwt_secret_env_name)
         if
           notify_status_jwt_payload is defined and notify_status_jwt_payload
         else
