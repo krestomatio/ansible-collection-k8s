@@ -1,0 +1,11 @@
+- name: set error status
+  import_tasks: "{{ common_path }}/k8s/status.yml"
+  vars:
+    k8s_status_properties:
+      ready: "False"
+      state: Terminating
+    k8s_status_conditions:
+      - type: "Ready"
+        status: "False"
+        reason: "Terminating"
+        message: "Finalizer started"
