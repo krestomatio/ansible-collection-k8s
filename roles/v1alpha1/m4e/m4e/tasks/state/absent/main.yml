@@ -5,11 +5,8 @@
 
 - name: import tasks
   block:
-    - name: set terminating state
-      vars:
-        k8s_status_properties:
-          state: Terminating
-      import_tasks: "{{ common_path }}/k8s/status.yml"
+    - name: start terminating condition
+      import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
     - name: handle nginx removal
       import_tasks: nginx.yml
@@ -19,6 +16,9 @@
 
     - name: handle postgres removal
       import_tasks: postgres.yml
+
+    - name: end terminating condition
+      import_tasks: "{{ common_path }}/condition/terminating/end.yml"
   rescue:
     - name: include rescue tasks
       import_tasks: "{{ common_path }}/rescue.yml"
