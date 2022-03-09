@@ -14,6 +14,3 @@
     - import_tasks: resource/svc.yml
 
     - import_tasks: resource/sts.yml
-
-    - include_tasks: "resource/{{ keydb_ingress_type }}.yml"
-      when: keydb_ingress_deploy | bool
