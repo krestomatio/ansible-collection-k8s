@@ -124,61 +124,6 @@ keydb_cm_data: |
   keydb.conf: |
     {{ keydb_cm_data_config | indent(2) }}
 
-# keydb ingress
-keydb_ingress: "{{ keydb_appname }}-ingress"
-## whether to deploy/add an ingress or not
-keydb_ingress_deploy: false
-keydb_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
-keydb_ingress_tls: false
-keydb_ingress_tls_secret_name: false
-keydb_ingress_host: "example.krestomat.io"
-# keydb_ingress_annotations: |
-#   app.krestomat.io/annotation: value1
-#   app.krestomat.io/other-annotation: value2
-keydb_ingress_spec: |
-  {% if keydb_ingress_tls %}
-  tls:
-  - hosts:
-    - '{{ keydb_ingress_host }}'
-  {% if keydb_ingress_tls_secret_name is defined and keydb_ingress_tls_secret_name %}
-    secretName: {{ keydb_ingress_tls_secret_name }}
-  {% endif %}
-  {% endif %}
-  rules:
-  - host: '{{ keydb_ingress_host }}'
-    http:
-      paths:
-      - path: {{ keydb_ingress_path | default('/') }}
-        pathType: {{ keydb_ingress_path_type | default('ImplementationSpecific') }}
-        backend:
-          service:
-            name: '{{ keydb_service }}'
-            port:
-              number: {{ keydb_port }}
-
-# keydb router
-keydb_route: "{{ keydb_appname }}-route"
-keydb_route_tls: "{{ keydb_ingress_tls }}"
-keydb_route_annotations: |
-  haproxy.router.openshift.io/rate-limit-connections: 'true'
-  haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'
-  haproxy.router.openshift.io/rate-limit-connections.rate-http: '100'
-  haproxy.router.openshift.io/rate-limit-connections.rate-tcp: '100'
-keydb_route_spec: |
-  host: '{{ keydb_ingress_host }}'
-  to:
-    kind: Service
-    name: '{{ keydb_service }}'
-    weight: 100
-  port:
-    targetPort: http
-  {% if keydb_route_tls %}
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
-  {% endif %}
-  wildcardPolicy: None
-
 # keydb sysctls
 # keydb_sysctls:
 #   - name: net.core.somaxconn

@@ -5,9 +5,6 @@
     component: keydb
     metadata_app: "{{ keydb_appname }}"
   block:
-    - include_tasks: "resource/{{ keydb_ingress_type }}.yml"
-      when: keydb_ingress_deploy | bool
-
     - import_tasks: resource/sts.yml
 
     - import_tasks: resource/svc.yml
