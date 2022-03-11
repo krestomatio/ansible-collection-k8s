@@ -1,0 +1,11 @@
+- name: postgres readreplicas resource definitions
+  vars:
+    name: readreplicas
+    component: readreplicas
+    metadata_app: "{{ postgres_readreplicas_appname }}"
+  block:
+    - import_tasks: resource/readreplicas/svc.yml
+
+    - import_tasks: resource/readreplicas/svc-readonly.yml
+
+    - import_tasks: resource/readreplicas/sts.yml

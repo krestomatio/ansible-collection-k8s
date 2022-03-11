@@ -1,0 +1,8 @@
+- name: common assertions
+  import_tasks: "{{ common_path }}/assertions.yml"
+
+- name: postgres mode
+  assert:
+    that: "postgres_mode in ['standalone', 'readreplicas']"
+    fail_msg: "Postgres mode should be one of 'standalone', 'readreplicas'"
+    quiet: true

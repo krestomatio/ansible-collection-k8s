@@ -12,7 +12,7 @@ meta_name_max_length: 55
 server_template: server.yaml.j2
 
 # common labels
-meta_app_part_of: nfs
+meta_app_part_of: "{{ meta_name }}"
 meta_app_created_by: nfs-operator
 
 # inventory

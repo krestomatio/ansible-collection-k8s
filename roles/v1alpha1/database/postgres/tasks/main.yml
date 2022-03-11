@@ -1,2 +1,10 @@
+# tasks file for postgres
+- name: get k8s distribution
+  import_tasks: "{{ common_path }}/k8s/distribution.yml"
+
+- name: include postgres mode vars
+  when: postgres_mode in ['standalone', 'readreplicas']
+  include_vars: "{{ postgres_mode }}.yml"
+
 - name: import state tasks
-  import_tasks: "{{ cr_state }}.yml"
+  import_tasks: "state/{{ cr_state }}/main.yml"

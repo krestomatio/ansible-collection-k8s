@@ -18,5 +18,5 @@ moodle_update_job_spec_template: job/moodle-update-spec.yaml.j2
 moodle_cronjob_spec_template: cronjob/moodle-spec.yaml.j2
 
 # common labels
-meta_app_part_of: moodle
+meta_app_part_of: "{{ meta_name }}"
 meta_app_created_by: m4e-operator

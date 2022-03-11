@@ -1,0 +1,13 @@
+- name: pgbouncer resource definitions
+  vars:
+    name: pgbouncer
+    component: pgbouncer
+    metadata_app: "{{ pgbouncer_appname }}"
+  block:
+    - import_tasks: resource/pgbouncer/secret.yml
+
+    - import_tasks: resource/pgbouncer/cm.yml
+
+    - import_tasks: resource/pgbouncer/svc.yml
+
+    - import_tasks: resource/pgbouncer/deploy.yml

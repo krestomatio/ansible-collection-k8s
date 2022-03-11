@@ -1,0 +1,14 @@
+- name: pgbouncer readonly config map resource definition
+  vars:
+    k8s_kind: ConfigMap
+    k8s_state:
+      "{{ 'absent' if postgres_mode not in ['readreplicas'] else
+      pgbouncer_readonly_cm_state | default(postgres_state) }}"
+    template: "{{ cm_template }}"
+    metadata_name: "{{ pgbouncer_readonly_cm }}"
+    cm_data: "{{ pgbouncer_readonly_cm_data }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save pgbouncer readonly config map resource definition task
+  set_fact:
+    k8s_pgbouncer_readonly_cm: "{{ k8s_object_task }}"

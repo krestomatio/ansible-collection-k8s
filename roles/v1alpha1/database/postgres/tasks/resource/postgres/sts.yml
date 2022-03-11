@@ -1,0 +1,35 @@
+- name: set postgres volume claim template
+  vars:
+    metadata_name: "{{ postgres_pvc_data }}"
+    annotations: "{{ postgres_pvc_data_annotations | default(false) }}"
+    extra_labels: "{{ postgres_pvc_data_extra_labels | default(false) }}"
+    namespaced: false
+    pvc_spec: "{{ postgres_pvc_data_spec }}"
+  set_fact:
+    postgres_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
+
+- name: set postgres statefulset spec
+  when: postgres_sts_spec is not defined
+  vars:
+    annotations: "{{ postgres_sts_spec_annotations | default(false) }}"
+    extra_labels: "{{ postgres_sts_spec_extra_labels | default(false) }}"
+    inventory_include: true
+  set_fact:
+    postgres_sts_spec: "{{ lookup('template', postgres_sts_spec_template) }}"
+
+- name: postgres statefulset resource definition
+  vars:
+    k8s_kind: StatefulSet
+    k8s_state: "{{ postgres_sts_state | default(postgres_state) }}"
+    k8s_wait: "{{ postgres_sts_wait | default(true) }}"
+    k8s_wait_timeout: "{{ postgres_sts_wait_timeout | default(200) }}"
+    template: "{{ sts_template }}"
+    metadata_name: "{{ postgres_sts }}"
+    annotations: "{{ postgres_sts_annotations | default(false) }}"
+    runtime: postgres
+    sts_spec: "{{ postgres_sts_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save postgres statefulset resource definition task output
+  set_fact:
+    k8s_postgres_sts: "{{ k8s_object_task }}"
