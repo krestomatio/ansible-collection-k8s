@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### Chores
 
-* keydb: remove ingress/route (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
