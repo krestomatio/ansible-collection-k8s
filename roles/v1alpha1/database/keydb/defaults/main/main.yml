@@ -1,5 +1,5 @@
 ---
-# defaults file for m4e
+# defaults file for keydb
 cr_group: keydb.krestomat.io
 cr_kind: Keydb
 

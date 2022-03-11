@@ -1,7 +1,7 @@
 - name: keydb headless service resource definition
   vars:
     k8s_kind: Service
-    k8s_state: "{{ keydb_service_headless_tate | default(keydb_state) }}"
+    k8s_state: "{{ keydb_service_headless_state | default(keydb_state) }}"
     template: "{{ service_template }}"
     metadata_name: "{{ keydb_service_headless }}"
     service_spec: "{{ keydb_service_headless_spec }}"
