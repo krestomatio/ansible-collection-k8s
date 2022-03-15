@@ -15,5 +15,4 @@ pgbouncer_deploy_spec_template: deploy/pgbouncer-spec.yaml.j2
 pgbouncer_readonly_deploy_spec_template: deploy/pgbouncer-readonly-spec.yaml.j2
 
 # common labels
-meta_app_part_of: "{{ meta_name }}"
 meta_app_created_by: postgres-operator

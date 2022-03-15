@@ -28,6 +28,9 @@ state: present
 # common path
 common_path: common
 
+# common labels
+meta_app_part_of: "{{ meta_name }}"
+
 # templates
 deploy_template: "{{ common_path }}/deploy.yaml.j2"
 sts_template: "{{ common_path }}/sts.yaml.j2"

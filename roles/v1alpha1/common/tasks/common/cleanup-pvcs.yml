@@ -1,7 +1,7 @@
 - name: remove remaining pvcs
   vars:
     k8s_definition: "{{ lookup('k8s', kind=k8s_kind, namespace=meta_namespace,
-      label_selector='app=' + metadata_app ) }}"
+      label_selector='app.kubernetes.io/instance=' + meta_name ) }}"
     k8s_state: absent
     k8s_kind: PersistentVolumeClaim
   when:
