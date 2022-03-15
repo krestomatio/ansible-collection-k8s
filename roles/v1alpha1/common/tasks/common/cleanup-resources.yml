@@ -1,13 +1,13 @@
-- name: remove remaining jobs and its pods
-  loop:
-    - Job
-    - Pod
+- name: remove remaining resources
+  loop: "{{ cleanup_kind_list }}"
   vars:
     k8s_definition: "{{ lookup('k8s', kind=item, namespace=meta_namespace,
-      label_selector='app.kubernetes.io/instance=' + meta_name ) }}"
+      label_selector=cleanup_label_selector ) }}"
     k8s_state: absent
     k8s_kind: "{{ item }}"
   when:
+    - cleanup_kind_list is defined
+    - cleanup_label_selector is defined
     - (k8s_definition | length) > 0
     - "state == 'absent'"
   include_tasks: "{{ common_path }}/k8s/object.yml"

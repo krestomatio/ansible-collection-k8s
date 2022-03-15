@@ -9,8 +9,6 @@
 
     - import_tasks: resource/cronjob.yml
 
-    - import_tasks: "{{ common_path }}/cleanup-jobs.yml"
-
     - import_tasks: resource/deploy.yml
 
     - import_tasks: resource/cm-scripts.yml
@@ -20,3 +18,10 @@
     - import_tasks: resource/secret-config.yml
 
     - import_tasks: resource/pvc-moodledata.yml
+
+    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
+      vars:
+        cleanup_label_selector: "app={{ metadata_app }}"
+        cleanup_kind_list:
+          - Job
+          - Pod
