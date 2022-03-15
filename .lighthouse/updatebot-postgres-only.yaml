@@ -3,9 +3,6 @@ kind: UpdateConfig
 spec:
   rules:
     - urls:
-        - https://github.com/krestomatio/m4e-operator
-        - https://github.com/krestomatio/nfs-operator
-        - https://github.com/krestomatio/keydb-operator
         - https://github.com/krestomatio/postgres-operator
       changes:
         - regex:
