@@ -1,5 +1,6 @@
 # requires watchDependentResources=true
 - name: trigger parent CR reconciliation by adding an annotation
+  when: cr_object.metadata.resourceVersion is defined
   vars:
     reconcile_trigger_value: "{{ cr_object.metadata.resourceVersion }}"
   k8s:

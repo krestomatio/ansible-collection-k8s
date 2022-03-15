@@ -18,7 +18,7 @@ metadata:
 {% if inventory_uuid | default(false) != false and inventory_include %}
     {{ cr_group }}/inventory: '{{ inventory_uuid }}'
 {% endif %}
-{% if cr_uid | default(false) != false %}
+{% if cr_uid | default(false,true) != false %}
     {{ cr_group }}/cr_uid: '{{ cr_uid }}'
 {% endif %}
 {% if component | default(false) != false %}
