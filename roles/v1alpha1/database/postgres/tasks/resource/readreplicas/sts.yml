@@ -1,0 +1,37 @@
+- name: set postgres readreplicas volume claim template
+  vars:
+    metadata_name: "{{ postgres_readreplicas_pvc_data }}"
+    annotations: "{{ postgres_readreplicas_pvc_data_annotations | default(false) }}"
+    extra_labels: "{{ postgres_readreplicas_pvc_data_extra_labels | default(false) }}"
+    namespaced: false
+    pvc_spec: "{{ postgres_readreplicas_pvc_data_spec }}"
+  set_fact:
+    postgres_readreplicas_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
+
+- name: set postgres readreplicas statefulset spec
+  when: postgres_readreplicas_sts_spec is not defined
+  vars:
+    annotations: "{{ postgres_readreplicas_sts_spec_annotations | default(false) }}"
+    extra_labels: "{{ postgres_readreplicas_sts_spec_extra_labels | default(false) }}"
+    inventory_include: true
+  set_fact:
+    postgres_readreplicas_sts_spec: "{{ lookup('template', postgres_readreplicas_sts_spec_template) }}"
+
+- name: postgres readreplicas statefulset resource definition
+  vars:
+    k8s_kind: StatefulSet
+    k8s_state:
+      "{{ 'absent' if postgres_mode not in ['readreplicas'] else
+      postgres_readreplicas_sts_state | default(postgres_state) }}"
+    k8s_wait: "{{ postgres_readreplicas_sts_wait | default(true) }}"
+    k8s_wait_timeout: "{{ postgres_readreplicas_sts_wait_timeout | default(200) }}"
+    template: "{{ sts_template }}"
+    metadata_name: "{{ postgres_readreplicas_sts }}"
+    annotations: "{{ postgres_readreplicas_sts_annotations | default(false) }}"
+    runtime: postgres
+    sts_spec: "{{ postgres_readreplicas_sts_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save postgres readreplicas statefulset resource definition task output
+  set_fact:
+    k8s_postgres_readreplicas_sts: "{{ k8s_object_task }}"

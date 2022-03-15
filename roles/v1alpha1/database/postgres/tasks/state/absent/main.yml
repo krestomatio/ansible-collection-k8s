@@ -8,8 +8,17 @@
     - name: start terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
-    - name: handle keydb
-      import_tasks: keydb.yml
+    - name: handle postgres
+      import_tasks: "{{ role_path }}/tasks/postgres.yml"
+
+    - name: handle pgbouncer
+      import_tasks: "{{ role_path }}/tasks/pgbouncer.yml"
+
+    - name: handle postgres read replicas
+      import_tasks: "{{ role_path }}/tasks/readreplicas.yml"
+
+    - name: handle pgbouncer readonly
+      import_tasks: "{{ role_path }}/tasks/pgbouncer-readonly.yml"
 
     - name: cleanup pvcs
       import_tasks: "{{ common_path }}/cleanup-pvcs.yml"

@@ -9,7 +9,7 @@
 
     - import_tasks: resource/cronjob.yml
 
-    - import_tasks: cleanup-jobs.yml
+    - import_tasks: "{{ common_path }}/cleanup-jobs.yml"
 
     - import_tasks: resource/deploy.yml
 

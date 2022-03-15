@@ -1,0 +1,27 @@
+- name: set pgbouncer readonly deploy spec
+  when: pgbouncer_readonly_deploy_spec is not defined
+  vars:
+    annotations: "{{ pgbouncer_readonly_deploy_spec_annotations | default(false) }}"
+    extra_labels: "{{ pgbouncer_readonly_deploy_spec_extra_labels | default(false) }}"
+    inventory_include: true
+  set_fact:
+    pgbouncer_readonly_deploy_spec: "{{ lookup('template', pgbouncer_readonly_deploy_spec_template) }}"
+
+- name: pgbouncer readonly deploy resource definition
+  vars:
+    k8s_kind: Deployment
+    k8s_state:
+      "{{ 'absent' if postgres_mode not in ['readreplicas'] else
+      pgbouncer_readonly_deploy_state | default(postgres_state) }}"
+    k8s_wait: "{{ pgbouncer_readonly_deploy_wait | default(true) }}"
+    k8s_wait_timeout: "{{ pgbouncer_readonly_deploy_wait_timeout | default(120) }}"
+    template: "{{ deploy_template }}"
+    metadata_name: "{{ pgbouncer_readonly_deploy }}"
+    annotations: "{{ pgbouncer_readonly_deploy_annotations | default(false) }}"
+    runtime: pgbouncer
+    deploy_spec: "{{ pgbouncer_readonly_deploy_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save pgbouncer readonly deploy resource definition task
+  set_fact:
+    k8s_pgbouncer_readonly_deploy: "{{ k8s_object_task }}"

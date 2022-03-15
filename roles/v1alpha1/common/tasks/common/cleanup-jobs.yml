@@ -1,13 +1,13 @@
-- name: remove remaining jobs and its pods of moodle cronjob
+- name: remove remaining jobs and its pods
   loop:
     - Job
     - Pod
   vars:
     k8s_definition: "{{ lookup('k8s', kind=item, namespace=meta_namespace,
-      label_selector='app=' + metadata_app ) }}"
+      label_selector='app.kubernetes.io/instance=' + meta_name ) }}"
     k8s_state: absent
     k8s_kind: "{{ item }}"
   when:
     - (k8s_definition | length) > 0
-    - "(moodle_cronjob_state | default(moodle_state)) == 'absent'"
+    - "state == 'absent'"
   include_tasks: "{{ common_path }}/k8s/object.yml"

@@ -1,0 +1,15 @@
+- name: postgres resource definitions
+  vars:
+    name: postgres
+    component: postgres
+    metadata_app: "{{ postgres_appname }}"
+  block:
+    - import_tasks: resource/postgres/secret.yml
+
+    - import_tasks: resource/postgres/cm.yml
+
+    - import_tasks: resource/postgres/cm-vars.yml
+
+    - import_tasks: resource/postgres/svc.yml
+
+    - import_tasks: resource/postgres/sts.yml
