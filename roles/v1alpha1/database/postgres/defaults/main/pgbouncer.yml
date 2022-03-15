@@ -63,13 +63,8 @@ pgbouncer_secret_data: |
     resource_name=pgbouncer_secret).data.pgbouncer_admin_password |
     default(pgbouncer_admin_password |
     b64encode,true) }}
-  database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-    resource_name=pgbouncer_secret).data.database_url |
-    default(('postgres://' + postgres_database_user + ':' + postgres_database_password
-    + '@' + pgbouncer_service + ':' + pgbouncer_port | string + '/' + postgres_database_name) |
-    b64encode,true) }}
-  database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-    resource_name=pgbouncer_secret).data.database_url |
+  pgbouncer_database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=pgbouncer_secret).data.pgbouncer_database_url |
     default(('postgres://' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_user | default(postgres_database_user)
     + ':' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
@@ -97,8 +92,8 @@ pgbouncer_readonly_secret_data: |
     resource_name=pgbouncer_readonly_secret).data.pgbouncer_readonly_admin_password |
     default(pgbouncer_readonly_admin_password |
     b64encode,true) }}
-  database_readonly_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-    resource_name=pgbouncer_readonly_secret).data.database_url |
+  pgbouncer_readonly_database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=pgbouncer_readonly_secret).data.pgbouncer_readonly_database_url |
     default(('postgres://' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_user | default(postgres_database_user)
     + ':' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
