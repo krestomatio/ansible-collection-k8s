@@ -11,6 +11,9 @@
     - name: handle keydb
       import_tasks: keydb.yml
 
+    - name: cleanup pvcs
+      import_tasks: "{{ common_path }}/cleanup-pvcs.yml"
+
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"
   rescue:
