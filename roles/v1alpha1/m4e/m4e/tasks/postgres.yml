@@ -1,4 +1,0 @@
-- name: handle postgres
-  when: moodle_database_deploy | bool
-  include_role:
-    name: "{{ cr_version }}/database/postgres"

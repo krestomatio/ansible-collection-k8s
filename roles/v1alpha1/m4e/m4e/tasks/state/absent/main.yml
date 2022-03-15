@@ -14,9 +14,6 @@
     - name: handle moodle removal
       import_tasks: moodle.yml
 
-    - name: handle postgres removal
-      import_tasks: postgres.yml
-
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"
   rescue:

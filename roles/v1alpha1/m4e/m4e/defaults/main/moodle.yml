@@ -33,7 +33,7 @@ moodle_resource_limits_cpu: 1
 moodle_resource_limits_memory: 1Gi
 moodle_term_grace_period: 30
 moodle_tolerations: false
-moodle_connects_to: "{{ moodle_database_appname }}"
+moodle_connects_to: "{{ moodle_postgres_meta_name }}"
 
 # moodle service
 moodle_service: "{{ moodle_appname }}-service"
@@ -232,9 +232,9 @@ moodle_cm_scripts_data: |
 # database
 ## deploy own database for moodle using postgres
 moodle_database_deploy: true
-moodle_database_appname: "{{ postgres_appname | default(meta_name + '-postgres') }}"
-moodle_database_service: "{{ postgres_service | default(moodle_database_appname + '-service') }}"
-moodle_database_secret: "{{ postgres_secret | default(moodle_database_appname + '-secret') }}"
+moodle_postgres_meta_name: postgres-sample
+moodle_database_service: "{{ moodle_postgres_meta_name + '-pgbouncer-service' }}"
+moodle_database_secret: "{{ moodle_postgres_meta_name + '-secret' }}"
 moodle_database_secret_dbname_key: database_name
 moodle_database_secret_dbuser_key: database_user
 moodle_database_secret_dbpass_key: database_password

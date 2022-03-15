@@ -7,9 +7,6 @@
     - name: make assertions
       import_tasks: "assertions.yml"
 
-    - name: handle postgres
-      import_tasks: postgres.yml
-
     - name: handle moodle
       import_tasks: moodle.yml
 
