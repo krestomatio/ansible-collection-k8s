@@ -2,4 +2,4 @@
 
 ### Chores
 
-* bump postgres image version (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
