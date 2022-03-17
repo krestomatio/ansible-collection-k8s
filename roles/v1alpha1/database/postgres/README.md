@@ -32,7 +32,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "postgres"
+        name: "krestomatio.k8s.v1alpha1.database.postgres"
 ```
 License
 -------

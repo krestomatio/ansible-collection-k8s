@@ -5,19 +5,21 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
-    - import_tasks: resource/service.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/nginx.yml"
 
-    - import_tasks: resource/cronjob.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/service.yml"
 
-    - import_tasks: resource/deploy.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
 
-    - import_tasks: resource/cm-scripts.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/deploy.yml"
 
-    - import_tasks: resource/secret-admin.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/cm-scripts.yml"
 
-    - import_tasks: resource/secret-config.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/secret-admin.yml"
 
-    - import_tasks: resource/pvc-moodledata.yml
+    - import_tasks: "{{ role_path }}/tasks/resource/secret-config.yml"
+
+    - import_tasks: "{{ role_path }}/tasks/resource/pvc-moodledata.yml"
 
     - import_tasks: "{{ common_path }}/cleanup-resources.yml"
       vars:
@@ -25,3 +27,5 @@
         cleanup_kind_list:
           - Job
           - Pod
+
+    # - import_tasks: "{{ role_path }}/tasks/resource/routine.yml"

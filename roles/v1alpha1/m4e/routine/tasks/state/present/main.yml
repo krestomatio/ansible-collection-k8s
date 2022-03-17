@@ -1,0 +1,15 @@
+- name: import tasks
+  block:
+    - name: make assertions
+      import_tasks: "{{ role_path }}/tasks/assertions.yml"
+
+    - name: handle routine
+      import_tasks: "{{ role_path }}/tasks/routine.yml"
+
+    - name: include successful status
+      import_tasks: "{{ common_path }}/condition/ready/successful.yml"
+      delegate_to: localhost
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"
+      delegate_to: localhost

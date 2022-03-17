@@ -35,7 +35,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "m4e"
+        name: "krestomatio.k8s.v1alpha1.m4e.m4e"
 ```
 License
 -------

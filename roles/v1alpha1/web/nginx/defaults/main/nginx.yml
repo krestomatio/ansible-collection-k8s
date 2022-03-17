@@ -47,6 +47,12 @@ nginx_connects_to: false
 #       persistentVolumeClaim:
 #         claimName: metadata-pvc
 
+# nginx config map
+nginx_cm: "{{ nginx_appname }}-cm"
+nginx_cm_data: |
+  nginx-extra.conf: |
+    {{ nginx_extra_config | default('') | indent(2) }}
+
 # nginx service
 nginx_service: "{{ nginx_appname }}-service"
 nginx_service_type: ClusterIP
@@ -73,6 +79,9 @@ nginx_ingress_tls: "{{ true if nginx_ingress_protocol == 'https' else false }}"
 nginx_ingress_tls_secret_name: false
 nginx_ingress_protocol: "http"
 nginx_ingress_host: "example.krestomat.io"
+## 'nginx_ingress_only' handle only ingress and ignore other resources
+nginx_ingress_only: false
+nginx_ingress_wait_for_ip: false
 # nginx_ingress_annotations: |
 #   krestomat.io/annotation: value1
 #   krestomat.io/other-annotation: value2
@@ -100,6 +109,8 @@ nginx_ingress_spec: |
 # nginx router
 nginx_route: "{{ nginx_appname }}-route"
 nginx_route_tls: "{{ nginx_ingress_tls }}"
+## 'nginx_route_only' handle only route and ignore other resources
+nginx_route_only: false
 nginx_route_annotations: |
   haproxy.router.openshift.io/rate-limit-connections: 'true'
   haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: '100'

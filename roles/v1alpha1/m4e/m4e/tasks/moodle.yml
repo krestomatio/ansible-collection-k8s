@@ -5,6 +5,11 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
+    - when: not (cr_status_properties.created | default('False') | bool)
+      import_tasks: resource/nginx.yml
+      vars:
+        moodle_ingress_only: true
+
     - import_tasks: resource/secret-admin.yml
 
     - import_tasks: resource/pvc-moodledata.yml
@@ -31,5 +36,7 @@
           (status_version_update.type == 'major' and moodle_update_major)
 
     - import_tasks: resource/service.yml
+
+    - import_tasks: resource/nginx.yml
 
     - import_tasks: resource/routine.yml

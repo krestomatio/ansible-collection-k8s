@@ -66,6 +66,9 @@ template:
 {% endif %}
 {% if nginx_volumes is defined and nginx_volumes %}
       volumeMounts:
+      - mountPath: /etc/nginx/default.d/nginx-extra.conf
+        name: nginx-extra-config
+        subPath: nginx-extra.conf
 {%   for volume in nginx_volumes %}
       - name: '{{ volume.name }}'
         mountPath: '{{ volume.mount_path }}'
@@ -76,6 +79,13 @@ template:
 {% endif %}
 {% if nginx_volumes is defined and nginx_volumes %}
     volumes:
+    - name: nginx-extra-config
+      configMap:
+        name: '{{ nginx_cm }}'
+        defaultMode: 0664
+        items:
+        - key: nginx-extra.conf
+          path: nginx-extra.conf
 {%   for volume in nginx_volumes %}
     - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}

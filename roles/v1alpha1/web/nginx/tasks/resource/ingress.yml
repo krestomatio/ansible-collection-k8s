@@ -14,7 +14,7 @@
 
 - name: wait for nginx ingress
   when:
-    - _nginx_ingress_wait_for_ip | default(nginx_ingress_wait_for_ip) | default(false)
+    - _nginx_ingress_wait_for_ip | default(false)
     - k8s_nginx_ingress is changed
     - "'absent' not in nginx_ingress_state | default(nginx_state)"
   include_tasks: "{{ common_path }}/ingress-wait.yml"

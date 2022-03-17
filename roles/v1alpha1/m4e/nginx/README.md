@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Role to allocate nfs servers for RWX using Ansible Operator SDK and rook nfs
+Role to handle Nginx for Moodle with Ansible Operator SDK
 
 Requirements
 ------------
@@ -11,8 +11,9 @@ None
 Role Variables
 --------------
 
-- See [`defaults/main/main.yml`](defaults/main/main.yml)
-- See [`defaults/main/server.yml`](defaults/main/server.yml)
+- See [`vars/main/main.yml`](vars/main/main.yml)
+- See [`vars/main/nginx.yml`](vars/main/nginx.yml)
+- See [`defaults/main/nginx.yml`](../../web/nginx/defaults/main/nginx.yml)
 
 Dependencies
 ------------
@@ -32,7 +33,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: krestomatio.k8s.v1alpha1.nfs.server
+        name: "krestomatio.k8s.v1alpha1.m4e.nginx"
 ```
 License
 -------

@@ -176,6 +176,27 @@ moodle_routine_spec: |
   {%    endif %}
   {% endif %}
 
+# moodle nginx
+moodle_nginx: "{{ moodle_appname }}-nginx"
+moodle_nginx_spec: |
+  moodle_image: "{{ moodle_image }}"
+  moodle_appname: "{{ moodle_appname }}"
+  moodle_nginx_appname: "{{ moodle_nginx }}"
+  moodle_host: "{{ moodle_host }}"
+  moodle_protocol: "{{ moodle_protocol }}"
+  moodle_service: "{{ moodle_service }}"
+  moodle_data: "{{ moodle_data }}"
+  moodle_pvc_moodledata: "{{ moodle_pvc_moodledata }}"
+  {% if moodle_ingress_only | bool %}
+  moodle_ingress_only: true
+  {% endif %}
+  {% if moodle_nginx_extra_config != '' %}
+  moodle_nginx_extra_config: |
+    {{ moodle_nginx_extra_config }}
+  {% endif %}
+moodle_ingress_only: false
+moodle_nginx_extra_config: ''
+
 # moodle status
 moodle_status_script: "{{ moodle_scripts_path }}/status.php"
 moodle_status_version: true
@@ -224,9 +245,9 @@ moodle_secret_admin_data: |
 # moodle config map
 moodle_cm_scripts: "{{ moodle_appname }}-cm-scripts"
 moodle_cm_scripts_data: |
-  muc-store.php: |-
+  muc-store.php: |
     {{ lookup('template', moodle_script_muc_store_template) | indent(2) }}
-  status.php: |-
+  status.php: |
     {{ lookup('template', moodle_script_status_template) | indent(2) }}
 
 # database
@@ -234,7 +255,7 @@ moodle_cm_scripts_data: |
 moodle_database_deploy: true
 moodle_postgres_meta_name: postgres-sample
 moodle_database_service: "{{ moodle_postgres_meta_name + '-pgbouncer-service' }}"
-moodle_database_secret: "{{ moodle_postgres_meta_name + '-secret' }}"
+moodle_database_secret: "{{ moodle_postgres_meta_name + '-postgres-secret' }}"
 moodle_database_secret_dbname_key: database_name
 moodle_database_secret_dbuser_key: database_user
 moodle_database_secret_dbpass_key: database_password
@@ -307,7 +328,7 @@ moodle_config_dataroot: "{{ moodle_data }}"
 # moodle_config_dbpersist: "false"
 # moodle_config_dbsocket: "false"
 # moodle_config_dbport: "''"
-# moodle_config_dbhandlesoptions: "false"
+moodle_config_dbhandlesoptions: "{{ moodle_database_service is search('pgbouncer') }}"
 # moodle_config_dbcollation: "utf8mb4_unicode_ci"
 # moodle_config_fetchbuffersize: "100000"
 # moodle_config_directorypermissions: "02777"
