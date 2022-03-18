@@ -43,7 +43,7 @@ nginx_connects_to: false
 # nginx_volumes:
 #   - name: html
 #     mount_path: /var/www/html
-#     source: |
+#     source:
 #       persistentVolumeClaim:
 #         claimName: metadata-pvc
 

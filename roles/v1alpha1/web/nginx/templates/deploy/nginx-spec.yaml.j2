@@ -18,7 +18,22 @@ template:
       ports:
       - containerPort: {{ nginx_port }}
       imagePullPolicy: IfNotPresent
+{% if nginx_command is defined and nginx_command %}
+{%   if nginx_command is string %}
+      command: {{ nginx_command }}
+{%   elif nginx_command | type_debug == 'list' %}
+      command:
+      {{ nginx_command | to_nice_yaml(indent=2) | indent(6) }}
+{%   endif %}
+{% endif %}
+{% if nginx_args is defined and nginx_args %}
+{%   if nginx_args is string %}
       args: {{ nginx_args }}
+{%   elif nginx_args | type_debug == 'list' %}
+      args:
+      {{ nginx_args | to_nice_yaml(indent=2) | indent(6) }}
+{%   endif %}
+{% endif %}
 {% if nginx_readiness_probe %}
       readinessProbe:
         httpGet:
@@ -60,15 +75,20 @@ template:
           memory: '{{ nginx_resource_limits_memory }}'
 {%   endif %}
 {% endif %}
-{% if k8s_distribution == 'k8s' %}
+{% if (k8s_distribution == 'k8s' and nginx_run_as_user is defined and nginx_run_as_user) or nginx_security_context is defined %}
       securityContext:
+{%   if k8s_distribution == 'k8s' and nginx_run_as_user is defined and nginx_run_as_user and nginx_security_context.runAsUser is not defined %}
         runAsUser: {{ nginx_run_as_user }}
+{%   endif %}
+{%   if nginx_security_context is defined %}
+        {{ nginx_security_context | to_nice_yaml(indent=2) | indent(8) }}
+{%   endif %}
 {% endif %}
-{% if nginx_volumes is defined and nginx_volumes %}
       volumeMounts:
       - mountPath: /etc/nginx/default.d/nginx-extra.conf
         name: nginx-extra-config
         subPath: nginx-extra.conf
+{% if nginx_volumes is defined and nginx_volumes %}
 {%   for volume in nginx_volumes %}
       - name: '{{ volume.name }}'
         mountPath: '{{ volume.mount_path }}'
@@ -77,7 +97,6 @@ template:
 {%     endif %}
 {%   endfor %}
 {% endif %}
-{% if nginx_volumes is defined and nginx_volumes %}
     volumes:
     - name: nginx-extra-config
       configMap:
@@ -86,10 +105,11 @@ template:
         items:
         - key: nginx-extra.conf
           path: nginx-extra.conf
+{% if nginx_volumes is defined and nginx_volumes %}
 {%   for volume in nginx_volumes %}
     - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
-      {{ volume.source | indent(6) }}
+      {{ volume.source | to_nice_yaml(indent=2) | indent(6) }}
 {%     endif %}
 {%   endfor %}
 {% endif %}
