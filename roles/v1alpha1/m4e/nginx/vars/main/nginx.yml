@@ -20,5 +20,6 @@ nginx_envvars:
 nginx_volumes:
   - name: moodledata
     mount_path: '{{ moodle_data }}'
-    persistentVolumeClaim:
-      claimName: '{{ moodle_pvc_moodledata }}'
+    source:
+      persistentVolumeClaim:
+        claimName: '{{ moodle_pvc_moodledata }}'
