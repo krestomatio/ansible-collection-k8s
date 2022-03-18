@@ -103,16 +103,16 @@ template:
 {% endif %}
 {% if pgbouncer_resource_requests or pgbouncer_resource_limits %}
       resources:
-{% if pgbouncer_resource_requests %}
+{%   if pgbouncer_resource_requests %}
         requests:
           cpu: '{{ pgbouncer_resource_requests_cpu }}'
           memory: '{{ pgbouncer_resource_requests_memory }}'
-{% endif %}
-{% if pgbouncer_resource_limits %}
+{%   endif %}
+{%   if pgbouncer_resource_limits %}
         limits:
           cpu: '{{ pgbouncer_resource_limits_cpu }}'
           memory: '{{ pgbouncer_resource_limits_memory }}'
-{% endif %}
+{%   endif %}
 {% endif %}
       volumeMounts:
       - mountPath: /etc/pgbouncer/pgbouncer-extra.ini
