@@ -43,7 +43,7 @@ graphql_engine_connects_to: "{{ graphql_engine_database_appname if graphql_engin
 # graphql_engine_volumes:
 #   - name: metadata
 #     mount_path: /metadata
-#     source: |
+#     source:
 #       persistentVolumeClaim:
 #         claimName: metadata-pvc
 ## add environment variables from this list of secrets:

@@ -105,7 +105,7 @@ template:
 {%   for volume in graphql_engine_volumes %}
     - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
-      {{ volume.source | indent(6) }}
+      {{ volume.source | to_nice_yaml(indent=2) | indent(6) }}
 {%     endif %}
 {%   endfor %}
 {% endif %}

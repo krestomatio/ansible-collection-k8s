@@ -43,7 +43,7 @@ server_connects_to: "{{ server_database_appname if server_database_deploy else f
 # server_volumes:
 #   - name: volume1
 #     mount_path: /path
-#     source: |
+#     source:
 #       persistentVolumeClaim:
 #         claimName: metadata-pvc
 ## add environment variables from this list of secrets:
