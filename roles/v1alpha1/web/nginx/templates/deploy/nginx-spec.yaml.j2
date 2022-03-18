@@ -49,16 +49,16 @@ template:
 {% endif %}
 {% if nginx_resource_requests or nginx_resource_limits %}
       resources:
-{% if nginx_resource_requests %}
+{%   if nginx_resource_requests %}
         requests:
           cpu: '{{ nginx_resource_requests_cpu }}'
           memory: '{{ nginx_resource_requests_memory }}'
-{% endif %}
-{% if nginx_resource_limits %}
+{%   endif %}
+{%   if nginx_resource_limits %}
         limits:
           cpu: '{{ nginx_resource_limits_cpu }}'
           memory: '{{ nginx_resource_limits_memory }}'
-{% endif %}
+{%   endif %}
 {% endif %}
 {% if k8s_distribution == 'k8s' %}
       securityContext:
