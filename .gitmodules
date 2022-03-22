@@ -1,0 +1,3 @@
+[submodule "hack/mk"]
+	path = hack/mk
+	url = https://github.com/krestomatio/kio-makefiles.git

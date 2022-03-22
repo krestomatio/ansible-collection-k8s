@@ -25,7 +25,7 @@ spec:
                 memory: 512Mi
             workingDir: /workspace/source
           steps:
-            - image: uses:krestomatio/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@9ae86d98b3fc7a74e20148a39f269adc88f96933
+            - image: uses:krestomatio/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@470089068824ee4a1159d21df6d25126d2e65888
             - image: quay.io/krestomatio/ansible-docker-ci
               name: pr
               script: |

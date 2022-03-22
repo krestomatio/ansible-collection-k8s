@@ -14,3 +14,4 @@ spec:
     branches:
     - ^main$
     - ^master$
+    - ^release-([0-9]+)\.([0-9]+)$
