@@ -1,0 +1,11 @@
+# moodle new instance
+moodle_new_instance_job_needed:
+  "{{ true if ((moodle_new_instance | bool) and not
+  (cr_status_properties.instantiated | default('False') | bool)) else
+  false }}"
+
+# moodle auto update
+moodle_update_job_needed:
+  "{{ true if (status_version_update.type is defined and ((status_version_update.type == 'minor' and moodle_update_minor) or
+  (status_version_update.type == 'major' and moodle_update_major))) else
+  false }}"

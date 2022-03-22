@@ -1,0 +1,15 @@
+---
+# defaults file for m4e
+cr_group: php-fpm.krestomat.io
+cr_kind: Phpfpm
+
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 26
+
+# templates
+php_fpm_deploy_spec_template: deploy/php-fpm-spec.yaml.j2
+
+# common labels
+meta_app_created_by: php-fpm-operator

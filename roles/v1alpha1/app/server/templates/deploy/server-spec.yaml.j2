@@ -130,7 +130,7 @@ template:
     tolerations:
     {{ server_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
-{% if server_image_pull_secret  %}
+{% if server_image_pull_secret %}
     imagePullSecrets:
     - name: {{ server_image_pull_secret }}
 {% endif %}

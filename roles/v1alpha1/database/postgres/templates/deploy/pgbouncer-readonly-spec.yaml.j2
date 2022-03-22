@@ -56,14 +56,23 @@ template:
       {{ pgbouncer_args | to_nice_yaml(indent=2) | indent(6) }}
 {%   endif %}
 {% endif %}
-{% if pgbouncer_startup_probe | bool %}
+{% if pgbouncer_startup_probe %}
       startupProbe:
+{%   if pgbouncer_startup_command is defined and pgbouncer_startup_command %}
         exec:
-{%   if pgbouncer_startup_command is string %}
+{%     if pgbouncer_startup_command is string %}
           command: {{ pgbouncer_startup_command }}
-{%   elif pgbouncer_startup_command | type_debug == 'list' %}
+{%     elif pgbouncer_startup_command | type_debug == 'list' %}
           command:
           {{ pgbouncer_startup_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif pgbouncer_startup_path is defined and pgbouncer_startup_path %}
+        httpGet:
+          path: '{{ pgbouncer_startup_path }}'
+          port: {{ pgbouncer_startup_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ pgbouncer_startup_host }}'
 {%   endif %}
         initialDelaySeconds: {{ pgbouncer_startup_initial }}
         periodSeconds: {{ pgbouncer_startup_period }}
@@ -71,14 +80,23 @@ template:
         successThreshold: {{ pgbouncer_startup_success }}
         failureThreshold: {{ pgbouncer_startup_failure }}
 {% endif %}
-{% if pgbouncer_readiness_probe | bool %}
+{% if pgbouncer_readiness_probe %}
       readinessProbe:
+{%   if pgbouncer_readiness_command is defined and pgbouncer_readiness_command %}
         exec:
-{%   if pgbouncer_readiness_command is string %}
+{%     if pgbouncer_readiness_command is string %}
           command: {{ pgbouncer_readiness_command }}
-{%   elif pgbouncer_readiness_command | type_debug == 'list' %}
+{%     elif pgbouncer_readiness_command | type_debug == 'list' %}
           command:
           {{ pgbouncer_readiness_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif pgbouncer_readiness_path is defined and pgbouncer_readiness_path %}
+        httpGet:
+          path: '{{ pgbouncer_readiness_path }}'
+          port: {{ pgbouncer_readiness_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ pgbouncer_readiness_host }}'
 {%   endif %}
         initialDelaySeconds: {{ pgbouncer_readiness_initial }}
         periodSeconds: {{ pgbouncer_readiness_period }}
@@ -86,14 +104,23 @@ template:
         successThreshold: {{ pgbouncer_readiness_success }}
         failureThreshold: {{ pgbouncer_readiness_failure }}
 {% endif %}
-{% if pgbouncer_liveness_probe | bool %}
+{% if pgbouncer_liveness_probe %}
       livenessProbe:
+{%   if pgbouncer_liveness_command is defined and pgbouncer_liveness_command %}
         exec:
-{%   if pgbouncer_liveness_command is string %}
+{%     if pgbouncer_liveness_command is string %}
           command: {{ pgbouncer_liveness_command }}
-{%   elif pgbouncer_liveness_command | type_debug == 'list' %}
+{%     elif pgbouncer_liveness_command | type_debug == 'list' %}
           command:
           {{ pgbouncer_liveness_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif pgbouncer_liveness_path is defined and pgbouncer_liveness_path %}
+        httpGet:
+          path: '{{ pgbouncer_liveness_path }}'
+          port: {{ pgbouncer_liveness_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ pgbouncer_liveness_host }}'
 {%   endif %}
         initialDelaySeconds: {{ pgbouncer_liveness_initial }}
         periodSeconds: {{ pgbouncer_liveness_period }}
@@ -140,7 +167,7 @@ template:
     tolerations:
     {{ pgbouncer_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
-{% if pgbouncer_image_pull_secret  %}
+{% if pgbouncer_image_pull_secret %}
     imagePullSecrets:
     - name: {{ pgbouncer_image_pull_secret }}
 {% endif %}

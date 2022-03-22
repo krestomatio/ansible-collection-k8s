@@ -1,3 +1,29 @@
----
+# THIS FILES IS SHARED BETWEEN M4E.M4E AND PHP-FPM.M4E CRD
+
+# php-fpm
+php_fpm_appname: "{{ moodle_php_fpm_appname }}"
+
+# php-fpm deploy
+# php_fpm_size: 1
+php_fpm_image: "{{ moodle_image }}"
+php_fpm_container: "moodle-php-fpm"
+php_fpm_appname: "{{ moodle_php_fpm_appname }}"
+php_fpm_connects_to: "{{ moodle_appname }}"
+## php.ini extra config
+# php_extra_config: ''
+## php-fpm extra conf
+# php_fpm_extra_config: ''
+
+# deploy
+php_fpm_envvars:
+  - name: MOODLE_CONFIG_DIR
+    value: '{{ moodle_config_path }}'
+php_fpm_volumes:
+  - name: moodledata
+    mount_path: '{{ moodle_data }}'
+    source:
+      persistentVolumeClaim:
+        claimName: '{{ moodle_pvc_moodledata }}'
+
 # php-fpm config
 php_fpm_config_process_control_timeout: 20

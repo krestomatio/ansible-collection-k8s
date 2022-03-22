@@ -34,7 +34,7 @@ template:
       - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
-        value: '{{ php_fpm_config_process_control_timeout }}'
+        value: '{{ moodle_new_instance_job_php_fpm_config_process_control_timeout }}'
       command:
       - '/bin/bash'
       - '-c'
@@ -95,7 +95,7 @@ template:
     tolerations:
     {{ moodle_new_instance_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
-{% if moodle_image_pull_secret  %}
+{% if moodle_image_pull_secret %}
     imagePullSecrets:
     - name: {{ moodle_image_pull_secret }}
 {% endif %}

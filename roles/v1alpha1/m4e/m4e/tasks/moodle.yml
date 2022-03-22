@@ -8,7 +8,7 @@
     - when: not (cr_status_properties.created | default('False') | bool)
       import_tasks: resource/nginx.yml
       vars:
-        moodle_ingress_only: true
+        nginx_ingress_only: true
 
     - import_tasks: resource/secret-admin.yml
 
@@ -19,23 +19,16 @@
     - import_tasks: resource/cm-scripts.yml
 
     - include_tasks: resource/job-new-instance.yml
-      when:
-        - moodle_new_instance | bool
-        - not (cr_status_properties.instantiated | default('False') | bool)
+      when: moodle_new_instance_job_needed
 
-    - import_tasks: resource/deploy.yml
+    - import_tasks: resource/php-fpm.yml
 
     - import_tasks: routine/status.yml
 
     - import_tasks: resource/cronjob.yml
 
     - include_tasks: resource/job-update.yml
-      when:
-        - status_version_update.type is defined
-        - (status_version_update.type == 'minor' and moodle_update_minor) or
-          (status_version_update.type == 'major' and moodle_update_major)
-
-    - import_tasks: resource/service.yml
+      when: moodle_update_job_needed
 
     - import_tasks: resource/nginx.yml
 

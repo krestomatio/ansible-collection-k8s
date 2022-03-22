@@ -1,0 +1,20 @@
+- name: moodle php-fpm resource definition
+  vars:
+    moodle_php_fpm_annotation_inventory_extra_cr_cwd: |
+      krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
+    k8s_kind: Phpfpm
+    k8s_state: "{{ moodle_php_fpm_state | default(moodle_state) }}"
+    k8s_wait: "{{ false if moodle_php_fpm_state | default(moodle_state) == 'absent'
+      else moodle_php_fpm_wait | default(true) }}"
+    k8s_wait_condition:
+      type: "Ready"
+      status: "True"
+    template: "{{ php_fpm_template }}"
+    metadata_name: "{{ moodle_php_fpm }}"
+    annotations: "{{ moodle_php_fpm_annotation_inventory_extra_cr_cwd + (moodle_php_fpm_annotations | default('')) }}"
+    php_fpm_spec: "{{ moodle_php_fpm_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save moodle php-fpm resource definition task
+  set_fact:
+    k8s_moodle_php_fpm: "{{ k8s_object_task }}"

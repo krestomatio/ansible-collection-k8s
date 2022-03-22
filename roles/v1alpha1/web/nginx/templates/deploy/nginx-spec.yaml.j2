@@ -34,14 +34,48 @@ template:
       {{ nginx_args | to_nice_yaml(indent=2) | indent(6) }}
 {%   endif %}
 {% endif %}
-{% if nginx_readiness_probe %}
-      readinessProbe:
+{% if nginx_startup_probe %}
+      startupProbe:
+{%   if nginx_startup_command is defined and nginx_startup_command %}
+        exec:
+{%     if nginx_startup_command is string %}
+          command: {{ nginx_startup_command }}
+{%     elif nginx_startup_command | type_debug == 'list' %}
+          command:
+          {{ nginx_startup_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif nginx_startup_path is defined and nginx_startup_path %}
         httpGet:
-          path: '{{ nginx_readiness_path }}'
-          port: {{ nginx_port }}
+          path: '{{ nginx_startup_path }}'
+          port: {{ nginx_startup_port }}
           httpHeaders:
           - name: 'Host'
-            value: '{{ nginx_host }}'
+            value: '{{ nginx_startup_host }}'
+{%   endif %}
+        initialDelaySeconds: {{ nginx_startup_initial }}
+        periodSeconds: {{ nginx_startup_period }}
+        timeoutSeconds: {{ nginx_startup_timeout }}
+        successThreshold: {{ nginx_startup_success }}
+        failureThreshold: {{ nginx_startup_failure }}
+{% endif %}
+{% if nginx_readiness_probe %}
+      readinessProbe:
+{%   if nginx_readiness_command is defined and nginx_readiness_command %}
+        exec:
+{%     if nginx_readiness_command is string %}
+          command: {{ nginx_readiness_command }}
+{%     elif nginx_readiness_command | type_debug == 'list' %}
+          command:
+          {{ nginx_readiness_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif nginx_readiness_path is defined and nginx_readiness_path %}
+        httpGet:
+          path: '{{ nginx_readiness_path }}'
+          port: {{ nginx_readiness_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ nginx_readiness_host }}'
+{%   endif %}
         initialDelaySeconds: {{ nginx_readiness_initial }}
         periodSeconds: {{ nginx_readiness_period }}
         timeoutSeconds: {{ nginx_readiness_timeout }}
@@ -50,12 +84,22 @@ template:
 {% endif %}
 {% if nginx_liveness_probe %}
       livenessProbe:
+{%   if nginx_liveness_command is defined and nginx_liveness_command %}
+        exec:
+{%     if nginx_liveness_command is string %}
+          command: {{ nginx_liveness_command }}
+{%     elif nginx_liveness_command | type_debug == 'list' %}
+          command:
+          {{ nginx_liveness_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif nginx_liveness_path is defined and nginx_liveness_path %}
         httpGet:
           path: '{{ nginx_liveness_path }}'
-          port: {{ nginx_port }}
+          port: {{ nginx_liveness_port }}
           httpHeaders:
           - name: 'Host'
-            value: '{{ nginx_host }}'
+            value: '{{ nginx_liveness_host }}'
+{%   endif %}
         initialDelaySeconds: {{ nginx_liveness_initial }}
         periodSeconds: {{ nginx_liveness_period }}
         timeoutSeconds: {{ nginx_liveness_timeout }}
@@ -117,7 +161,7 @@ template:
     tolerations:
     {{ nginx_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
-{% if nginx_image_pull_secret  %}
+{% if nginx_image_pull_secret %}
     imagePullSecrets:
     - name: {{ nginx_image_pull_secret }}
 {% endif %}

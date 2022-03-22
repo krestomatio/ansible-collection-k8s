@@ -1,0 +1,14 @@
+# defaults file for m4e
+cr_group: m4e.krestomat.io
+cr_kind: Phpfpm
+
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 26
+
+# inventory
+inventory_include: true
+
+# common labels
+meta_app_created_by: m4e-operator

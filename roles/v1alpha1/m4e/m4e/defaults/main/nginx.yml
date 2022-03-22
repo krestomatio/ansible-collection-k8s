@@ -1,0 +1,29 @@
+# THIS FILES IS SHARED BETWEEN M4E.M4E AND NGINX.M4E CRD
+
+# nginx
+nginx_appname: "{{ moodle_nginx_appname }}"
+
+# nginx deploy
+# nginx_size: 1
+nginx_image: "{{ moodle_image }}"
+nginx_container: "moodle-nginx"
+nginx_connects_to: "{{ moodle_appname }}"
+## nginx extra conf
+# nginx_extra_config: ''
+
+# ingress
+nginx_ingress_host: "{{ moodle_host }}"
+nginx_ingress_protocol: "{{ moodle_protocol }}"
+
+# deploy
+nginx_envvars:
+  - name: MOODLE_CHECK_HOST
+    value: '{{ moodle_host }}'
+  - name: PHP_FPM_HOST
+    value: '{{ moodle_service }}'
+nginx_volumes:
+  - name: moodledata
+    mount_path: '{{ moodle_data }}'
+    source:
+      persistentVolumeClaim:
+        claimName: '{{ moodle_pvc_moodledata }}'

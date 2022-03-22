@@ -26,8 +26,8 @@ moodle_liveness_timeout: 3
 moodle_liveness_success: 1
 moodle_liveness_failure: 3
 moodle_resource_requests: true
-moodle_resource_requests_cpu: 150m
-moodle_resource_requests_memory: 256Mi
+moodle_resource_requests_cpu: 75m
+moodle_resource_requests_memory: 128Mi
 moodle_resource_limits: false
 moodle_resource_limits_cpu: 1
 moodle_resource_limits_memory: 1Gi
@@ -83,6 +83,7 @@ moodle_new_instance_job_resource_requests_memory: 256Mi
 moodle_new_instance_job_resource_limits: false
 moodle_new_instance_job_resource_limits_cpu: 1
 moodle_new_instance_job_resource_limits_memory: 1Gi
+moodle_new_instance_job_php_fpm_config_process_control_timeout: "{{ moodle_php_fpm_config_process_control_timeout }}"
 moodle_new_instance_job_command_snippet: |
   echo "Instantiating moodle..."
   /usr/libexec/check-container-php -d
@@ -132,70 +133,8 @@ moodle_update_job_resource_limits_cpu: 1
 moodle_update_job_resource_limits_memory: 1Gi
 moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
 moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
+moodle_update_job_php_fpm_config_process_control_timeout: "{{ moodle_php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
-
-# moodle routine
-moodle_routine: "{{ moodle_appname }}-routine"
-moodle_routine_spec: |
-  k8s_status_api_version: '{{ cr_api_version }}'
-  k8s_status_kind: '{{ cr_kind }}'
-  k8s_status_name: '{{ meta_name }}'
-  k8s_status_namespace: '{{ meta_namespace }}'
-  {% if notify_status is defined and notify_status %}
-  notify_status:
-    {{ notify_status | to_nice_yaml | indent(2) }}
-  {% endif %}
-  pods_ready_group: '{{ pods_ready_group }}'
-  moodle_container_group: '{{ moodle_container_group }}'
-  moodle_secret_config: '{{ moodle_secret_config }}'
-  moodle_config_autosync: {{ moodle_config_autosync }}
-  moodle_app: '{{ moodle_app }}'
-  moodle_status_script: '{{ moodle_status_script }}'
-  moodle_status_usage: {{ moodle_status_usage }}
-  {% if moodle_status_checks is defined and moodle_status_checks %}
-  moodle_status_checks: '{{ moodle_status_checks }}'
-  {% endif %}
-  moodle_status_version: false
-  {% if moodle_redis_muc_store | bool and moodle_redis_muc_store_routine | bool %}
-  moodle_redis_host: '{{ moodle_redis_host }}'
-  moodle_redis_secret_auth_secret: '{{ moodle_redis_secret_auth_secret }}'
-  moodle_redis_secret_auth_key: '{{ moodle_redis_secret_auth_key }}'
-  {%    if moodle_redis_secret_auth_secret | string == 'False' %}
-  moodle_redis_password: '{{ moodle_redis_password }}'
-  {%    endif %}
-  {%    if moodle_redis_muc_store_routine_script != moodle_redis_muc_store_script %}
-  moodle_redis_muc_store_routine_script: '{{ moodle_redis_muc_store_routine_script }}'
-  {%    else %}
-  moodle_redis_muc_store: {{ moodle_redis_muc_store }}
-  moodle_redis_muc_store_routine: {{ moodle_redis_muc_store_routine }}
-  moodle_redis_muc_store_overwrite: true
-  moodle_redis_muc_store_reset: {{ moodle_redis_muc_store_reset }}
-  moodle_redis_muc_store_plugin: '{{ moodle_redis_muc_store_plugin }}'
-  moodle_redis_muc_store_name: '{{ moodle_redis_muc_store_name }}'
-  moodle_redis_muc_store_script_extra_config: '{{ moodle_redis_muc_store_script_extra_config }}'
-  {%    endif %}
-  {% endif %}
-
-# moodle nginx
-moodle_nginx: "{{ moodle_appname }}-nginx"
-moodle_nginx_spec: |
-  moodle_image: "{{ moodle_image }}"
-  moodle_appname: "{{ moodle_appname }}"
-  moodle_nginx_appname: "{{ moodle_nginx }}"
-  moodle_host: "{{ moodle_host }}"
-  moodle_protocol: "{{ moodle_protocol }}"
-  moodle_service: "{{ moodle_service }}"
-  moodle_data: "{{ moodle_data }}"
-  moodle_pvc_moodledata: "{{ moodle_pvc_moodledata }}"
-  {% if moodle_ingress_only | bool %}
-  moodle_ingress_only: true
-  {% endif %}
-  {% if moodle_nginx_extra_config != '' %}
-  moodle_nginx_extra_config: |
-    {{ moodle_nginx_extra_config }}
-  {% endif %}
-moodle_ingress_only: false
-moodle_nginx_extra_config: ''
 
 # moodle status
 moodle_status_script: "{{ moodle_scripts_path }}/status.php"
@@ -208,7 +147,7 @@ moodle_cronjob: "{{ moodle_appname }}-cronjob"
 moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
 moodle_cronjob_failed_limit: 1
-moodle_cronjob_suspend: "{{ not cr_status_properties.uptodate | default('True') | bool }}"
+moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
 moodle_cronjob_resource_requests: true
@@ -217,6 +156,7 @@ moodle_cronjob_resource_requests_memory: 128Mi
 moodle_cronjob_resource_limits: false
 moodle_cronjob_resource_limits_cpu: 1
 moodle_cronjob_resource_limits_memory: 1Gi
+moodle_cronjob_php_fpm_config_process_control_timeout: "{{ moodle_php_fpm_config_process_control_timeout }}"
 moodle_cronjob_tolerations: false
 
 # moodle pvc
