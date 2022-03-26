@@ -19,3 +19,15 @@ moodle_cronjob_spec_template: cronjob/moodle-spec.yaml.j2
 
 # common labels
 meta_app_created_by: m4e-operator
+
+# status
+## moodle status version
+moodle_status_version: "{{ (status_moodle_task.stdout | default({}) | from_json ).version | default([]) | first }}"
+## whether moodle is uptodate
+moodle_status_uptodate: "{{ cr_status_properties.uptodate | default('True') | bool }}"
+## whether moodle is created
+moodle_status_created: "{{ cr_status_properties.created | default('False') | bool }}"
+moodle_status_script: "{{ moodle_scripts_path }}/status.php"
+moodle_status_script_version: true
+moodle_status_script_usage: true
+moodle_status_script_checks: critical,error

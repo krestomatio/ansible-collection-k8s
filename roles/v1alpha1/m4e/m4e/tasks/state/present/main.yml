@@ -4,14 +4,14 @@
       import_tasks: "assertions.yml"
 
     - name: handle creating
-      when: not (cr_status_properties.created | default('False') | bool)
+      when: moodle_status_not_created_condition_needed
       import_tasks: condition/created/not-created.yml
 
     - name: handle moodle
       import_tasks: "{{ role_path }}/tasks/moodle.yml"
 
     - name: end play without successful status when not up to date
-      when: not cr_status_properties.uptodate | default('True') | bool
+      when: not moodle_status_uptodate
       meta: end_play
 
     - name: include successful status

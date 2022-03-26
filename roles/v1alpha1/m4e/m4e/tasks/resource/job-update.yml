@@ -1,6 +1,7 @@
 - name: moodle update
   vars:
     moodle_component: "job"
+  when: moodle_update_job_needed
   block:
     - name: set moodle update job spec
       when: moodle_update_job_spec is not defined

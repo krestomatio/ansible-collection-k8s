@@ -1,11 +1,3 @@
-- name: refresh inventory fact
-  when: k8s_moodle_deploy is defined and k8s_moodle_deploy is changed
-  set_fact:
-    inventory_refresh_task: refresh
-
-- name: refresh dynamic inventory
-  include_tasks: "{{ common_path }}/inventory/{{ inventory_refresh_task }}.yml"
-
 - name: get moodle status
   when:
     - moodle_container_group in groups
@@ -16,26 +8,11 @@
   run_once: true
   register: status_moodle_task
   command: "{{ moodle_status_script }} -l {{ '-v' if
-    moodle_status_version else '' }} {{ '-u' if
-    moodle_status_usage else '' }}{% if moodle_status_checks is defined and
-    moodle_status_checks %} -c='{{ moodle_status_checks }}'{% endif %}"
+    moodle_status_script_version else '' }} {{ '-u' if
+    moodle_status_script_usage else '' }}{% if moodle_status_script_checks is defined and
+    moodle_status_script_checks %} -c='{{ moodle_status_script_checks }}'{% endif %}"
 
-- name: set moodle status
-  when: status_moodle_task.stdout | default(false, true)
+- name: set moodle uptodate condition
   vars:
-    k8s_status_properties: "{{ status_moodle_task.stdout | from_json }}"
     k8s_status_replace_lists: true
-  block:
-    - name: set version update fact
-      when: k8s_status_properties.version | default([]) |
-        selectattr('update', 'equalto', 'pending') | first | default(false, true)
-      set_fact:
-        status_version_update: "{{ k8s_status_properties.version |
-          selectattr('update', 'equalto', 'pending') | first }}"
-
-    - name: set moodle status
-      when: status_moodle_task.stdout | default(false,true)
-      include_tasks: "condition/uptodate//{{ 'uptodate'
-        if status_version_update is not defined else 'downgraded'
-        if (status_version_update.downgrade_error | default('False') | bool)
-        else 'pending' }}.yml"
+  include_tasks: "{{ moodle_status_uptodate_condition }}"

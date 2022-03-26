@@ -5,8 +5,8 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
-    - when: not (cr_status_properties.created | default('False') | bool)
-      import_tasks: resource/nginx.yml
+    - import_tasks: resource/nginx.yml
+      when: not (cr_status_properties.created | default('False') | bool)
       vars:
         nginx_ingress_only: true
 
@@ -18,10 +18,12 @@
 
     - import_tasks: resource/cm-scripts.yml
 
-    - include_tasks: resource/job-new-instance.yml
+    - import_tasks: resource/job-new-instance.yml
       when: moodle_new_instance_job_needed
 
     - import_tasks: resource/php-fpm.yml
+
+    - meta: refresh_inventory
 
     - import_tasks: routine/status.yml
 

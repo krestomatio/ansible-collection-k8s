@@ -53,21 +53,14 @@ if($options['url']){
 
 if($options['version']){
     # save current version properties in array
-    $version_current = array(
-        "version" => "$CFG->version",
-        "release" => "$CFG->release",
-        "allversionshash" => "$CFG->allversionshash",
-        "branch" => "$CFG->branch"
-    );
-    $json['version'][] = $version_current;
+    $uptodate = "True";
+    $version_update_minor = "False";
+    $version_update_major = "False";
+    $version_update_downgrade_error = "False";
+    $hash = $CFG->allversionshash;
 
     # Whether a version update is pending
     require("$CFG->dirroot/version.php");
-
-    $uptodate = "True";
-    $version_update_type = "minor";
-    $version_update_downgrade_error = "False";
-    $hash = $CFG->allversionshash;
 
     # check if older version,
     # then check if empty values, and
@@ -82,26 +75,25 @@ if($options['version']){
         if($hash !== $CFG->allversionshash){
             $uptodate = "False";
             if($branch !== $CFG->branch){
-                $version_update_type = "major";
+                $version_update_major = "True";
+            } else {
+                $version_update_minor = "True";
             }
         }
     }
 
     $json['uptodate'] = $uptodate;
-    $version_update = array();
-    if ($uptodate !== "True") {
-        $json['ready'] = "False";
-        $version_update = array(
-            "version" => "$version",
-            "release" => "$release",
-            "allversionshash" => "$hash",
-            "branch" => "$branch",
-            "update" => "pending",
-            "type" => "$version_update_type",
-            "downgrade_error" => "$version_update_downgrade_error"
-        );
-        $json['version'][] = $version_update;
-    }
+    $json['ready'] = $uptodate;
+    $json['version'][] = array(
+        "version" => "$CFG->version",
+        "release" => "$CFG->release",
+        "allversionshash" => "$CFG->allversionshash",
+        "branch" => "$CFG->branch",
+        "pending" => ($uptodate !== "True") ? "True" : "False";,
+        "minor" => "$version_update_minor",
+        "major" => "$version_update_major",
+        "downgrade_error" => "$version_update_downgrade_error"
+    );
 }
 
 if($options['usage']){

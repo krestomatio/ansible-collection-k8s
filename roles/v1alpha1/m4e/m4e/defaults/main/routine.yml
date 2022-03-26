@@ -1,0 +1,6 @@
+# reconcile
+routine_reconcile_trigger_cr_version: v1alpha1
+routine_reconcile_trigger_cr_group: m4e.krestomat.io
+routine_reconcile_trigger_cr_kind: M4e
+routine_reconcile_trigger_cr_name: "{{ meta_name }}"
+routine_reconcile_trigger_cr_namespace: "{{ meta_namespace }}"
