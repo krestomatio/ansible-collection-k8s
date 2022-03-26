@@ -1,0 +1,7 @@
+- name: routine to enforce redis muc store config
+  when: routine_redis_muc_store | bool
+  run_once: true
+  register: routine_redis_muc_store_task
+  command: "{{ routine_redis_muc_store_script if
+    routine_redis_muc_store_script is search(' -o ') else
+    routine_redis_muc_store_script + ' -o ' }}"

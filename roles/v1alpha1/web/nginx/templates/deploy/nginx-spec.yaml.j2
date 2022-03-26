@@ -13,7 +13,16 @@ template:
       image: '{{ nginx_image }}'
 {% if nginx_envvars is defined and nginx_envvars %}
       env:
-      {{ nginx_envvars | to_nice_yaml(indent=2) | indent(6) }}
+{%   for nginx_envvar in nginx_envvars %}
+      - name: {{ nginx_envvar.name }}
+{%     if nginx_envvar.value is defined %}
+        value: {{ nginx_envvar.value }}
+{%     endif %}
+{%     if nginx_envvar.source is defined %}
+        valueFrom:
+          {{ nginx_envvar.source | indent(10) }}
+{%     endif %}
+{%   endfor %}
 {% endif %}
       ports:
       - containerPort: {{ nginx_port }}
@@ -125,7 +134,7 @@ template:
         runAsUser: {{ nginx_run_as_user }}
 {%   endif %}
 {%   if nginx_security_context is defined %}
-        {{ nginx_security_context | to_nice_yaml(indent=2) | indent(8) }}
+        {{ nginx_security_context | indent(8) }}
 {%   endif %}
 {% endif %}
       volumeMounts:
@@ -136,6 +145,12 @@ template:
 {%   for volume in nginx_volumes %}
       - name: '{{ volume.name }}'
         mountPath: '{{ volume.mount_path }}'
+{%     if volume.sub_path is defined and volume.sub_path %}
+        subPath: {{ volume.sub_path }}
+{%     endif %}
+{%     if volume.sub_path_expr is defined and  volume.sub_path_expr %}
+        subPathExpr: {{ volume.sub_path_expr }}
+{%     endif %}
 {%     if volume.read_only is defined and volume.read_only %}
         readOnly: true
 {%     endif %}
@@ -153,7 +168,7 @@ template:
 {%   for volume in nginx_volumes %}
     - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
-      {{ volume.source | to_nice_yaml(indent=2) | indent(6) }}
+      {{ volume.source | indent(6) }}
 {%     endif %}
 {%   endfor %}
 {% endif %}

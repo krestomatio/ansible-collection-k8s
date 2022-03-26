@@ -1,7 +1,28 @@
 # THIS FILES IS SHARED BETWEEN M4E.M4E AND NGINX.M4E CRD
 
+# moodle nginx envvars
+moodle_nginx_envvar_php_fpm_host:
+  name: PHP_FPM_HOST
+  value: "{{ php_fpm_appname }}-service"
+moodle_nginx_envvar_moodle_check_host:
+  name: MOODLE_CHECK_HOST
+  value: "{{ moodle_host }}"
+moodle_nginx_envvars_base: "{{ [moodle_nginx_envvar_php_fpm_host] +
+  [moodle_nginx_envvar_moodle_check_host] }}"
+moodle_nginx_envvars_extra: []
+
+# moodle nginx volumes
+moodle_nginx_volume_moodledata:
+  name: moodledata
+  mount_path: "{{ moodle_data }}"
+  source: |-
+    persistentVolumeClaim:
+      claimName: "{{ moodle_pvc_moodledata }}"
+moodle_nginx_volumes_base: "{{ [moodle_nginx_volume_moodledata] }}"
+moodle_nginx_volumes_extra: []
+
 # nginx
-nginx_appname: "{{ moodle_nginx_appname }}"
+nginx_appname: "{{ meta_name }}-nginx"
 
 # nginx deploy
 # nginx_size: 1
@@ -16,14 +37,5 @@ nginx_ingress_host: "{{ moodle_host }}"
 nginx_ingress_protocol: "{{ moodle_protocol }}"
 
 # deploy
-nginx_envvars:
-  - name: MOODLE_CHECK_HOST
-    value: '{{ moodle_host }}'
-  - name: PHP_FPM_HOST
-    value: '{{ moodle_service }}'
-nginx_volumes:
-  - name: moodledata
-    mount_path: '{{ moodle_data }}'
-    source:
-      persistentVolumeClaim:
-        claimName: '{{ moodle_pvc_moodledata }}'
+nginx_envvars: "{{ moodle_nginx_envvars_base + moodle_nginx_envvars_extra }}"
+nginx_volumes: "{{ moodle_nginx_volumes_base + moodle_nginx_volumes_extra }}"

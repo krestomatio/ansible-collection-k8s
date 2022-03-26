@@ -12,9 +12,3 @@ moodle_update_job_needed:
   "{{ true if (not moodle_status_uptodate and
   ((moodle_update_minor and moodle_status_version.minor | default('False') | bool) or
   (moodle_update_major and moodle_status_version.major | default('False') | bool))) else  false }}"
-
-# moodle status uptodate condition
-moodle_status_uptodate_condition: "condition/uptodate//{{ 'uptodate'
-  if moodle_status_version | default(false, true) else ('downgraded'
-  if (moodle_status_version.downgrade_error | default('False') | bool)
-  else 'pending') }}.yml"

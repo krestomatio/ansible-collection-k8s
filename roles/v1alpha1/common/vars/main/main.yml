@@ -4,9 +4,12 @@ cr_version: v1alpha1
 cr_api_version: "{{ cr_group }}/{{ cr_version }}"
 
 ## CR object and status
-cr_object: "{{ lookup('vars', ('_' + cr_group + '_' + cr_kind) | lower |
-  regex_replace('(\\.|\\-)','_'), default='') }}"
-cr_uid: "{{ cr_object.metadata.uid | default('') }}"
+cr_object: "{{ lookup('vars', cr_object_var_name, default='')
+  if cr_object_var_name | default(false, true) else '' }}"
+cr_object_var_name:
+  "{{ ('_' + cr_group + '_' + cr_kind) | lower | regex_replace('(\\.|\\-)','_')
+  if (cr_group | default(false, true) and cr_kind | default(false, true)) else '' }}"
+cr_uid: "{{ cr_object.metadata.uid | default('', true) }}"
 cr_status: "{{ k8s_status_task.result.status | default(cr_object.status,true) | default({},true) }}"
 cr_status_ready: "{{ cr_status_properties.ready | default(false) | bool }}"
 cr_status_conditions: "{{ cr_status.conditions | default([]) }}"
@@ -48,17 +51,10 @@ ingress_template: "{{ common_path }}/ingress.yaml.j2"
 sc_template: "{{ common_path }}/sc.yaml.j2"
 routine_template: "{{ common_path }}/routine.yaml.j2"
 
-# images
-image_pull_secret: false
-
 # inventory
-inventory_include: false
 inventory_refresh_task: not-refresh
 inventory_uuid: '{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}'
 annotation_inventory_hostvars:
   ansible_remote_tmp: /var/tmp/.ansible
   ansible_python_interpreter: /usr/libexec/platform-python
   ansible_ssh_pipelining: true
-
-# status
-notify_status_jwt_secret_env_name: JWT_TOKEN_SECRET

@@ -6,7 +6,7 @@
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
     - import_tasks: resource/nginx.yml
-      when: not (cr_status_properties.created | default('False') | bool)
+      when: not moodle_status_created
       vars:
         nginx_ingress_only: true
 

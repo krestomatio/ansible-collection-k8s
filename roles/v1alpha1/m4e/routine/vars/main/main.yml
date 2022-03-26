@@ -9,3 +9,14 @@ meta_name_max_length: 56
 
 # common labels
 meta_app_created_by: m4e-operator
+
+# status
+notify_status_force: "{{ routine_notify_status_force }}"
+notify_status: "{{ routine_notify_status }}"
+
+# reconcile-trigger
+reconcile_trigger_cr_version: "{{ routine_reconcile_trigger_cr_version }}"
+reconcile_trigger_cr_group: "{{ routine_reconcile_trigger_cr_group }}"
+reconcile_trigger_cr_kind: "{{ routine_reconcile_trigger_cr_kind }}"
+reconcile_trigger_cr_name: "{{ routine_reconcile_trigger_cr_name }}"
+reconcile_trigger_cr_namespace: "{{ routine_reconcile_trigger_cr_namespace }}"

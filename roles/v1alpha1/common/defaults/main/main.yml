@@ -8,4 +8,5 @@ image_pull_secret: false
 inventory_include: false
 
 # status
-notify_status_jwt_secret_env_name: JWT_TOKEN_SECRET
+notify_status: false
+notify_status_force: false

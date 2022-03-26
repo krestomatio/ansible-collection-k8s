@@ -5,7 +5,7 @@
     k8s_kind: Nginx
     k8s_state: "{{ moodle_nginx_state | default(moodle_state) }}"
     k8s_wait: "{{ false if moodle_nginx_state | default(moodle_state) == 'absent'
-      else moodle_nginx_wait | default(true) }}"
+      else moodle_nginx_wait | default(not nginx_ingress_only | default(false)) }}"
     k8s_wait_condition:
       type: "Ready"
       status: "True"

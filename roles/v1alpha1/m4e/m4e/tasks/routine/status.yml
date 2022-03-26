@@ -1,18 +1,23 @@
+# THIS FILES IS SHARED BETWEEN M4E.M4E AND ROUTINE.M4E CRD
+
 - name: get moodle status
   when:
-    - moodle_container_group in groups
-    - groups[moodle_container_group] | length > 0
-    - groups[moodle_container_group][0] in groups[pods_ready_group]
-  delegate_to: "{{ groups[moodle_container_group][0] }}"
+    - routine_moodle_container_group in groups
+    - groups[routine_moodle_container_group] | length > 0
+    - groups[routine_moodle_container_group][0] in groups[routine_pods_ready_group]
+  delegate_to: "{{ groups[routine_moodle_container_group][0] }}"
   changed_when: false
   run_once: true
-  register: status_moodle_task
-  command: "{{ moodle_status_script }} -l {{ '-v' if
-    moodle_status_script_version else '' }} {{ '-u' if
-    moodle_status_script_usage else '' }}{% if moodle_status_script_checks is defined and
-    moodle_status_script_checks %} -c='{{ moodle_status_script_checks }}'{% endif %}"
+  register: routine_status_moodle_task
+  command: "{{ routine_moodle_status_script }}"
 
-- name: set moodle uptodate condition
+- name: set moodle properties status and uptodate condition
+  when: k8s_status_properties | default(false, true)
   vars:
+    k8s_status_properties: "{{ routine_status_moodle_task.stdout | default('{}',true) | from_json }}"
     k8s_status_replace_lists: true
-  include_tasks: "{{ moodle_status_uptodate_condition }}"
+    routine_status_moodle_version_condition:
+      "{{ 'uptodate' if (k8s_status_properties.uptodate | default('True') | bool) else
+        ('downgraded' if (k8s_status_properties.version.downgrade_error |
+        default('False') | bool) else 'pending') }}"
+  include_tasks: "condition/uptodate//{{ routine_status_moodle_version_condition }}.yml"

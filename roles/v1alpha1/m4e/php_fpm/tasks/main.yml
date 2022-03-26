@@ -1,0 +1,3 @@
+- name: handle php-fpm
+  import_role:
+    name: krestomatio.k8s.v1alpha1.web.php_fpm

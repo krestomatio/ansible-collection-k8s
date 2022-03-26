@@ -17,7 +17,16 @@ template:
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
         value: '{{ php_fpm_config_process_control_timeout }}'
 {% if php_fpm_envvars is defined and php_fpm_envvars %}
-      {{ php_fpm_envvars | to_nice_yaml(indent=2) | indent(6) }}
+{%   for php_fpm_envvar in php_fpm_envvars %}
+      - name: {{ php_fpm_envvar.name }}
+{%     if php_fpm_envvar.value is defined %}
+        value: {{ php_fpm_envvar.value }}
+{%     endif %}
+{%     if php_fpm_envvar.source is defined %}
+        valueFrom:
+          {{ php_fpm_envvar.source | indent(10) }}
+{%     endif %}
+{%   endfor %}
 {% endif %}
       ports:
       - containerPort: {{ php_fpm_port }}
@@ -129,7 +138,7 @@ template:
         runAsUser: {{ php_fpm_run_as_user }}
 {%   endif %}
 {%   if php_fpm_security_context is defined %}
-        {{ php_fpm_security_context | to_nice_yaml(indent=2) | indent(8) }}
+        {{ php_fpm_security_context | indent(8) }}
 {%   endif %}
 {% endif %}
       volumeMounts:
@@ -143,11 +152,11 @@ template:
 {%   for volume in php_fpm_volumes %}
       - name: '{{ volume.name }}'
         mountPath: '{{ volume.mount_path }}'
-{%     if volume.subPath is defined and volume.read_only %}
-        subPath: {{ volume.subPath }}
+{%     if volume.sub_path is defined and volume.sub_path %}
+        subPath: {{ volume.sub_path }}
 {%     endif %}
-{%     if volume.subPathExpr is defined and volume.read_only %}
-        subPathExpr: {{ volume.subPathExpr }}
+{%     if volume.sub_path_expr is defined and  volume.sub_path_expr %}
+        subPathExpr: {{ volume.sub_path_expr }}
 {%     endif %}
 {%     if volume.read_only is defined and volume.read_only %}
         readOnly: true
@@ -168,7 +177,7 @@ template:
 {%   for volume in php_fpm_volumes %}
     - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
-      {{ volume.source | to_nice_yaml(indent=2) | indent(6) }}
+      {{ volume.source | indent(6) }}
 {%     endif %}
 {%   endfor %}
 {% endif %}

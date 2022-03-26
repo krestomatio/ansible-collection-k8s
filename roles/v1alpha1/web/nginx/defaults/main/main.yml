@@ -1,0 +1,10 @@
+---
+# defaults file for m4e
+cr_group: nginx.krestomat.io
+cr_kind: Nginx
+
+# custom resource state: present, absent
+cr_state: present
+
+# common labels
+meta_app_created_by: nginx-operator

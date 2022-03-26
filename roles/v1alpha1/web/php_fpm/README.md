@@ -32,7 +32,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "krestomatio.k8s.v1alpha1.web.php-fpm"
+        name: "krestomatio.k8s.v1alpha1.web.php_fpm"
 ```
 License
 -------

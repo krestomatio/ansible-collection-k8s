@@ -83,7 +83,7 @@ moodle_new_instance_job_resource_requests_memory: 256Mi
 moodle_new_instance_job_resource_limits: false
 moodle_new_instance_job_resource_limits_cpu: 1
 moodle_new_instance_job_resource_limits_memory: 1Gi
-moodle_new_instance_job_php_fpm_config_process_control_timeout: "{{ moodle_php_fpm_config_process_control_timeout }}"
+moodle_new_instance_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_new_instance_job_command_snippet: |
   echo "Instantiating moodle..."
   /usr/libexec/check-container-php -d
@@ -133,7 +133,7 @@ moodle_update_job_resource_limits_cpu: 1
 moodle_update_job_resource_limits_memory: 1Gi
 moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
 moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
-moodle_update_job_php_fpm_config_process_control_timeout: "{{ moodle_php_fpm_config_process_control_timeout }}"
+moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
 
 # moodle cronjob
@@ -150,7 +150,7 @@ moodle_cronjob_resource_requests_memory: 128Mi
 moodle_cronjob_resource_limits: false
 moodle_cronjob_resource_limits_cpu: 1
 moodle_cronjob_resource_limits_memory: 1Gi
-moodle_cronjob_php_fpm_config_process_control_timeout: "{{ moodle_php_fpm_config_process_control_timeout }}"
+moodle_cronjob_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_cronjob_tolerations: false
 
 # moodle pvc
@@ -185,8 +185,6 @@ moodle_cm_scripts_data: |
     {{ lookup('template', moodle_script_status_template) | indent(2) }}
 
 # database
-## deploy own database for moodle using postgres
-moodle_database_deploy: true
 moodle_postgres_meta_name: postgres-sample
 moodle_database_service: "{{ moodle_postgres_meta_name + '-pgbouncer-service' }}"
 moodle_database_secret: "{{ moodle_postgres_meta_name + '-postgres-secret' }}"
@@ -195,24 +193,17 @@ moodle_database_secret_dbuser_key: database_user
 moodle_database_secret_dbpass_key: database_password
 
 # redis
-moodle_redis_host: "127.0.0.1"
+moodle_redis_meta_name: keydb-sample
+## redis host
+moodle_redis_service: "{{ moodle_redis_meta_name + '-service' }}"
+## secret name to get auth from
+moodle_redis_secret: "{{ moodle_postgres_meta_name + '-secret' }}"
+moodle_redis_secret_auth_key: keydb_password
+moodle_redis_host: "{{ moodle_redis_meta_name }}"
 ## whether redis will be used as session store
 moodle_redis_session_store: false
 ## whether redis will be used as muc store
 moodle_redis_muc_store: false
-## whether redis muc store config will be enforce in periodic routine
-moodle_redis_muc_store_routine: false
-## secret name to get auth from
-moodle_redis_secret_auth_secret: false
-moodle_redis_secret_auth_key: redis_password
-moodle_redis_password:
-  "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-      resource_name=moodle_redis_secret_auth_secret).data
-      [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode
-    if
-      moodle_redis_secret_auth_secret | string != 'False' and (moodle_config_session_redis | bool or moodle_redis_muc_store | bool)
-    else
-      false }}"
 ## muc store
 moodle_redis_muc_store_script: >-
   {{ moodle_scripts_path }}/muc-store.php
@@ -225,10 +216,9 @@ moodle_redis_muc_store_script: >-
   -p='{{ moodle_redis_muc_store_plugin }}'
   -n='{{ moodle_redis_muc_store_name }}'
   -s='{{ moodle_redis_host }}'
-  -a='{{ moodle_redis_password }}'
+  -a="${REDIS_PASSWORD}"
   -m='application,session'
   -e='{{ moodle_redis_muc_store_script_extra_config }}'
-moodle_redis_muc_store_routine_script: "{{ moodle_redis_muc_store_script }}"
 moodle_redis_muc_store_overwrite: false
 moodle_redis_muc_store_reset: false
 moodle_redis_muc_store_plugin: redis
@@ -275,7 +265,9 @@ moodle_config_session_redis: "{{ moodle_redis_session_store }}"
 moodle_config_session_redis_host: '{{ moodle_redis_host }}'
 # moodle_config_session_redis_port: 6379
 # moodle_config_session_redis_database: 0
-moodle_config_session_redis_auth: "{{ moodle_redis_password | default('') }}"
+moodle_config_session_redis_auth: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=moodle_redis_secret).data
+    [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode }}"
 # moodle_config_session_redis_prefix: ''
 moodle_config_session_redis_acquire_lock_timeout: 120
 moodle_config_session_redis_lock_expire: 7200

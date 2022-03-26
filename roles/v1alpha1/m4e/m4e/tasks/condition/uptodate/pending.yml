@@ -1,11 +1,12 @@
 - name: set update pending status
   include_tasks: "{{ common_path }}/k8s/status.yml"
   vars:
+    _condition_uptodate_pending_version_type: "{{ 'Major' if (moodle_status_version.major | default('False') | bool) else 'Minor' }}"
     k8s_status_conditions:
       - type: "UpToDate"
         status: "False"
-        reason: "{{ moodle_status_version.type | default('minor') | capitalize }}UpdatePending"
-        message: "A {{ moodle_status_version.type | default('minor') }} update of Moodle is pending"
+        reason: "{{ _condition_uptodate_pending_version_type }}UpdatePending"
+        message: "A {{ _pending_version_type }} update of Moodle is pending"
       - type: "Ready"
         status: "False"
         reason: "UpdatePending"

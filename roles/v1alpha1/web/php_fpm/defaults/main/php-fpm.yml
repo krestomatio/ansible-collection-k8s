@@ -49,7 +49,7 @@ php_fpm_connects_to: false
 # php_fpm_volumes:
 #   - name: html
 #     mount_path: /var/www/html
-#     source:
+#     source: |-
 #       persistentVolumeClaim:
 #         claimName: metadata-pvc
 

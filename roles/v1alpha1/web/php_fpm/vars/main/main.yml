@@ -3,4 +3,4 @@
 meta_name_max_length: 26
 
 # templates
-nginx_deploy_spec_template: deploy/nginx-spec.yaml.j2
+php_fpm_deploy_spec_template: deploy/php-fpm-spec.yaml.j2

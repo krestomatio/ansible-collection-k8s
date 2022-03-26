@@ -11,8 +11,6 @@
 
     - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
 
-    - import_tasks: "{{ role_path }}/tasks/resource/deploy.yml"
-
     - import_tasks: "{{ role_path }}/tasks/resource/cm-scripts.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/secret-admin.yml"
