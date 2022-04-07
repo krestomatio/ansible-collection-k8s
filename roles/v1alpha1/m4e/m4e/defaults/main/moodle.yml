@@ -4,36 +4,12 @@ moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
 
 # moodle deploy
-moodle_size: 1
 moodle_image: quay.io/krestomatio/moodle_web@sha256:0a5ad13a14dbc899780e4da96bc1606accfffe2bdf642c3216091c4e928b46e8
 moodle_image_pull_secret: "{{ image_pull_secret }}"
-moodle_deploy: "{{ moodle_appname }}-deploy"
-moodle_container_args: "['php-fpm']"
 moodle_container: "moodle-php-fpm"
 moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
-moodle_readiness_probe: true
 moodle_readiness_command: "['/usr/libexec/check-container-php', '-t', '-r']"
-moodle_readiness_initial: 5
-moodle_readiness_period: 30
-moodle_readiness_timeout: 3
-moodle_readiness_success: 1
-moodle_readiness_failure: 6
-moodle_liveness_probe: true
 moodle_liveness_command: "['/usr/libexec/check-container-php', '-t', '-l']"
-moodle_liveness_initial: 5
-moodle_liveness_period: 10
-moodle_liveness_timeout: 3
-moodle_liveness_success: 1
-moodle_liveness_failure: 3
-moodle_resource_requests: true
-moodle_resource_requests_cpu: 75m
-moodle_resource_requests_memory: 128Mi
-moodle_resource_limits: false
-moodle_resource_limits_cpu: 1
-moodle_resource_limits_memory: 1Gi
-moodle_term_grace_period: 30
-moodle_tolerations: false
-moodle_connects_to: "{{ moodle_postgres_meta_name }}"
 
 # moodle service
 moodle_service: "{{ moodle_appname }}-service"
@@ -141,9 +117,12 @@ moodle_cronjob: "{{ moodle_appname }}-cronjob"
 moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
 moodle_cronjob_failed_limit: 1
+moodle_cronjob_parallelism: 1
+moodle_cronjob_backoff_limit: 2
 moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
+moodle_cronjob_readiness_command: "{{ moodle_readiness_command }}"
 moodle_cronjob_resource_requests: true
 moodle_cronjob_resource_requests_cpu: 50m
 moodle_cronjob_resource_requests_memory: 128Mi

@@ -5,7 +5,11 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
+    - import_tasks: "{{ role_path }}/tasks/resource/routine.yml"
+
     - import_tasks: "{{ role_path }}/tasks/resource/nginx.yml"
+
+    - import_tasks: "{{ role_path }}/tasks/resource/php-fpm.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/service.yml"
 
@@ -25,5 +29,3 @@
         cleanup_kind_list:
           - Job
           - Pod
-
-    # - import_tasks: "{{ role_path }}/tasks/resource/routine.yml"

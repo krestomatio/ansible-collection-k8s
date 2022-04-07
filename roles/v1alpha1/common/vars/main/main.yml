@@ -25,9 +25,6 @@ pods_group: "{{ cr_kind }}__{{ meta_namespace.replace('-', '_') }}__{{ meta_name
 pods_ready_group: "{{ pods_group }}_ready"
 meta_name_max_length: 63
 
-# general k8s state for resources: present or absent
-state: present
-
 # common path
 common_path: common
 
@@ -53,10 +50,5 @@ routine_template: "{{ common_path }}/routine.yaml.j2"
 
 # inventory
 inventory_refresh_task: not-refresh
-inventory_uuid: '{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}'
-inventory_annotation_hostvars:
-  ansible_remote_tmp: /var/tmp/.ansible
-  ansible_python_interpreter: /usr/libexec/platform-python
-  ansible_ssh_pipelining: true
 inventory_annotation_extra_cr_cwd: |
   krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'

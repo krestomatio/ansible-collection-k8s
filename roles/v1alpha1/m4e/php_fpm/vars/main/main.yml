@@ -8,7 +8,7 @@ cr_state: present
 meta_name_max_length: 26
 
 # inventory
-inventory_include: true
+inventory_uuid: "{{ php_fpm_inventory_uuid }}"
 
 # common labels
 meta_app_created_by: m4e-operator

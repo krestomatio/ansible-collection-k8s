@@ -23,12 +23,19 @@ moodle_nginx_volumes_extra: []
 
 # nginx
 nginx_appname: "{{ meta_name }}-nginx"
+nginx_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}"
 
 # nginx deploy
 # nginx_size: 1
 nginx_image: "{{ moodle_image }}"
 nginx_container: "moodle-nginx"
-nginx_connects_to: "{{ moodle_appname }}"
+nginx_startup_probe: "{{ not _moodle_k8s_wait | default(true) }}"
+nginx_startup_path: "/login/index.php"
+nginx_readiness_probe: true
+nginx_readiness_path: "/login/index.php"
+nginx_liveness_probe: true
+nginx_liveness_path: "/login/index.php"
+nginx_connects_to: "{{ php_fpm_appname | default(moodle_appname + '-php-fpm') }}"
 ## nginx extra conf
 # nginx_extra_config: ''
 

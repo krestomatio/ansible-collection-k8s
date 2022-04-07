@@ -8,6 +8,10 @@ template:
   spec:
     terminationGracePeriodSeconds: {{ php_fpm_term_grace_period }}
     automountServiceAccountToken: false
+{% if php_fpm_init_containers is defined and php_fpm_init_containers %}
+    initContainers:
+    {{ php_fpm_init_containers | indent(4) }}
+{% endif %}
     containers:
     - name: '{{ php_fpm_container }}'
       image: '{{ php_fpm_image }}'

@@ -1,11 +1,15 @@
 # THIS FILES IS SHARED BETWEEN M4E.M4E AND ROUTINE.M4E CRD
 
 # status
+routine_k8s_status_api_version: '{{ cr_api_version }}'
+routine_k8s_status_kind: '{{ cr_kind }}'
+routine_k8s_status_name: '{{ meta_name }}'
+routine_k8s_status_namespace: '{{ meta_namespace }}'
 routine_moodle_container_group: "{{ moodle_container_group }}"
 routine_pods_ready_group: "{{ pods_ready_group }}"
 routine_moodle_status_script: "{{ moodle_status_script }}"
-routine_notify_status: false
-routine_notify_status_force: false
+routine_status_cr_notify: false
+routine_status_cr_notify_force: false
 
 # reset admin pass
 routine_moodle_new_adminpass_hash: "{{ moodle_new_adminpass_hash }}"

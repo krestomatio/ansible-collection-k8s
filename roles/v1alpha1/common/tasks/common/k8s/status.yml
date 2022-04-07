@@ -14,68 +14,68 @@
     replace_lists: "{{ k8s_status_replace_lists | default(omit,true) }}"
 
 
-- name: notify status
+- name: notify cr status
   when:
     - k8s_status_task.result is defined
-    - k8s_status_task is changed or notify_status_force
-    - _notify_status is defined and _notify_status
+    - k8s_status_task is changed or status_cr_notify_force
+    - _status_cr_notify
   vars:
-    _notify_status: "{{ notify_status }}"
+    _status_cr_notify: "{{ status_cr_notify }}"
   block:
     - name: notify status
       vars:
-        _notify_status_uuid: "{{ _notify_status.uuid | default(cr_uid) }}"
-        _notify_status_jwt_secret_env_name: "{{ _notify_status.jwt_secret_env_name | default('JWT_TOKEN_SECRET') }}"
-        _notify_status_jwt_payload:
+        _status_cr_notify_uuid: "{{ _status_cr_notify.uuid | default(cr_uid) }}"
+        _status_cr_notify_jwt_secret_env_name: "{{ _status_cr_notify.jwt_secret_env_name | default('JWT_TOKEN_SECRET') }}"
+        _status_cr_notify_jwt_payload:
           "{{
-              {'uuid': _notify_status_uuid}
+              {'uuid': _status_cr_notify_uuid}
             if
-              lookup('env',_notify_status_jwt_secret_env_name) and _notify_status_uuid is defined and _notify_status_uuid
+              lookup('env',_status_cr_notify_jwt_secret_env_name) and _status_cr_notify_uuid is defined and _status_cr_notify_uuid
             else
               false }}"
-        _notify_status_header_auth_token:
+        _status_cr_notify_header_auth_token:
           "{{
-              _notify_status_jwt_payload | krestomatio.k8s.jwt_token(_notify_status_jwt_secret_env_name)
+              _status_cr_notify_jwt_payload | krestomatio.k8s.jwt_token(_status_cr_notify_jwt_secret_env_name)
             if
-              _notify_status_jwt_payload is defined and _notify_status_jwt_payload
+              _status_cr_notify_jwt_payload is defined and _status_cr_notify_jwt_payload
             else
-              _notify_status.header_auth_token | default('') }}"
-        _notify_status_header_auth_header:
+              _status_cr_notify.header_auth_token | default('') }}"
+        _status_cr_notify_header_auth_header:
           Authorization:
-            "{{ _notify_status.header_auth_type | default('Bearer') }} {{ _notify_status_header_auth_token }}"
+            "{{ _status_cr_notify.header_auth_type | default('Bearer') }} {{ _status_cr_notify_header_auth_token }}"
       failed_when: false
-      register: notify_status_task
+      register: _status_cr_notify_task
       uri:
         body: "{{ k8s_status_task.result if
-          (_notify_status.object | default('False') | bool)
+          (_status_cr_notify.object | default('False') | bool)
           else k8s_status_task.result.status }}"
-        body_format: "{{ _notify_status.body_format | default('json') }}"
-        client_cert: "{{ _notify_status.client_cert | default(omit) }}"
-        client_key: "{{ _notify_status.client_key | default(omit) }}"
-        force_basic_auth: "{{ _notify_status.force_basic_auth | default(omit) }}"
+        body_format: "{{ _status_cr_notify.body_format | default('json') }}"
+        client_cert: "{{ _status_cr_notify.client_cert | default(omit) }}"
+        client_key: "{{ _status_cr_notify.client_key | default(omit) }}"
+        force_basic_auth: "{{ _status_cr_notify.force_basic_auth | default(omit) }}"
         headers:
           "{{
-              _notify_status.headers | default({}) | combine(_notify_status_header_auth_header)
+              _status_cr_notify.headers | default({}) | combine(_status_cr_notify_header_auth_header)
             if
-              _notify_status_header_auth_token != ''
+              _status_cr_notify_header_auth_token != ''
             else
-              _notify_status.headers | default(omit)
+              _status_cr_notify.headers | default(omit)
           }}"
-        method: "{{ _notify_status.method | default('POST') }}"
-        return_content: "{{ _notify_status.return_content | default(omit) }}"
-        status_code: "{{ _notify_status.status_code | default([200]) }}"
-        timeout: "{{ _notify_status.timeout | default(5) }}"
-        url: "{{ _notify_status.url }}"
-        user: "{{ _notify_status.user | default(omit) }}"
+        method: "{{ _status_cr_notify.method | default('POST') }}"
+        return_content: "{{ _status_cr_notify.return_content | default(omit) }}"
+        status_code: "{{ _status_cr_notify.status_code | default([200]) }}"
+        timeout: "{{ _status_cr_notify.timeout | default(5) }}"
+        url: "{{ _status_cr_notify.url }}"
+        user: "{{ _status_cr_notify.user | default(omit) }}"
         password:
-          "{{ _notify_status.password | default(lookup('env','_notify_status_PASSWORD')) | default(omit, true) }}"
-        validate_certs: "{{ _notify_status.validate_certs | default(omit) }}"
+          "{{ _status_cr_notify.password | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
+        validate_certs: "{{ _status_cr_notify.validate_certs | default(omit) }}"
 
     - name: show notify status error
-      when: notify_status_task.status not in _notify_status.status_code | default([200])
+      when: _status_cr_notify_task.status not in _status_cr_notify.status_code | default([200])
       debug:
         msg: |
-          Could not notify status to endpoint {{ _notify_status.url }}
-          {%  if notify_status_task.msg is defined %}
-          {{ notify_status_task.msg }}
+          Could not notify status to endpoint {{ _status_cr_notify.url }}
+          {%  if _status_cr_notify_task.msg is defined %}
+          {{ _status_cr_notify_task.msg }}
           {% endif %}

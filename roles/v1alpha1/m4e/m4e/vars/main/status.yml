@@ -1,5 +1,5 @@
 # moodle status version
-moodle_status_version: "{{ cr_status_properties.version | default([],true) | first | default([]) }}"
+moodle_status_version: "{{ cr_status_properties.version | default({},true) }}"
 # whether moodle is uptodate
 moodle_status_uptodate: "{{ cr_status_properties.uptodate | default('True') | bool }}"
 # whether moodle is created
@@ -9,7 +9,7 @@ moodle_status_script_version: true
 moodle_status_script_usage: true
 moodle_status_script_checks: critical,error
 moodle_status_script: >-
-  {{ moodle_scripts_path }}status.php -l
+  {{ moodle_scripts_path }}/status.php -l
   {{ '-v' if  moodle_status_script_version else '' }}
   {{ '-u' if  moodle_status_script_usage else '' }}
   {{ '-c=' + moodle_status_script_checks if moodle_status_script_checks is defined and moodle_status_script_checks else '' }}

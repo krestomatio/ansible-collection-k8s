@@ -11,12 +11,9 @@ meta_name_max_length: 56
 meta_app_created_by: m4e-operator
 
 # status
-notify_status_force: "{{ routine_notify_status_force }}"
-notify_status: "{{ routine_notify_status }}"
-
-# reconcile-trigger
-reconcile_trigger_cr_version: "{{ routine_reconcile_trigger_cr_version }}"
-reconcile_trigger_cr_group: "{{ routine_reconcile_trigger_cr_group }}"
-reconcile_trigger_cr_kind: "{{ routine_reconcile_trigger_cr_kind }}"
-reconcile_trigger_cr_name: "{{ routine_reconcile_trigger_cr_name }}"
-reconcile_trigger_cr_namespace: "{{ routine_reconcile_trigger_cr_namespace }}"
+k8s_status_api_version: "{{ routine_k8s_status_api_version }}"
+k8s_status_kind: "{{ routine_k8s_status_kind }}"
+k8s_status_name: "{{ routine_k8s_status_name }}"
+k8s_status_namespace: "{{ routine_k8s_status_namespace }}"
+status_cr_notify_force: "{{ routine_status_cr_notify_force }}"
+status_cr_notify: "{{ routine_status_cr_notify }}"

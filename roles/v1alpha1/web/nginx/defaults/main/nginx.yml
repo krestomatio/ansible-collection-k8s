@@ -13,7 +13,7 @@ nginx_host: "{{ nginx_ingress_host }}"
 nginx_args: "['nginx']"
 nginx_container: "nginx"
 nginx_container_group: "{{ nginx_container.replace('-', '_') }}"
-nginx_startup_probe: true
+nginx_startup_probe: false
 nginx_startup_path: "/login/index.php"
 nginx_startup_host: "{{ nginx_host }}"
 nginx_startup_port: "{{ nginx_port }}"
@@ -21,17 +21,17 @@ nginx_startup_initial: 5
 nginx_startup_period: 30
 nginx_startup_timeout: 3
 nginx_startup_success: 1
-nginx_startup_failure: 6
-nginx_readiness_probe: true
+nginx_startup_failure: 10
+nginx_readiness_probe: false
 nginx_readiness_path: "/login/index.php"
 nginx_readiness_host: "{{ nginx_host }}"
 nginx_readiness_port: "{{ nginx_port }}"
 nginx_readiness_initial: 5
-nginx_readiness_period: 30
+nginx_readiness_period: 10
 nginx_readiness_timeout: 3
 nginx_readiness_success: 1
 nginx_readiness_failure: 6
-nginx_liveness_probe: true
+nginx_liveness_probe: false
 nginx_liveness_path: "/login/index.php"
 nginx_liveness_host: "{{ nginx_host }}"
 nginx_liveness_port: "{{ nginx_port }}"

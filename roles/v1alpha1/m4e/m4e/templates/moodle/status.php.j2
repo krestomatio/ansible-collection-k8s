@@ -52,47 +52,51 @@ if($options['url']){
 }
 
 if($options['version']){
-    # save current version properties in array
-    $uptodate = "True";
-    $version_update_minor = "False";
-    $version_update_major = "False";
-    $version_update_downgrade_error = "False";
-    $hash = $CFG->allversionshash;
-
-    # Whether a version update is pending
+    # Source version to compare with db version later
     require("$CFG->dirroot/version.php");
+
+    # Set update defaults
+    $uptodate = "True";
+    $version_source = $version;
+    $version_source_release = $release;
+    $version_source_branch = $branch;
+    $version_source_type = "Minor";
+    $version_source_downgrade_error = "False";
+    $version_source_allversionshash = $CFG->allversionshash;
+    $version_source_pending = "False";
 
     # check if older version,
     # then check if empty values, and
     # finally check if inconsisten versions hash
-    if ($version < $CFG->version) {
+    if ($version_source < $CFG->version) {
         $uptodate = "False";
-        $version_update_downgrade_error = "True";
+        $version_source_downgrade_error = "True";
     } else if (empty($CFG->version) or empty($CFG->allversionshash)) {
         $uptodate = "False";
     } else {
-        $hash = core_component::get_all_versions_hash();
-        if($hash !== $CFG->allversionshash){
+        $version_source_allversionshash = core_component::get_all_versions_hash();
+        if($version_source_allversionshash !== $CFG->allversionshash){
             $uptodate = "False";
             if($branch !== $CFG->branch){
-                $version_update_major = "True";
-            } else {
-                $version_update_minor = "True";
+                $version_source_type = "Major";
             }
         }
     }
 
     $json['uptodate'] = $uptodate;
-    $json['ready'] = $uptodate;
-    $json['version'][] = array(
-        "version" => "$CFG->version",
-        "release" => "$CFG->release",
-        "allversionshash" => "$CFG->allversionshash",
-        "branch" => "$CFG->branch",
-        "pending" => ($uptodate !== "True") ? "True" : "False";,
-        "minor" => "$version_update_minor",
-        "major" => "$version_update_major",
-        "downgrade_error" => "$version_update_downgrade_error"
+    if ($uptodate !== "True") {
+        $version_source_pending = "True";
+        $json['state'] = "UpdatePending";
+        $json['ready'] = "False";
+    }
+    $json['version'] = array(
+        "allversionshash" => "$version_source_allversionshash",
+        "branch" => "$version_source_branch",
+        "downgrade_error" => "$version_source_downgrade_error",
+        "pending" => "$version_source_pending",
+        "release" => "$version_source_release",
+        "type" => "$version_source_type",
+        "version" => "$version_source"
     );
 }
 

@@ -53,9 +53,9 @@ server_routine_spec: |
   k8s_status_kind: '{{ cr_kind }}'
   k8s_status_name: '{{ meta_name }}'
   k8s_status_namespace: '{{ meta_namespace }}'
-  {% if notify_status is defined and notify_status %}
-  notify_status:
-    {{ notify_status | to_nice_yaml | indent(2) }}
+  {% if status_cr_notify is defined and status_cr_notify %}
+  status_cr_notify:
+    {{ status_cr_notify | to_nice_yaml | indent(2) }}
   {% endif %}
   pods_ready_group: '{{ pods_ready_group }}'
   condition_expand_keyname: '{{ condition_expand_keyname }}'

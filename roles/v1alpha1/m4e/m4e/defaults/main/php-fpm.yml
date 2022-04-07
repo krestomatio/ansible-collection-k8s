@@ -15,11 +15,6 @@ moodle_php_fpm_envvars_base: "{{ [moodle_php_fpm_envvar_config] +
 moodle_php_fpm_envvars_extra: []
 
 # moodle php-fpm volumes
-moodle_php_fpm_volume_localcache:
-  name: localcache
-  mount_path: "{{ moodle_config_localcachedir }}"
-  source: |-
-    emptyDir: {}
 moodle_php_fpm_volume_config:
   name: config-php
   mount_path: "{{ moodle_config_path }}/config.php"
@@ -31,24 +26,43 @@ moodle_php_fpm_volume_config:
       items:
       - key: config.php
         path: config.php
+moodle_php_fpm_volume_localcache:
+  name: localcache
+  mount_path: "{{ moodle_config_localcachedir }}"
+  source: |-
+    emptyDir: {}
 moodle_php_fpm_volume_moodledata:
   name: moodledata
   mount_path: "{{ moodle_data }}"
   source: |-
     persistentVolumeClaim:
       claimName: "{{ moodle_pvc_moodledata }}"
+moodle_php_fpm_volume_scripts:
+  name: scripts
+  mount_path: "{{ moodle_scripts_path }}"
+  source: |-
+    configMap:
+      name: "{{ moodle_cm_scripts }}"
+      defaultMode: 0555
 moodle_php_fpm_volumes_base: "{{ [moodle_php_fpm_volume_config] +
-  [moodle_php_fpm_volume_moodledata] + [moodle_php_fpm_volume_localcache] }}"
+  [moodle_php_fpm_volume_moodledata] + [moodle_php_fpm_volume_localcache] + [moodle_php_fpm_volume_scripts] }}"
 moodle_php_fpm_volumes_extra: []
 
 # php-fpm
 php_fpm_appname: "{{ meta_name }}-php-fpm"
+php_fpm_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}"
 
 # php-fpm deploy
 # php_fpm_size: 1
 php_fpm_image: "{{ moodle_image }}"
 php_fpm_container: "moodle-php-fpm"
-php_fpm_connects_to: "{{ moodle_appname }}"
+php_fpm_startup_probe: "{{ not _moodle_k8s_wait | default(true) }}"
+php_fpm_startup_command: "{{ moodle_readiness_command }}"
+php_fpm_readiness_probe: true
+php_fpm_readiness_command:  "{{ moodle_readiness_command }}"
+php_fpm_liveness_probe: true
+php_fpm_liveness_command: "{{ moodle_liveness_command }}"
+php_fpm_connects_to: "{{ moodle_postgres_meta_name }}"
 ## php.ini extra config
 # php_extra_config: ''
 ## php-fpm extra conf

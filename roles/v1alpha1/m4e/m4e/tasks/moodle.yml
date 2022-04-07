@@ -5,10 +5,16 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
-    - import_tasks: resource/nginx.yml
+    - name: deploy php-fpm and nginx ingress only without waiting while creating m4e
       when: not moodle_status_created
       vars:
-        nginx_ingress_only: true
+        _moodle_k8s_wait: false
+      block:
+        - import_tasks: resource/nginx.yml
+          vars:
+            nginx_ingress_only: true
+
+        - import_tasks: resource/php-fpm.yml
 
     - import_tasks: resource/secret-admin.yml
 

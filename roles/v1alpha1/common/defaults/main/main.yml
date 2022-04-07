@@ -6,7 +6,19 @@ image_pull_secret: false
 
 # inventory
 inventory_include: false
+inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}"
+inventory_annotation_hostvars:
+  ansible_remote_tmp: /var/tmp/.ansible
+  ansible_python_interpreter: /usr/libexec/platform-python
+  ansible_ssh_pipelining: true
 
 # status
-notify_status: false
-notify_status_force: false
+status_cr_notify: false
+status_cr_notify_force: false
+
+# reconcile-trigger
+reconcile_trigger_cr_version: "{{ cr_version }}"
+reconcile_trigger_cr_group: "{{ cr_group }}"
+reconcile_trigger_cr_kind: "{{ cr_kind }}"
+reconcile_trigger_cr_name: "{{ meta_name }}"
+reconcile_trigger_cr_namespace: "{{ meta_namespace }}"
