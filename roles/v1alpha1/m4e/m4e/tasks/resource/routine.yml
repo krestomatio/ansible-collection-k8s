@@ -1,12 +1,10 @@
 - name: moodle routine resource definition
   vars:
-    routine_annotation_inventory_extra_cr_cwd: |
-      krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
     k8s_kind: Routine
     k8s_state: "{{ moodle_routine_state | default(moodle_state) }}"
     template: "{{ routine_template }}"
     metadata_name: "{{ moodle_routine }}"
-    annotations: "{{ routine_annotation_inventory_extra_cr_cwd + (moodle_routine_annotations | default('')) }}"
+    annotations: "{{ inventory_annotation_extra_cr_cwd + (moodle_routine_annotations | default('')) }}"
     routine_spec: "{{ moodle_routine_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
 

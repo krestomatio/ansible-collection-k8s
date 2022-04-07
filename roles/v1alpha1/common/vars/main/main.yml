@@ -54,7 +54,9 @@ routine_template: "{{ common_path }}/routine.yaml.j2"
 # inventory
 inventory_refresh_task: not-refresh
 inventory_uuid: '{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}'
-annotation_inventory_hostvars:
+inventory_annotation_hostvars:
   ansible_remote_tmp: /var/tmp/.ansible
   ansible_python_interpreter: /usr/libexec/platform-python
   ansible_ssh_pipelining: true
+inventory_annotation_extra_cr_cwd: |
+  krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'

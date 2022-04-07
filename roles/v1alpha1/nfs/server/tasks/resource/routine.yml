@@ -1,12 +1,12 @@
 - name: nfs server routine resource definition
   vars:
-    routine_annotation_inventory_extra_cr_cwd: |
+    routine_inventory_annotation_extra_cr_cwd: |
       krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
     k8s_kind: Status
     k8s_state: "{{ server_routine_state | default(server_state) }}"
     template: "{{ routine_template }}"
     metadata_name: "{{ server_routine }}"
-    annotations: "{{ routine_annotation_inventory_extra_cr_cwd + (server_routine_annotations | default('')) }}"
+    annotations: "{{ routine_inventory_annotation_extra_cr_cwd + (server_routine_annotations | default('')) }}"
     routine_spec: "{{ server_routine_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
 

@@ -1,7 +1,5 @@
 - name: moodle nginx resource definition
   vars:
-    moodle_nginx_annotation_inventory_extra_cr_cwd: |
-      krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
     k8s_kind: Nginx
     k8s_state: "{{ moodle_nginx_state | default(moodle_state) }}"
     k8s_wait: "{{ false if moodle_nginx_state | default(moodle_state) == 'absent'
@@ -11,7 +9,7 @@
       status: "True"
     template: "{{ nginx_template }}"
     metadata_name: "{{ moodle_nginx }}"
-    annotations: "{{ moodle_nginx_annotation_inventory_extra_cr_cwd + (moodle_nginx_annotations | default('')) }}"
+    annotations: "{{ inventory_annotation_extra_cr_cwd + (moodle_nginx_annotations | default('')) }}"
     nginx_spec: "{{ moodle_nginx_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
 

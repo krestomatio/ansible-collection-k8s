@@ -141,7 +141,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
     transport = 'kubectl'
 
     cr_cwd = None
-    annotation_inventory_extra_cr_cwd = 'krestomat.io/inventory-extra-cr-cwd'
+    inventory_annotation_extra_cr_cwd = 'krestomat.io/inventory-extra-cr-cwd'
 
     def parse(self, inventory, loader, path, cache=True):
         super(InventoryModule, self).parse(inventory, loader, path)
@@ -213,7 +213,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
             inventory_uuid
         )
 
-        self.annotation_inventory_hostvars = self.cr_group + '/inventory-hostvars'
+        self.inventory_annotation_hostvars = self.cr_group + '/inventory-hostvars'
 
     def add_extra_inventory(self):
         try:
@@ -229,8 +229,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
 
         cr_annotations = {} if not obj.metadata.annotations else dict(obj.metadata.annotations)
 
-        if self.annotation_inventory_extra_cr_cwd in cr_annotations:
-            self.cr_cwd = cr_annotations[self.annotation_inventory_extra_cr_cwd]
+        if self.inventory_annotation_extra_cr_cwd in cr_annotations:
+            self.cr_cwd = cr_annotations[self.inventory_annotation_extra_cr_cwd]
             self.get_cr_info()
             self.get_pods()
 
@@ -279,11 +279,11 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable, K8sAnsibleM
                         self.inventory.add_child(group_name, pod_group_name)
 
                 # save variables from annotation
-                if self.annotation_inventory_hostvars in pod_annotations:
-                    annotation_inventory_hostvars_value = pod_annotations[self.annotation_inventory_hostvars]
-                    del pod_annotations[self.annotation_inventory_hostvars]
+                if self.inventory_annotation_hostvars in pod_annotations:
+                    inventory_annotation_hostvars_value = pod_annotations[self.inventory_annotation_hostvars]
+                    del pod_annotations[self.inventory_annotation_hostvars]
                     try:
-                        pod_variables = json.loads(annotation_inventory_hostvars_value)
+                        pod_variables = json.loads(inventory_annotation_hostvars_value)
                     except ValueError as e:
                         raise InventoryException('Error getting variables from annotation: %s' % e)
 

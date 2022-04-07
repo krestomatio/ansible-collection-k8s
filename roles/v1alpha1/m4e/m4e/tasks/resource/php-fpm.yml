@@ -1,7 +1,5 @@
 - name: moodle php-fpm resource definition
   vars:
-    moodle_php_fpm_annotation_inventory_extra_cr_cwd: |
-      krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
     k8s_kind: Phpfpm
     k8s_state: "{{ moodle_php_fpm_state | default(moodle_state) }}"
     k8s_wait: "{{ false if moodle_php_fpm_state | default(moodle_state) == 'absent'
@@ -11,7 +9,7 @@
       status: "True"
     template: "{{ php_fpm_template }}"
     metadata_name: "{{ moodle_php_fpm }}"
-    annotations: "{{ moodle_php_fpm_annotation_inventory_extra_cr_cwd + (moodle_php_fpm_annotations | default('')) }}"
+    annotations: "{{ inventory_annotation_extra_cr_cwd + (moodle_php_fpm_annotations | default('')) }}"
     php_fpm_spec: "{{ moodle_php_fpm_spec }}"
   import_tasks: "{{ common_path }}/k8s/object.yml"
 
