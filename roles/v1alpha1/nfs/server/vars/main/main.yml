@@ -9,11 +9,7 @@ cr_state: present
 meta_name_max_length: 55
 
 # templates
-server_template: server.yaml.j2
+server_sts_spec_template: sts/server-spec.yaml.j2
 
 # common labels
 meta_app_created_by: nfs-operator
-
-# inventory
-inventory_annotation_hostvars:
-  ansible_python_interpreter: /usr/bin/python3

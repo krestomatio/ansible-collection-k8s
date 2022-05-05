@@ -4,7 +4,7 @@ metadata:
 {% include common_path + '/metadata.j2' ignore missing %}
 {% if sc_parameters is defined and sc_parameters %}
 parameters:
-  {{ sc_parameters | to_nice_yaml(indent=2) | indent(2) }}
+  {{ sc_parameters | indent(2) }}
 {% endif %}
 {% if sc_mount_options is defined and sc_mount_options %}
 mountOptions:

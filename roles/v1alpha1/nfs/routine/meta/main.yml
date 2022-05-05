@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Job Céspedes Ortiz
-  description: Role to create NFSv4 Ganesha servers for RWX storage in Kubernetes, using Ansible Operator SDK
+  description: Role to handle Routine for (NFS) Server with Ansible Operator SDK
   company: Krestomatio
 
   # If the issue tracker for your role is not on github, uncomment the

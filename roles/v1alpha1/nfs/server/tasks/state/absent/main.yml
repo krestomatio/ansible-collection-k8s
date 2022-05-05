@@ -8,11 +8,8 @@
     - name: start terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
-    - name: handle server pvcs
-      import_tasks: server-pvcs.yml
-
-    - name: handle nfs
-      import_tasks: nfs.yml
+    - name: handle (nfs) server
+      import_tasks: "{{ role_path }}/tasks/server.yml"
 
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"
