@@ -1,7 +1,7 @@
 - name: set older code status
-  include_tasks: "{{ common_path }}/k8s/status.yml"
+  include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
-    k8s_status_conditions:
+    routine_k8s_status_conditions:
       - type: "UpToDate"
         status: "False"
         reason: "Downgraded"

@@ -4,5 +4,5 @@
   set_fact:
     routine_moodle_status_uptodate: "{{ cr_status_properties.uptodate | default('True') | bool }}"
 
-- when: k8s_status_task is defined and k8s_status_task is changed
-  import_tasks: "{{ common_path }}/reconcile-trigger.yml"
+- when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
+  import_tasks: "{{ common_path }}/routine/reconcile-trigger.yml"

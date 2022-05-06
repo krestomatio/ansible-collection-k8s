@@ -12,12 +12,12 @@
   command: "{{ routine_moodle_status_script }}"
 
 - name: set moodle properties status and uptodate condition
-  when: k8s_status_properties | default(false, true)
+  when: routine_k8s_status_properties | default(false, true)
   vars:
-    k8s_status_properties: "{{ routine_status_moodle_task.stdout | default('{}',true) | from_json }}"
-    k8s_status_replace_lists: true
+    routine_k8s_status_properties: "{{ routine_status_moodle_task.stdout | default('{}',true) | from_json }}"
+    routine_k8s_status_replace_lists: true
     routine_status_moodle_version_condition:
-      "{{ 'uptodate' if (k8s_status_properties.uptodate | default('True') | bool) else
-        ('downgraded' if (k8s_status_properties.version.downgrade_error |
+      "{{ 'uptodate' if (routine_k8s_status_properties.uptodate | default('True') | bool) else
+        ('downgraded' if (routine_k8s_status_properties.version.downgrade_error |
         default('False') | bool) else 'pending') }}"
   include_tasks: "condition/uptodate//{{ routine_status_moodle_version_condition }}.yml"

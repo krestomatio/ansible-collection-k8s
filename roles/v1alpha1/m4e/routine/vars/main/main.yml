@@ -9,11 +9,3 @@ meta_name_max_length: 56
 
 # common labels
 meta_app_created_by: m4e-operator
-
-# status
-k8s_status_api_version: "{{ routine_k8s_status_api_version }}"
-k8s_status_kind: "{{ routine_k8s_status_kind }}"
-k8s_status_name: "{{ routine_k8s_status_name }}"
-k8s_status_namespace: "{{ routine_k8s_status_namespace }}"
-status_cr_notify_force: "{{ routine_status_cr_notify_force }}"
-status_cr_notify: "{{ routine_status_cr_notify }}"

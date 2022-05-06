@@ -10,7 +10,7 @@ cr_object_var_name:
   "{{ ('_' + cr_group + '_' + cr_kind) | lower | regex_replace('(\\.|\\-)','_')
   if (cr_group | default(false, true) and cr_kind | default(false, true)) else '' }}"
 cr_uid: "{{ cr_object.metadata.uid | default('', true) }}"
-cr_status: "{{ k8s_status_task.result.status | default(cr_object.status,true) | default({},true) }}"
+cr_status: "{{ routine_k8s_status_task.result.status | default(cr_object.status,true) | default({},true) }}"
 cr_status_ready: "{{ cr_status_properties.ready | default(false) | bool }}"
 cr_status_conditions: "{{ cr_status.conditions | default([]) }}"
 cr_status_properties:

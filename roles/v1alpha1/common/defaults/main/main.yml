@@ -12,13 +12,19 @@ inventory_annotation_hostvars:
   ansible_python_interpreter: /usr/libexec/platform-python
   ansible_ssh_pipelining: true
 
-# status
-status_cr_notify: false
-status_cr_notify_force: false
-
-# reconcile-trigger
-reconcile_trigger_cr_version: "{{ cr_version }}"
-reconcile_trigger_cr_group: "{{ cr_group }}"
-reconcile_trigger_cr_kind: "{{ cr_kind }}"
-reconcile_trigger_cr_name: "{{ meta_name }}"
-reconcile_trigger_cr_namespace: "{{ meta_namespace }}"
+# routine
+routine_k8s_status_api_version: '{{ cr_api_version }}'
+routine_k8s_status_kind: '{{ cr_kind }}'
+routine_k8s_status_name: '{{ meta_name }}'
+routine_k8s_status_namespace: '{{ meta_namespace }}'
+routine_pods_ready_group: "{{ pods_ready_group }}"
+routine_status_cr_notify: false
+routine_status_cr_notify_force: false
+## pvc-info
+routine_pvc_info_pods_ready_group: "{{ pods_ready_group }}"
+## reconcile-trigger
+routine_reconcile_trigger_cr_version: "{{ cr_version }}"
+routine_reconcile_trigger_cr_group: "{{ cr_group }}"
+routine_reconcile_trigger_cr_kind: "{{ cr_kind }}"
+routine_reconcile_trigger_cr_name: "{{ meta_name }}"
+routine_reconcile_trigger_cr_namespace: "{{ meta_namespace }}"

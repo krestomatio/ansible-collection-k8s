@@ -1,11 +1,11 @@
 - name: set error status
-  import_tasks: "{{ common_path }}/k8s/status.yml"
+  import_tasks: "{{ common_path }}/routine/status.yml"
   vars:
-    status_cr_notify_force: true
-    k8s_status_properties:
+    routine_status_cr_notify_force: true
+    routine_k8s_status_properties:
       ready: "False"
       state: Failed
-    k8s_status_conditions:
+    routine_k8s_status_conditions:
       - type: "Ready"
         status: "False"
         reason: "Error"

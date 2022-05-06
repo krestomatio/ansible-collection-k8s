@@ -1,0 +1,12 @@
+# requires watchDependentResources=true
+- name: trigger a CR reconciliation adding an annotation
+  k8s:
+    state: patched
+    definition:
+      apiVersion: "{{ routine_reconcile_trigger_cr_group }}/{{ routine_reconcile_trigger_cr_version }}"
+      kind: "{{ routine_reconcile_trigger_cr_kind }}"
+      metadata:
+        name: "{{ routine_reconcile_trigger_cr_name }}"
+        namespace: "{{ routine_reconcile_trigger_cr_namespace }}"
+        annotations: "{{ { routine_reconcile_trigger_cr_group + '/reconcile-trigger':
+         now(utc=True).isoformat(timespec='seconds') + 'Z' } }}"

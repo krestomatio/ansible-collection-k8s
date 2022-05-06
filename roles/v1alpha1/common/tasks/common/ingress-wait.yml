@@ -25,8 +25,8 @@
       host: "{{ ingress_host }}"
 
 - name: set ingress ip status
-  import_tasks: "{{ common_path }}/k8s/status.yml"
+  import_tasks: "{{ common_path }}/routine/status.yml"
   vars:
-    k8s_status_properties:
+    routine_k8s_status_properties:
       ip: "{{ (ingress_ip_task.resources | first).status.loadBalancer.ingress |
         map(attribute='ip') | first }}"
