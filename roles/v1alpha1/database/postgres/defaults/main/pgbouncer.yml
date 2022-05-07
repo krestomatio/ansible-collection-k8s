@@ -5,7 +5,7 @@ pgbouncer_appname: "{{ meta_name }}-pgbouncer"
 pgbouncer_readonly_appname: "{{ meta_name }}-pgbouncer-readonly"
 
 # pgbouncer deploy
-pgbouncer_image: quay.io/krestomatio/pgbouncer@sha256:71668f4469b8d0925e2f9e85646e1d46ac585ed2765f90609fad426b99fa3235
+pgbouncer_image: quay.io/krestomatio/pgbouncer@sha256:30e61d2b2e24f9caa0e04170baede3196823e7a0dd082551e3f854322fde1601
 pgbouncer_image_pull_secret: "{{ image_pull_secret }}"
 pgbouncer_deploy: "{{ pgbouncer_appname }}-deploy"
 pgbouncer_container: "pgbouncer"
