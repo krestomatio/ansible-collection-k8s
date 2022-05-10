@@ -19,6 +19,7 @@
     - import_tasks: resource/secret-admin.yml
 
     - import_tasks: resource/pvc-moodledata.yml
+      when: moodle_pvc_data_needed
 
     - import_tasks: resource/secret-config.yml
 

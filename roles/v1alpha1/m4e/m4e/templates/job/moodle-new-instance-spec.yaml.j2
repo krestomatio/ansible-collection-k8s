@@ -21,11 +21,11 @@ template:
         - '/bin/bash'
         - '-c'
         - |
-          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ moodle_data }}'
-          chmod 0740 {{ moodle_data }}
+          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ moodle_volume_moodledata.mount_path }}'
+          chmod 0740 {{ moodle_volume_moodledata.mount_path }}
       volumeMounts:
-      - mountPath: '{{ moodle_data }}'
-        name: moodledata
+      - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
+        name: "{{ moodle_volume_moodledata.name }}"
 {% endif %}
     containers:
     - name: 'moodle-new-instance-job'
@@ -61,8 +61,8 @@ template:
 {% endif %}
 {% endif %}
       volumeMounts:
-      - mountPath: '{{ moodle_data }}'
-        name: moodledata
+      - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
+        name: "{{ moodle_volume_moodledata.name }}"
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
       - mountPath: '{{ moodle_config_localcachedir }}'
         name: localcache
@@ -74,9 +74,8 @@ template:
       - mountPath: {{ moodle_scripts_path }}
         name: scripts
     volumes:
-    - name: moodledata
-      persistentVolumeClaim:
-        claimName: '{{ moodle_pvc_moodledata }}'
+    - name: "{{ moodle_volume_moodledata.name }}"
+      {{ moodle_volume_moodledata.source | indent(6) }}
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
     - name: localcache
       emptyDir: {}

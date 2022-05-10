@@ -31,7 +31,7 @@ moodle_service_spec: |
 
 # moodle app
 moodle_app: /var/www/html
-moodle_data: /var/moodledata
+moodle_data_path: /var/moodledata
 moodle_config_path: /config
 moodle_scripts_path: "{{ moodle_config_path }}/scripts"
 moodle_host: "m4e.krestomat.io"
@@ -132,20 +132,47 @@ moodle_cronjob_resource_limits_memory: 1Gi
 moodle_cronjob_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_cronjob_tolerations: false
 
-# moodle pvc
-moodle_pvc_moodledata: "{{ moodle_appname }}-moodledata-pvc"
-moodle_pvc_moodledata_size: 1Gi
-moodle_pvc_moodledata_storage_access_mode: ReadWriteOnce
-moodle_pvc_moodledata_storage_class_name: false
-moodle_pvc_moodledata_spec: |
-  {% if moodle_pvc_moodledata_storage_class_name is defined and moodle_pvc_moodledata_storage_class_name %}
-  storageClassName: {{ moodle_pvc_moodledata_storage_class_name }}
+# moodle data pvc
+moodle_pvc_data: "{{ moodle_appname }}-moodledata-pvc"
+moodle_pvc_data_size: 1Gi
+moodle_pvc_data_storage_access_mode: ReadWriteOnce
+moodle_pvc_data_storage_class_name: false
+moodle_pvc_data_spec: |
+  {% if moodle_pvc_data_storage_class_name is defined and moodle_pvc_data_storage_class_name %}
+  storageClassName: {{ moodle_pvc_data_storage_class_name }}
   {% endif %}
   accessModes:
-    - '{{ moodle_pvc_moodledata_storage_access_mode }}'
+    - '{{ moodle_pvc_data_storage_access_mode }}'
   resources:
     requests:
-      storage: '{{ moodle_pvc_moodledata_size }}'
+      storage: '{{ moodle_pvc_data_size }}'
+moodle_pvc_data_source: |-
+  persistentVolumeClaim:
+    claimName: "{{ moodle_pvc_data }}"
+
+# optional moodle data nfs volume instead of pvc
+moodle_nfs_data_volume: false
+moodle_nfs_meta_name: server-sample
+moodle_nfs_meta_namespace: "{{ meta_namespace }}"
+moodle_nfs_service: "{{ moodle_nfs_meta_name + '-service' }}"
+moodle_nfs_data_source: |-
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeAttributes:
+      server: "{{ moodle_nfs_data_server | default(moodle_nfs_service.moodle_nfs_meta_namespace) }}"  # required
+      share: "{{ moodle_nfs_data_share | default('/') }}"  # required
+      {% if moodle_nfs_data_mount_options is defined and moodle_nfs_data_mount_options %}
+      mountOptions: "{{ moodle_nfs_data_mount_options }}"  # optional
+      {% endif %}
+      {% if moodle_nfs_data_mount_permissions is defined and moodle_nfs_data_mount_permissions %}
+      mountPermissions: "{{ moodle_nfs_data_mount_permissions | default('0777') }}"  # optional
+      {% endif %}
+
+# moodledata volume
+moodle_volume_moodledata:
+  name: moodledata
+  mount_path: "{{ moodle_data_path }}"
+  source: "{{ moodle_nfs_data_source if moodle_nfs_data_volume else moodle_pvc_data_source }}"
 
 # moodle secrets
 moodle_secret_config: "{{ moodle_appname }}-secret-config"
@@ -223,7 +250,7 @@ moodle_config_dbpass: "{{ lookup('k8s', api_version='v1', kind='Secret', namespa
   resource_name=moodle_database_secret).data[moodle_database_secret_dbpass_key] |
   default('') | b64decode }}"
 moodle_config_wwwroot: "{{ moodle_url }}"
-moodle_config_dataroot: "{{ moodle_data }}"
+moodle_config_dataroot: "{{ moodle_data_path }}"
 # moodle_config_context_cache_max_size: 7500
 # moodle_config_dbtype: pgsql
 # moodle_config_dblibrary: native

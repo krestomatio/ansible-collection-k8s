@@ -69,8 +69,8 @@ jobTemplate:
 {% endif %}
 {% endif %}
           volumeMounts:
-          - mountPath: '{{ moodle_data }}'
-            name: moodledata
+          - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
+            name: "{{ moodle_volume_moodledata.name }}"
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
           - mountPath: '{{ moodle_config_localcachedir }}'
             name: localcache
@@ -82,9 +82,8 @@ jobTemplate:
           - mountPath: {{ moodle_scripts_path }}
             name: scripts
         volumes:
-        - name: moodledata
-          persistentVolumeClaim:
-            claimName: '{{ moodle_pvc_moodledata }}'
+        - name: "{{ moodle_volume_moodledata.name }}"
+          {{ moodle_volume_moodledata.source | indent(10) }}
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
         - name: localcache
           emptyDir: {}

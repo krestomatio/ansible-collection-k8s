@@ -31,12 +31,7 @@ moodle_php_fpm_volume_localcache:
   mount_path: "{{ moodle_config_localcachedir }}"
   source: |-
     emptyDir: {}
-moodle_php_fpm_volume_moodledata:
-  name: moodledata
-  mount_path: "{{ moodle_data }}"
-  source: |-
-    persistentVolumeClaim:
-      claimName: "{{ moodle_pvc_moodledata }}"
+moodle_php_fpm_volume_moodledata: "{{ moodle_volume_moodledata }}"
 moodle_php_fpm_volume_scripts:
   name: scripts
   mount_path: "{{ moodle_scripts_path }}"

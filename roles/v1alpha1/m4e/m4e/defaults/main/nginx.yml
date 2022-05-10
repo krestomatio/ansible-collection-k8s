@@ -12,12 +12,7 @@ moodle_nginx_envvars_base: "{{ [moodle_nginx_envvar_php_fpm_host] +
 moodle_nginx_envvars_extra: []
 
 # moodle nginx volumes
-moodle_nginx_volume_moodledata:
-  name: moodledata
-  mount_path: "{{ moodle_data }}"
-  source: |-
-    persistentVolumeClaim:
-      claimName: "{{ moodle_pvc_moodledata }}"
+moodle_nginx_volume_moodledata: "{{ moodle_volume_moodledata }}"
 moodle_nginx_volumes_base: "{{ [moodle_nginx_volume_moodledata] }}"
 moodle_nginx_volumes_extra: []
 
