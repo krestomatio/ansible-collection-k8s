@@ -11,7 +11,7 @@ moodle_php_fpm_envvar_redis:
       name: "{{ moodle_redis_secret }}"
       key: "{{ moodle_redis_secret_auth_key }}"
 moodle_php_fpm_envvars_base: "{{ [moodle_php_fpm_envvar_config] +
-  ([moodle_php_fpm_envvar_redis] if moodle_redis_session_store else []) }}"
+  ([moodle_php_fpm_envvar_redis] if moodle_redis_secret else []) }}"
 moodle_php_fpm_envvars_extra: []
 
 # moodle php-fpm volumes

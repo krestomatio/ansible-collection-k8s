@@ -14,4 +14,4 @@ moodle_update_job_needed:
   (moodle_update_major and moodle_status_version.type | default('Minor') is match('Major')))) else false }}"
 
 # moodle data pvc
-moodle_pvc_data_needed: "{{ false if moodle_nfs_data_volume else true }}"
+moodle_pvc_data_needed: "{{ false if moodle_nfs_meta_name else true }}"
