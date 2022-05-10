@@ -154,12 +154,12 @@ moodle_pvc_data_source: |-
 moodle_nfs_data_volume: false
 moodle_nfs_meta_name: server-sample
 moodle_nfs_meta_namespace: "{{ meta_namespace }}"
-moodle_nfs_service: "{{ moodle_nfs_meta_name + '-service' }}"
+moodle_nfs_service: "{{ moodle_nfs_meta_name + '-nfs-service' }}"
 moodle_nfs_data_source: |-
   csi:
     driver: nfs.csi.k8s.io
     volumeAttributes:
-      server: "{{ moodle_nfs_data_server | default(moodle_nfs_service.moodle_nfs_meta_namespace) }}"  # required
+      server: "{{ moodle_nfs_data_server | default(moodle_nfs_service + '.' + moodle_nfs_meta_namespace) }}"  # required
       share: "{{ moodle_nfs_data_share | default('/') }}"  # required
       {% if moodle_nfs_data_mount_options is defined and moodle_nfs_data_mount_options %}
       mountOptions: "{{ moodle_nfs_data_mount_options }}"  # optional
@@ -201,11 +201,11 @@ moodle_database_secret_dbpass_key: database_password
 # redis
 moodle_redis_meta_name: keydb-sample
 ## redis host
-moodle_redis_service: "{{ moodle_redis_meta_name + '-service' }}"
+moodle_redis_service: "{{ moodle_redis_meta_name + '-keydb-service' }}"
 ## secret name to get auth from
-moodle_redis_secret: "{{ moodle_postgres_meta_name + '-secret' }}"
+moodle_redis_secret: "{{ moodle_redis_meta_name + '-keydb-secret' }}"
 moodle_redis_secret_auth_key: keydb_password
-moodle_redis_host: "{{ moodle_redis_meta_name }}"
+moodle_redis_host: "{{ moodle_redis_service }}"
 ## whether redis will be used as session store
 moodle_redis_session_store: false
 ## whether redis will be used as muc store
