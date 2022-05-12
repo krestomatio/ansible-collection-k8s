@@ -2,7 +2,6 @@ server_state: "{{ state }}"
 server_appname: "{{ meta_name }}-nfs"
 server_container: "nfs-server"
 server_container_group: "{{ server_container.replace('-', '_') }}"
-server_hostname: "{{ server_service + '.' + meta_namespace }}"
 
 # (nfs) server sts
 server_image: quay.io/krestomatio/nfs-ganesha@sha256:c93d0048e2f3529c272d4c09a4d15ed172a78b60f70a955ef6d81e6facc61692
@@ -125,7 +124,7 @@ server_generated_nfs_sc: "{{ server_appname }}-sc"
 server_generated_nfs_sc_needed: true
 server_generated_nfs_sc_mount_permissions: '0777'
 server_generated_nfs_sc_parameters: |-
-  server: "{{ server_hostname }}"
+  server: "{{ server_service + '.' + meta_namespace }}"
   share: "{{ server_generated_nfs_sc_share | default('/') }}"
   mountPermissions: "{{ server_generated_nfs_sc_mount_permissions }}"
   {% if server_generated_nfs_sc_extra_parameters is defined and server_generated_nfs_sc_extra_parameters %}

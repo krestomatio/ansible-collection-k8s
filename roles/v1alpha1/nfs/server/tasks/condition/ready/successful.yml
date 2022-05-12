@@ -5,9 +5,9 @@
     routine_k8s_status_properties:
       ready: "True"
       state: Ready
-      storage_class: "{{ server_generated_nfs_sc
+      storageClass: "{{ server_generated_nfs_sc
         if server_generated_nfs_sc_needed else '' }}"
-      hostname: "{{ server_hostname }}"
+      service: "{{ server_service + '.' + meta_namespace }}"
     routine_k8s_status_conditions:
       - type: "Ready"
         status: "True"
