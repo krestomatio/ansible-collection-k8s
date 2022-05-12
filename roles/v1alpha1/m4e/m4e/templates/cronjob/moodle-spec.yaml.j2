@@ -52,9 +52,9 @@ jobTemplate:
           ports:
           - containerPort: 9000
           imagePullPolicy: IfNotPresent
-          readinessProbe:
+          startupProbe:
             exec:
-              command: {{ moodle_cronjob_readiness_command }}
+              command: {{ moodle_cronjob_startup_command }}
 {% if moodle_cronjob_resource_requests or moodle_cronjob_resource_limits %}
           resources:
 {% if moodle_cronjob_resource_requests %}

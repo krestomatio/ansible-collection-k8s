@@ -96,7 +96,8 @@ moodle_new_instance_job_command_snippet: |-
   {{ moodle_redis_muc_store_script }}
   {% endif %}
 moodle_new_instance_job_php_max_memory: ''
-moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
+moodle_new_instance_job_startup_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
+moodle_new_instance_job_startup_failure: 6
 moodle_new_instance_job_tolerations: false
 
 # moodle auto update
@@ -123,7 +124,7 @@ moodle_update_job_command:
 moodle_update_job_command_snippet: |-
   php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
 moodle_update_job_php_max_memory: ''
-moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
+moodle_update_job_startup_command: "{{ moodle_readiness_command }}"
 moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
 
@@ -145,7 +146,7 @@ moodle_cronjob_command:
 moodle_cronjob_command_snippet: |-
   php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
 moodle_cronjob_php_max_memory: ''
-moodle_cronjob_readiness_command: "{{ moodle_readiness_command }}"
+moodle_cronjob_startup_command: "{{ moodle_readiness_command }}"
 moodle_cronjob_resource_requests: true
 moodle_cronjob_resource_requests_cpu: 50m
 moodle_cronjob_resource_requests_memory: 128Mi
