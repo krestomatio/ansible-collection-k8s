@@ -14,6 +14,7 @@
 
 - name: wait for moodle nginx resource
   when:
+    - not ansible_check_mode
     - moodle_nginx_state | default(moodle_state) != 'absent'
     - moodle_nginx_wait | default(_moodle_k8s_wait) | default(true)
     - k8s_moodle_nginx is defined and k8s_moodle_nginx is changed
