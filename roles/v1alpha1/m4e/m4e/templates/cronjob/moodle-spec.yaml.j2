@@ -69,10 +69,10 @@ jobTemplate:
 {% endif %}
 {% endif %}
           volumeMounts:
-          - mountPath: /etc/php.d/php-extra.ini
+          - mountPath: /etc/php.d/99-php-extra.ini
             name: php-fpm-extra-config
             subPath: php-extra.ini
-          - mountPath: /etc/php-fpm.d/php-fpm-extra.conf
+          - mountPath: /etc/php-fpm.d/zz-php-fpm-extra.conf
             name: php-fpm-extra-config
             subPath: php-fpm-extra.conf
           - mountPath: '{{ moodle_volume_moodledata.mount_path }}'

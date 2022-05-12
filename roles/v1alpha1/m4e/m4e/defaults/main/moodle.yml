@@ -60,13 +60,19 @@ moodle_new_instance_job_resource_limits: false
 moodle_new_instance_job_resource_limits_cpu: 1
 moodle_new_instance_job_resource_limits_memory: 1Gi
 moodle_new_instance_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
-moodle_new_instance_job_command_snippet: |
+moodle_new_instance_command:
+  - '/bin/bash'
+  - '-c'
+  - |
+    container-entrypoint
+    {{ moodle_new_instance_job_command_snippet | indent(2) }}
+moodle_new_instance_job_command_snippet: |-
   echo "Instantiating moodle..."
   /usr/libexec/check-container-php -d
   exit_code=$?
   if [ $exit_code -eq 2 ]; then
     echo "Installing..."
-    php admin/cli/install_database.php \
+    php {{ '-d memory_limit=' + moodle_new_instance_job_php_max_memory if moodle_new_instance_job_php_max_memory else '' }} admin/cli/install_database.php \
       --lang='{{ moodle_new_instance_lang }}' \
       --fullname='{{ moodle_new_instance_fullname }}' \
       --shortname='{{ moodle_new_instance_shortname }}' \
@@ -89,6 +95,7 @@ moodle_new_instance_job_command_snippet: |
   echo "Setting redis MUC store"
   {{ moodle_redis_muc_store_script }}
   {% endif %}
+moodle_new_instance_job_php_max_memory: ''
 moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
 moodle_new_instance_job_tolerations: false
 
@@ -107,7 +114,15 @@ moodle_update_job_resource_requests_memory: 256Mi
 moodle_update_job_resource_limits: false
 moodle_update_job_resource_limits_cpu: 1
 moodle_update_job_resource_limits_memory: 1Gi
-moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
+moodle_update_job_command:
+  - '/bin/bash'
+  - '-c'
+  - |
+    container-entrypoint
+    {{ moodle_update_job_command_snippet | indent(2) }}
+moodle_update_job_command_snippet: |-
+  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
+moodle_update_job_php_max_memory: ''
 moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
 moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
@@ -121,7 +136,15 @@ moodle_cronjob_parallelism: 1
 moodle_cronjob_backoff_limit: 2
 moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
-moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
+moodle_cronjob_command:
+  - '/bin/bash'
+  - '-c'
+  - |
+    container-entrypoint
+    {{ moodle_cronjob_command_snippet | indent(2) }}
+moodle_cronjob_command_snippet: |-
+  php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
+moodle_cronjob_php_max_memory: ''
 moodle_cronjob_readiness_command: "{{ moodle_readiness_command }}"
 moodle_cronjob_resource_requests: true
 moodle_cronjob_resource_requests_cpu: 50m

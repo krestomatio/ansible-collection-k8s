@@ -45,6 +45,7 @@ moodle_php_fpm_volumes_extra: []
 
 # php-fpm
 php_fpm_appname: "{{ meta_name }}-php-fpm"
+php_fpm_cm: "{{ php_fpm_appname }}-cm"
 php_fpm_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}"
 
 # php-fpm deploy
