@@ -1,7 +1,7 @@
 # moodle status version
 moodle_status_version: "{{ cr_status_properties.version | default({},true) }}"
 # whether moodle is uptodate
-moodle_status_uptodate: "{{ cr_status_properties.uptodate | default('True') | bool }}"
+moodle_status_uptodate: "{{ cr_status_properties.upToDate | default('True') | bool }}"
 # whether moodle is created
 moodle_status_created: "{{ cr_status_properties.created | default('False') | bool }}"
 # status script

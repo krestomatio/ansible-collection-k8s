@@ -2,7 +2,7 @@
 
 - name: set uptodate fact
   set_fact:
-    routine_moodle_status_uptodate: "{{ cr_status_properties.uptodate | default('True') | bool }}"
+    routine_moodle_status_uptodate: "{{ cr_status_properties.upToDate | default('True') | bool }}"
 
 - when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
   import_tasks: "{{ common_path }}/routine/reconcile-trigger.yml"

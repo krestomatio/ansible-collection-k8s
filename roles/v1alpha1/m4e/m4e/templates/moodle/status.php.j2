@@ -83,16 +83,16 @@ if($options['version']){
         }
     }
 
-    $json['uptodate'] = $uptodate;
+    $json['upToDate'] = $uptodate;
     if ($uptodate !== "True") {
         $version_source_pending = "True";
         $json['state'] = "UpdatePending";
         $json['ready'] = "False";
     }
     $json['version'] = array(
-        "allversionshash" => "$version_source_allversionshash",
+        "allVersionsHash" => "$version_source_allversionshash",
         "branch" => "$version_source_branch",
-        "downgrade_error" => "$version_source_downgrade_error",
+        "downgradeError" => "$version_source_downgrade_error",
         "pending" => "$version_source_pending",
         "release" => "$version_source_release",
         "type" => "$version_source_type",
@@ -179,8 +179,8 @@ if($options['checks']){
                 $type_check['summary'] = $result->get_summary();
                 // $type_check['details'] = $result->get_details();
                 // if ($actionlink){
-                //     $type_check['action_link']['name'] = $actionlink->name;
-                //     $type_check['action_link']['url'] = $actionlink->url;
+                //     $type_check['actionLink']['name'] = $actionlink->name;
+                //     $type_check['actionLink']['url'] = $actionlink->url;
                 // }
                 $all_checks[] = $type_check;
             }
