@@ -6,7 +6,7 @@
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
     - name: deploy php-fpm and nginx ingress only without waiting while creating m4e
-      when: not moodle_status_created
+      when: not moodle_status_created and moodle_new_instance_job_needed
       vars:
         _moodle_k8s_wait: false
       block:
