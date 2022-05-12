@@ -58,8 +58,8 @@ php_fpm_readiness_command:  "{{ moodle_readiness_command }}"
 php_fpm_liveness_probe: true
 php_fpm_liveness_command: "{{ moodle_liveness_command }}"
 php_fpm_connects_to: "{{ moodle_postgres_meta_name }}"
-## php.ini extra config
-# php_extra_config: ''
+## php.ini extra ini config
+# php_fpm_php_extra_ini: ''
 ## php-fpm extra conf
 # php_fpm_extra_config: ''
 

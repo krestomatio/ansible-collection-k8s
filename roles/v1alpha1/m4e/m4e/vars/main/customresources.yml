@@ -10,6 +10,9 @@ moodle_php_fpm_spec: |-
   {% elif _php_fpm_vartype == 'list' or _php_fpm_vartype == 'dict'  %}
   {{ _php_fpm_varname }}:
     {{ _php_fpm_varvalue | to_nice_yaml(indent=2) | indent(2) -}}
+  {% elif _php_fpm_varvalue is regex('\n|\t') %}
+  {{ _php_fpm_varname }}: |
+    {{ _php_fpm_varvalue | indent(2) }}
   {% else %}
   {{ _php_fpm_varname }}: '{{ _php_fpm_varvalue | regex_replace("'", "''") }}'
   {% endif %}
@@ -28,6 +31,9 @@ moodle_nginx_spec: |-
   {% elif _nginx_vartype == 'list' or _nginx_vartype == 'dict'  %}
   {{ _nginx_varname }}:
     {{ _nginx_varvalue | to_nice_yaml(indent=2) | indent(2) -}}
+  {% elif _nginx_varvalue is regex('\n|\t') %}
+  {{ _nginx_varname }}: |
+    {{ _nginx_varvalue | indent(2) }}
   {% else %}
   {{ _nginx_varname }}: '{{ _nginx_varvalue | regex_replace("'", "''") }}'
   {% endif %}
@@ -46,6 +52,9 @@ moodle_routine_spec: |-
   {% elif _routine_vartype == 'list' or _routine_vartype == 'dict'  %}
   {{ _routine_varname }}:
     {{ _routine_varvalue | to_nice_yaml(indent=2) | indent(2) -}}
+  {% elif _routine_varvalue is regex('\n|\t') %}
+  {{ _routine_varname }}: |
+    {{ _routine_varvalue | indent(2) }}
   {% else %}
   {{ _routine_varname }}: '{{ _routine_varvalue | regex_replace("'", "''") }}'
   {% endif %}

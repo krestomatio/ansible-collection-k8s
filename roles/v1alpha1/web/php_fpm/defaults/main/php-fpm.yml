@@ -57,11 +57,11 @@ php_fpm_connects_to: false
 php_fpm_cm: "{{ php_fpm_appname }}-cm"
 php_fpm_cm_data: |
   php-extra.ini: |
-    {{ php_extra_config | indent(2) }}
+    {{ php_fpm_php_extra_ini | indent(2) }}
   php-fpm-extra.conf: |
     {{ php_fpm_extra_config | indent(2) }}
-## php.ini extra config
-php_extra_config: ''
+## php.ini extra ini config
+php_fpm_php_extra_ini: ''
 ## php-fpm extra conf
 php_fpm_extra_config: ''
 

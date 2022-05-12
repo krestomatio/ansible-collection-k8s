@@ -10,6 +10,9 @@ server_routine_spec: |-
   {% elif _routine_vartype == 'list' or _routine_vartype == 'dict'  %}
   {{ _routine_varname }}:
     {{ _routine_varvalue | to_nice_yaml(indent=2) | indent(2) -}}
+  {% elif _routine_varvalue is regex('\n|\t') %}
+  {{ _routine_varname }}: |
+    {{ _routine_varvalue | indent(2) }}
   {% else %}
   {{ _routine_varname }}: '{{ _routine_varvalue | regex_replace("'", "''") }}'
   {% endif %}
