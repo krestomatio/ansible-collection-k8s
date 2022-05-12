@@ -142,7 +142,7 @@ template:
 {%   endif %}
 {% endif %}
       volumeMounts:
-      - mountPath: /etc/nginx/default.d/nginx-extra.conf
+      - mountPath: /etc/nginx/default.d/zz-nginx-extra.conf
         name: nginx-extra-config
         subPath: nginx-extra.conf
 {% if nginx_volumes is defined and nginx_volumes %}
