@@ -6,7 +6,7 @@
     metadata_name: "{{ moodle_nginx }}"
     annotations: "{{ moodle_nginx_annotations | default(false) }}"
     nginx_spec: "{{ moodle_nginx_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save moodle nginx resource definition task
   set_fact:

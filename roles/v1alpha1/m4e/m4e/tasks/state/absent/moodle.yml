@@ -22,7 +22,7 @@
     - import_tasks: "{{ role_path }}/tasks/resource/secret-config.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/pvc-moodledata.yml"
-      when: moodle_pvc_data_needed
+      when: moodle_pvc_data_needed | bool
 
     - import_tasks: "{{ common_path }}/cleanup-resources.yml"
       vars:

@@ -6,7 +6,7 @@
     metadata_name: "{{ moodle_php_fpm }}"
     annotations: "{{ moodle_php_fpm_annotations | default(false) }}"
     php_fpm_spec: "{{ moodle_php_fpm_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save moodle php-fpm resource definition task
   set_fact:

@@ -1,0 +1,9 @@
+- name: deploy php-fpm and nginx ingress only without waiting while creating m4e
+  vars:
+    _moodle_k8s_wait: false
+  block:
+    - include_tasks: resource/nginx.yml
+      vars:
+        nginx_ingress_only: true
+
+    - include_tasks: resource/php-fpm.yml

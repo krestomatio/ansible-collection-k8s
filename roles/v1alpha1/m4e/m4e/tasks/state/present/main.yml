@@ -8,7 +8,7 @@
       import_tasks: condition/created/not-created.yml
 
     - name: handle moodle
-      import_tasks: "{{ role_path }}/tasks/moodle.yml"
+      import_tasks: "{{ role_path }}/tasks/moodle/main.yml"
 
     - name: end play without successful status when not up to date
       when: not moodle_status_uptodate

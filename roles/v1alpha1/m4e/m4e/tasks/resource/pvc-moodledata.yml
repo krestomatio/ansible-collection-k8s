@@ -6,7 +6,7 @@
     metadata_name: "{{ moodle_pvc_data }}"
     extra_labels: "{{ moodle_pvc_data_extra_labels | default(false) }}"
     pvc_spec: "{{ moodle_pvc_data_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save moodle pvc resource definition task
   set_fact:

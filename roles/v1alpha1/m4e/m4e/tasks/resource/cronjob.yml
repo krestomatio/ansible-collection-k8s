@@ -17,7 +17,7 @@
         template: "{{ cronjob_template }}"
         metadata_name: "{{ moodle_cronjob }}"
         cronjob_spec: "{{ moodle_cronjob_spec }}"
-      import_tasks: "{{ common_path }}/k8s/object.yml"
+      include_tasks: "{{ common_path }}/k8s/object.yml"
 
     - name: save moodle cronjob resource definition task
       set_fact:

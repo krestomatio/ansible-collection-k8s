@@ -1,0 +1,36 @@
+- name: moodle resource definitions
+  vars:
+    name: moodle
+    k8s_state: "{{ moodle_state }}"
+    component: "{{ moodle_component | default('moodle') }}"
+    metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
+  block:
+    - include_tasks: predeploy.yml
+      when: not moodle_status_created | bool and moodle_new_instance_job_needed | bool
+
+    - import_tasks: resource/secret-admin.yml
+
+    - include_tasks: resource/pvc-moodledata.yml
+      when: moodle_pvc_data_needed | bool
+
+    - import_tasks: resource/secret-config.yml
+
+    - import_tasks: resource/cm-scripts.yml
+
+    - include_tasks: new-instance.yml
+      when: moodle_new_instance_job_needed | bool
+
+    - import_tasks: resource/php-fpm.yml
+
+    - meta: refresh_inventory
+
+    - import_tasks: routine/status.yml
+
+    - include_tasks: update.yml
+      when: moodle_update_job_needed | bool
+
+    - import_tasks: resource/nginx.yml
+
+    - import_tasks: resource/cronjob.yml
+
+    - import_tasks: resource/routine.yml
