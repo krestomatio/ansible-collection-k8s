@@ -61,6 +61,12 @@ template:
 {% endif %}
 {% endif %}
       volumeMounts:
+      - mountPath: /etc/php.d/php-extra.ini
+        name: php-fpm-extra-config
+        subPath: php-extra.ini
+      - mountPath: /etc/php-fpm.d/php-fpm-extra.conf
+        name: php-fpm-extra-config
+        subPath: php-fpm-extra.conf
       - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
         name: "{{ moodle_volume_moodledata.name }}"
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
@@ -74,6 +80,15 @@ template:
       - mountPath: {{ moodle_scripts_path }}
         name: scripts
     volumes:
+    - name: php-fpm-extra-config
+      configMap:
+        name: '{{ php_fpm_cm }}'
+        defaultMode: 0664
+        items:
+        - key: php-extra.ini
+          path: php-extra.ini
+        - key: php-fpm-extra.conf
+          path: php-fpm-extra.conf
     - name: "{{ moodle_volume_moodledata.name }}"
       {{ moodle_volume_moodledata.source | indent(6) }}
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
