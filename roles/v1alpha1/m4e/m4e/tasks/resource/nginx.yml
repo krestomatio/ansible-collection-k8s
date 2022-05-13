@@ -32,7 +32,7 @@
     k8s_moodle_nginx_object: "{{ k8s_moodle_nginx_wait.resources | default([]) | first | default([]) }}"
     k8s_moodle_nginx_conditions: "{{ k8s_moodle_nginx_object.status.conditions | default([]) }}"
     k8s_moodle_nginx_condition_ready: "{{ k8s_moodle_nginx_conditions |
-      selectattr('type', 'equalto', 'Ready') | first | default ([])}}"
+      selectattr('type', 'equalto', 'Ready') | first | default ([]) }}"
     k8s_moodle_nginx_condition_successful: "{{ k8s_moodle_nginx_conditions |
       selectattr('type', 'equalto', 'Successful') | first | default ([]) }}"
   k8s_info:

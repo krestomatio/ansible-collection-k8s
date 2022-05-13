@@ -72,7 +72,8 @@ moodle_new_instance_job_command_snippet: |-
   exit_code=$?
   if [ $exit_code -eq 2 ]; then
     echo "Installing..."
-    php {{ '-d memory_limit=' + moodle_new_instance_job_php_max_memory if moodle_new_instance_job_php_max_memory else '' }} admin/cli/install_database.php \
+    php {{ '-d memory_limit=' + moodle_new_instance_job_php_max_memory if
+    moodle_new_instance_job_php_max_memory else '' }} admin/cli/install_database.php \
       --lang='{{ moodle_new_instance_lang }}' \
       --fullname='{{ moodle_new_instance_fullname }}' \
       --shortname='{{ moodle_new_instance_shortname }}' \
@@ -122,7 +123,8 @@ moodle_update_job_command:
     container-entrypoint
     {{ moodle_update_job_command_snippet | indent(2) }}
 moodle_update_job_command_snippet: |-
-  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
+  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if
+  moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
 moodle_update_job_php_max_memory: ''
 moodle_update_job_startup_command: "{{ moodle_readiness_command }}"
 moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
@@ -144,7 +146,8 @@ moodle_cronjob_command:
     container-entrypoint
     {{ moodle_cronjob_command_snippet | indent(2) }}
 moodle_cronjob_command_snippet: |-
-  php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
+  php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
+  moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
 moodle_cronjob_php_max_memory: ''
 moodle_cronjob_startup_command: "{{ moodle_readiness_command }}"
 moodle_cronjob_resource_requests: true
@@ -284,7 +287,8 @@ moodle_config_dataroot: "{{ moodle_data_path }}"
 # moodle_config_dbpersist: "false"
 # moodle_config_dbsocket: "false"
 # moodle_config_dbport: "''"
-moodle_config_dbhandlesoptions: "{{ moodle_database_service is search('pgbouncer') if moodle_postgres_meta_name else false }}"
+moodle_config_dbhandlesoptions: "{{ moodle_database_service is search('pgbouncer') if
+  moodle_postgres_meta_name else false }}"
 # moodle_config_dbcollation: "utf8mb4_unicode_ci"
 # moodle_config_fetchbuffersize: "100000"
 # moodle_config_directorypermissions: "02777"

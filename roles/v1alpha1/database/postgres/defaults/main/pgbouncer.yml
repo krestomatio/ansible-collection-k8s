@@ -157,4 +157,5 @@ pgbouncer_readonly_cm_data: |
   pgbouncer-extra-users.ini: |
     {{ pgbouncer_readonly_extra_users_config | default(pgbouncer_extra_users_config) | default('') | indent(2) }}
   pgbouncer-extra-databases.ini: |
-    {{ pgbouncer_readonly_extra_databases_config | default(pgbouncer_extra_databases_config) | default('') | indent(2) }}
+    {{ pgbouncer_readonly_extra_databases_config | default(pgbouncer_extra_databases_config)
+    | default('') | indent(2) }}

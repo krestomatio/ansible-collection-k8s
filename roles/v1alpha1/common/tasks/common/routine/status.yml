@@ -25,12 +25,14 @@
     - name: notify status
       vars:
         _status_cr_notify_uuid: "{{ _routine_status_cr_notify.uuid | default(cr_uid) }}"
-        _status_cr_notify_jwt_secret_env_name: "{{ _routine_status_cr_notify.jwt_secret_env_name | default('JWT_TOKEN_SECRET') }}"
+        _status_cr_notify_jwt_secret_env_name:
+          "{{ _routine_status_cr_notify.jwt_secret_env_name | default('JWT_TOKEN_SECRET') }}"
         _status_cr_notify_jwt_payload:
           "{{
               {'uuid': _status_cr_notify_uuid}
             if
-              lookup('env',_status_cr_notify_jwt_secret_env_name) and _status_cr_notify_uuid is defined and _status_cr_notify_uuid
+              lookup('env',_status_cr_notify_jwt_secret_env_name)
+              and _status_cr_notify_uuid is defined and _status_cr_notify_uuid
             else
               false }}"
         _status_cr_notify_header_auth_token:
@@ -42,7 +44,8 @@
               _routine_status_cr_notify.header_auth_token | default('') }}"
         _status_cr_notify_header_auth_header:
           Authorization:
-            "{{ _routine_status_cr_notify.header_auth_type | default('Bearer') }} {{ _status_cr_notify_header_auth_token }}"
+            "{{ _routine_status_cr_notify.header_auth_type | default('Bearer') + ' '
+            + _status_cr_notify_header_auth_token }}"
       failed_when: false
       register: _status_cr_notify_task
       uri:
@@ -67,8 +70,8 @@
         timeout: "{{ _routine_status_cr_notify.timeout | default(5) }}"
         url: "{{ _routine_status_cr_notify.url }}"
         user: "{{ _routine_status_cr_notify.user | default(omit) }}"
-        password:
-          "{{ _routine_status_cr_notify.password | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
+        password: "{{ _routine_status_cr_notify.password
+          | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
         validate_certs: "{{ _routine_status_cr_notify.validate_certs | default(omit) }}"
 
     - name: show notify status error

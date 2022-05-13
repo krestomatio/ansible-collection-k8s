@@ -32,7 +32,7 @@
     k8s_moodle_php_fpm_object: "{{ k8s_moodle_php_fpm_wait.resources | default([]) | first | default([]) }}"
     k8s_moodle_php_fpm_conditions: "{{ k8s_moodle_php_fpm_object.status.conditions | default([]) }}"
     k8s_moodle_php_fpm_condition_ready: "{{ k8s_moodle_php_fpm_conditions |
-      selectattr('type', 'equalto', 'Ready') | first | default ([])}}"
+      selectattr('type', 'equalto', 'Ready') | first | default ([]) }}"
     k8s_moodle_php_fpm_condition_successful: "{{ k8s_moodle_php_fpm_conditions |
       selectattr('type', 'equalto', 'Successful') | first | default ([]) }}"
   k8s_info:

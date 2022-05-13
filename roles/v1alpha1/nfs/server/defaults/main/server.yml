@@ -1,7 +1,5 @@
 server_state: "{{ state }}"
 server_appname: "{{ meta_name }}-nfs"
-server_container: "nfs-server"
-server_container_group: "{{ server_container.replace('-', '_') }}"
 
 # (nfs) server sts
 server_image: quay.io/krestomatio/nfs-ganesha@sha256:c93d0048e2f3529c272d4c09a4d15ed172a78b60f70a955ef6d81e6facc61692
@@ -131,9 +129,9 @@ server_generated_nfs_sc_parameters: |-
   {{ server_generated_nfs_sc_extra_parameters }}
   {% endif %}
 server_generated_nfs_sc_mount_options: false
-  # - nconnect=8  # only supported on linux kernel version >= 5.3
-  # - hard
-  # - nfsvers=4.1
+# - nconnect=8  # only supported on linux kernel version >= 5.3
+# - hard
+# - nfsvers=4.1
 server_generated_nfs_sc_provisioner: nfs.csi.k8s.io
 server_generated_nfs_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
 server_generated_nfs_sc_reclaim_policy: Delete
@@ -141,7 +139,8 @@ server_generated_nfs_sc_volume_binding_mode: Immediate
 
 # server pvc
 server_pvc_data: "{{ server_appname }}-data-pvc"
-server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_info_keyname].spec_gib | default(server_pvc_autoexpansion_init_size_gib) }}"
+server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_info_keyname].spec_gib
+  | default(server_pvc_autoexpansion_init_size_gib) }}"
 server_pvc_data_size: 1Gi
 server_pvc_data_storage_access_mode: ReadWriteOnce
 server_pvc_data_storage_class_name: false
