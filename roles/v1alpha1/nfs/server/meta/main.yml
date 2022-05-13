@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Job Céspedes Ortiz
-  description: Role to allocate nfs servers for RWX using Ansible Operator SDK and rook nfs
+  description: Role to create NFSv4 Ganesha servers for RWX storage in Kubernetes, using Ansible Operator SDK
   company: Krestomatio
 
   # If the issue tracker for your role is not on github, uncomment the

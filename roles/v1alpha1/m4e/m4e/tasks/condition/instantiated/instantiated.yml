@@ -1,12 +1,12 @@
 - name: set instantiated status
-  include_tasks: "{{ common_path }}/k8s/status.yml"
+  include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     last_transition_time: "{{ now(utc=True).isoformat(timespec='seconds') + 'Z' }}"
-    k8s_status_properties:
+    routine_k8s_status_properties:
       instantiated: "True"
       ready: "False"
       state: Creating
-    k8s_status_conditions:
+    routine_k8s_status_conditions:
       - type: "Instantiated"
         status: "True"
         reason: "Instantiated"

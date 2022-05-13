@@ -1,0 +1,84 @@
+- name: set status
+  when:
+    # https://github.com/operator-framework/operator-sdk-ansible-util/issues/18
+    - not ansible_check_mode
+    - not routine_k8s_status_omit | default(false)
+  register: routine_k8s_status_task
+  k8s_status:
+    api_version: "{{ routine_k8s_status_api_version | default(cr_api_version) }}"
+    kind: "{{ routine_k8s_status_kind | default(cr_kind) }}"
+    name: "{{ routine_k8s_status_name | default(meta_name) }}"
+    namespace: "{{ routine_k8s_status_namespace | default(meta_namespace) }}"
+    status: "{{ routine_k8s_status_properties | default(omit,true) }}"
+    conditions: "{{ routine_k8s_status_conditions | default(omit,true) }}"
+    replace_lists: "{{ routine_k8s_status_replace_lists | default(omit,true) }}"
+
+
+- name: notify cr status
+  when:
+    - routine_k8s_status_task.result is defined
+    - routine_k8s_status_task is changed or routine_status_cr_notify_force
+    - _routine_status_cr_notify
+  vars:
+    _routine_status_cr_notify: "{{ routine_status_cr_notify }}"
+  block:
+    - name: notify status
+      vars:
+        _status_cr_notify_uuid: "{{ _routine_status_cr_notify.uuid | default(cr_uid) }}"
+        _status_cr_notify_jwt_secret_env_name:
+          "{{ _routine_status_cr_notify.jwt_secret_env_name | default('JWT_TOKEN_SECRET') }}"
+        _status_cr_notify_jwt_payload:
+          "{{
+              {'uuid': _status_cr_notify_uuid}
+            if
+              lookup('env',_status_cr_notify_jwt_secret_env_name)
+              and _status_cr_notify_uuid is defined and _status_cr_notify_uuid
+            else
+              false }}"
+        _status_cr_notify_header_auth_token:
+          "{{
+              _status_cr_notify_jwt_payload | krestomatio.k8s.jwt_token(_status_cr_notify_jwt_secret_env_name)
+            if
+              _status_cr_notify_jwt_payload is defined and _status_cr_notify_jwt_payload
+            else
+              _routine_status_cr_notify.header_auth_token | default('') }}"
+        _status_cr_notify_header_auth_header:
+          Authorization:
+            "{{ _routine_status_cr_notify.header_auth_type | default('Bearer') + ' '
+            + _status_cr_notify_header_auth_token }}"
+      failed_when: false
+      register: _status_cr_notify_task
+      uri:
+        body: "{{ routine_k8s_status_task.result if
+          (_routine_status_cr_notify.object | default('False') | bool)
+          else routine_k8s_status_task.result.status }}"
+        body_format: "{{ _routine_status_cr_notify.body_format | default('json') }}"
+        client_cert: "{{ _routine_status_cr_notify.client_cert | default(omit) }}"
+        client_key: "{{ _routine_status_cr_notify.client_key | default(omit) }}"
+        force_basic_auth: "{{ _routine_status_cr_notify.force_basic_auth | default(omit) }}"
+        headers:
+          "{{
+              _routine_status_cr_notify.headers | default({}) | combine(_status_cr_notify_header_auth_header)
+            if
+              _status_cr_notify_header_auth_token != ''
+            else
+              _routine_status_cr_notify.headers | default(omit)
+          }}"
+        method: "{{ _routine_status_cr_notify.method | default('POST') }}"
+        return_content: "{{ _routine_status_cr_notify.return_content | default(omit) }}"
+        status_code: "{{ _routine_status_cr_notify.status_code | default([200]) }}"
+        timeout: "{{ _routine_status_cr_notify.timeout | default(5) }}"
+        url: "{{ _routine_status_cr_notify.url }}"
+        user: "{{ _routine_status_cr_notify.user | default(omit) }}"
+        password: "{{ _routine_status_cr_notify.password
+          | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
+        validate_certs: "{{ _routine_status_cr_notify.validate_certs | default(omit) }}"
+
+    - name: show notify status error
+      when: _status_cr_notify_task.status not in _routine_status_cr_notify.status_code | default([200])
+      debug:
+        msg: |
+          Could not notify status to endpoint {{ _routine_status_cr_notify.url }}
+          {%  if _status_cr_notify_task.msg is defined %}
+          {{ _status_cr_notify_task.msg }}
+          {% endif %}

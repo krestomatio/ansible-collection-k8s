@@ -16,8 +16,6 @@ Role Variables
 - See [`defaults/main/php-fpm.yml`](defaults/main/php-fpm.yml)
 - See [`defaults/main/nginx.yml`](../../web/nginx/defaults/main/nginx.yml)
 - See [`vars/main/nginx.yml`](vars/main/nginx.yml)
-- See [`defaults/main/postgres.yml`](../../database/postgres/defaults/main/postgres.yml)
-- See [`vars/main/postgres.yml`](vars/main/postgres.yml)
 
 Dependencies
 ------------
@@ -37,7 +35,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "m4e"
+        name: "krestomatio.k8s.v1alpha1.m4e.m4e"
 ```
 License
 -------

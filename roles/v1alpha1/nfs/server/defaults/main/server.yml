@@ -1,67 +1,245 @@
 server_state: "{{ state }}"
 server_appname: "{{ meta_name }}-nfs"
-server_container: "nfs-server"
+
+# (nfs) server sts
+server_image: quay.io/krestomatio/nfs-ganesha@sha256:c93d0048e2f3529c272d4c09a4d15ed172a78b60f70a955ef6d81e6facc61692
+server_image_pull_secret: "{{ image_pull_secret }}"
+server_sts: "{{ server_appname }}-sts"
+server_container: "nfs-ganesha"
 server_container_group: "{{ server_container.replace('-', '_') }}"
+server_args: false
+server_startup_probe: true
+server_startup_tcp_socket: "{{ server_port }}"
+server_startup_initial: 2
+server_startup_period: 5
+server_startup_timeout: 1
+server_startup_success: 1
+server_startup_failure: 3
+server_readiness_probe: true
+server_readiness_tcp_socket: "{{ server_port }}"
+server_readiness_initial: 2
+server_readiness_period: 5
+server_readiness_timeout: 1
+server_readiness_success: 1
+server_readiness_failure: 3
+server_liveness_probe: true
+server_liveness_tcp_socket: "{{ server_port }}"
+server_liveness_initial: 5
+server_liveness_period: 10
+server_liveness_timeout: 10
+server_liveness_success: 1
+server_liveness_failure: 3
+server_resource_requests: true
+server_resource_requests_cpu: 150m
+server_resource_requests_memory: 256Mi
+server_resource_limits: false
+server_resource_limits_cpu: 1
+server_resource_limits_memory: 1Gi
+server_term_grace_period: 30
+server_tolerations: false
+server_port: 2049
+server_run_as_user: 0
+server_capabilities: |
+  drop:
+    - ALL
+  add:
+    - CHOWN
+    - DAC_OVERRIDE
+    - DAC_READ_SEARCH
+    - FOWNER
+    - FSETID
+    - KILL
+    - SETGID
+    - SETUID
+    - SETPCAP
+    - NET_BIND_SERVICE
+    - NET_RAW
+    - SYS_CHROOT
+    - MKNOD
+    - AUDIT_WRITE
 
-# export
-server_export_name: share1
-server_export_pvc: "{{ server_pvc }}"
-server_export_squash: none
-server_export_access_mode: ReadWrite
-# server_export_userid: root
-# server_export_groupid: root
-# server_export_permissions: 755
+# dbus
+dbus_container: dbus
+dbus_image: "{{ server_image }}"
+dbus_command:
+  - /usr/bin/dbus-daemon
+  - --nofork
+  - --nopidfile
+  - --nosyslog
+  - --system
+dbus_capabilities: |
+  drop:
+    - ALL
+  add:
+    - SETGID
+    - SETPCAP
+    - SETUID
+dbus_run_as_user: "{{ server_run_as_user }}"
 
-# pvc
-server_pvc: "{{ server_appname }}-pvc"
-server_pvc_storage_access_mode: ReadWriteOnce
-server_pvc_init_size_gib: 1
-server_pvc_size_gib: "{{ cr_status_properties.pvc.server.spec_gib | default(server_pvc_init_size_gib) }}"
-server_pvc_spec: |
-  {% if server_pvc_storage_class_name is defined and server_pvc_storage_class_name %}
-  storageClassName: {{ server_pvc_storage_class_name }}
+# server service
+server_service: "{{ server_appname }}-service"
+server_service_spec: |
+  {% if server_service_type is defined %}
+  type: {{ server_service_type }}
+  {% endif %}
+  {% if server_service_cluster_ip is defined %}
+  clusterIP: {{ server_service_cluster_ip }}
+  {% endif %}
+  {% if server_service_session_affinity is defined %}
+  sessionAffinity: {{ server_service_session_affinity }}
+  {% endif %}
+  {% if server_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ server_service_session_affinity_timeout }}
+  {% endif %}
+  selector:
+    app: '{{ server_appname }}'
+  ports:
+  - name: nfs-tcp
+    port: {{ server_port }}
+    protocol: TCP
+    targetPort: {{ server_port }}
+  # Issue: https://github.com/kubernetes/kubernetes/issues/39188
+  # - name: nfs-udp
+  #   port: {{ server_port }}
+  #   protocol: UDP
+  #   targetPort: {{ server_port }}
+  {% if server_ganesha_rquota %}
+  - name: rquota-tcp
+    port: {{ server_ganesha_rquota_port }}
+    protocol: TCP
+    targetPort: {{ server_ganesha_rquota_port }}
+  # Issue: https://github.com/kubernetes/kubernetes/issues/39188
+  # - name: rquota-udp
+  #   port: {{ server_ganesha_rquota_port }}
+  #   protocol: UDP
+  #   targetPort: {{ server_ganesha_rquota_port }}
+  {% endif %}
+
+# server generated storage class
+server_generated_nfs_sc: "{{ server_appname }}-sc"
+server_generated_nfs_sc_needed: true
+server_generated_nfs_sc_mount_permissions: '0777'
+server_generated_nfs_sc_parameters: |-
+  server: "{{ server_service + '.' + meta_namespace }}"
+  share: "{{ server_generated_nfs_sc_share | default('/') }}"
+  mountPermissions: "{{ server_generated_nfs_sc_mount_permissions }}"
+  {% if server_generated_nfs_sc_extra_parameters is defined and server_generated_nfs_sc_extra_parameters %}
+  {{ server_generated_nfs_sc_extra_parameters }}
+  {% endif %}
+server_generated_nfs_sc_mount_options: false
+# - nconnect=8  # only supported on linux kernel version >= 5.3
+# - hard
+# - nfsvers=4.1
+server_generated_nfs_sc_provisioner: nfs.csi.k8s.io
+server_generated_nfs_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
+server_generated_nfs_sc_reclaim_policy: Delete
+server_generated_nfs_sc_volume_binding_mode: Immediate
+
+# server pvc
+server_pvc_data: "{{ server_appname }}-data-pvc"
+server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_info_keyname].spec_gib
+  | default(server_pvc_autoexpansion_init_size_gib) }}"
+server_pvc_data_size: 1Gi
+server_pvc_data_storage_access_mode: ReadWriteOnce
+server_pvc_data_storage_class_name: false
+server_pvc_data_mode: "{{ server_export_mode }}"
+server_pvc_data_mount_path: "{{ server_export_dir }}"
+server_pvc_data_userid: "{{ server_export_userid }}"
+server_pvc_data_groupid: "{{ server_export_groupid }}"
+server_pvc_data_spec: |
+  {% if server_pvc_data_storage_class_name is defined and server_pvc_data_storage_class_name %}
+  storageClassName: {{ server_pvc_data_storage_class_name }}
   {% endif %}
   accessModes:
-    - '{{ server_pvc_storage_access_mode }}'
+    - '{{ server_pvc_data_storage_access_mode }}'
   resources:
     requests:
-      storage: '{{ server_pvc_size | default(server_pvc_size_gib + 'Gi') }}'
+      storage: '{{ server_pvc_datata_size | default(server_pvc_data_size_gib + 'Gi') }}'
+
+# server config map
+server_cm: "{{ server_appname }}-cm"
+server_cm_data: |
+  ganesha.conf: |
+    {{ server_ganesha_config | indent(2) }}
+  ganesha-extra.conf: |
+    {{ server_ganesha_extra_config | indent(2) }}
+## server ganesha conf
+server_ganesha_config: |
+  NFS_CORE_PARAM {
+      Protocols = 4;
+      NFS_Port = {{ server_port }};
+      Rquota_Port = {{ server_ganesha_rquota_port }};
+      fsid_device = true;
+  }
+  NFS_KRB5 {
+      Active_krb5 = false;
+  }
+  EXPORT_DEFAULTS {
+      SecType = sys;
+  }
+  %include "{{ server_conf_extra_file }}"
+## server ganesha extra conf
+server_ganesha_extra_config: |
+  NFSv4 {
+      Grace_Period = {{ server_conf_grace_period }};
+  }
+  MDCACHE {
+      Entries_HWMark = {{ server_conf_export_hwmark }};
+  }
+  EXPORT {
+      Export_Id = {{ server_conf_export_id }};
+      Path = "{{ server_conf_export_path }}";
+      Pseudo = {{ server_conf_export_pseudo }};
+      Access_Type = {{ server_conf_export_access_type }};
+      Squash = {{ server_conf_export_squash }};
+      FSAL {
+          Name = {{ server_conf_fsal }};
+      }
+  }
+  LOG {
+      COMPONENTS {
+          ALL = {{ server_conf_log_level }};
+      }
+  }
+  {% if server_ganesha_extra_block_config is defined and server_ganesha_extra_block_config %}
+  {{ server_ganesha_extra_block_config }}
+  {% endif %}
+server_ganesha_extra_block_config: ''
+
+# server config
+server_dbus_separete_container: true
+server_ganesha_lib_dir: /usr/local/var/lib/nfs/ganesha
+server_ganesha_conf_dir: /usr/local/etc/ganesha
+server_ganesha_run_dir: /usr/local/var/run/ganesha
+server_ganesha_tmp_dir: /tmp
+server_ganesha_rquota: true
+server_ganesha_rquota_port: 875
+server_conf_file: "{{ server_ganesha_conf_dir }}/ganesha.conf"
+server_conf_extra_file: "{{ server_ganesha_conf_dir }}/ganesha-extra.conf"
+server_conf_grace_period: 90
+server_conf_export_path: "{{ server_export_dir }}"
+server_conf_export_pseudo: /
+server_conf_export_id: 1
+server_conf_export_access_type: RW
+server_conf_export_squash: no_root_squash
+server_conf_export_hwmark: 100000
+server_conf_fsal: VFS
+server_conf_log_level: EVENT
+
+# owner/permitions
+server_export_owner_mode_set: true
+server_export_dir: /export
+server_export_userid: 0
+server_export_groupid: 0
+server_export_mode: '0700'
+
 ## enable autoexpansion
 server_pvc_autoexpansion: false
+### Initial pvc size
+server_pvc_autoexpansion_init_size_gib: 1
 ### Increments in those GiB
-server_pvc_autoexpansion_gib: 5
+server_pvc_autoexpansion_increment_gib: 5
 ### No more than those GiB
 server_pvc_autoexpansion_cap_gib: 250
-
-# sc
-server_sc: "{{ server_appname }}-sc"
-server_sc_parameters:
-  exportName: "{{ server_export_name }}"
-  nfsServerName: "{{ server_appname }}"
-  nfsServerNamespace: "{{ meta_namespace }}"
-server_sc_mount_options:
-  - vers=4.2
-server_sc_provisioner: "nfs.rook.io/{{ server_appname }}-provisioner"
-server_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
-server_sc_reclaim_policy: Delete
-server_sc_volume_binding_mode: Immediate
-
-# routine
-server_routine: "{{ server_appname }}-routine"
-server_routine_spec: |
-  k8s_status_api_version: '{{ cr_api_version }}'
-  k8s_status_kind: '{{ cr_kind }}'
-  k8s_status_name: '{{ meta_name }}'
-  k8s_status_namespace: '{{ meta_namespace }}'
-  {% if notify_status is defined and notify_status %}
-  notify_status:
-    {{ notify_status | to_nice_yaml | indent(2) }}
-  {% endif %}
-  pods_ready_group: '{{ pods_ready_group }}'
-  condition_expand_keyname: '{{ condition_expand_keyname }}'
-  pvc_info_keyname: '{{ pvc_info_keyname }}'
-  pvc_info_container_group: '{{ pvc_info_container_group }}'
-  pvc_info_name: '{{ pvc_info_name }}'
-  pvc_info_autoexpansion: {{ pvc_info_autoexpansion }}
-  pvc_info_increment_gib: {{ pvc_info_increment_gib }}
-  pvc_info_cap_gib: {{ pvc_info_increment_gib }}

@@ -1,8 +1,10 @@
 ---
+# defaults file for m4e
+cr_group: nginx.krestomat.io
+cr_kind: Nginx
+
 # custom resource state: present, absent
 cr_state: present
 
-meta_name_max_length: 55
-
-# templates
-nginx_deploy_spec_template: deploy/nginx-spec.yaml.j2
+# common labels
+meta_app_created_by: nginx-operator

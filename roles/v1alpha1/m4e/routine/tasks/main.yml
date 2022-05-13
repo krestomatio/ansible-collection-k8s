@@ -1,0 +1,9 @@
+- name: get k8s distribution
+  import_tasks: "{{ common_path }}/k8s/distribution.yml"
+
+- name: make assertions
+  import_tasks: "{{ role_path }}/tasks/assertions.yml"
+  delegate_to: localhost
+
+- name: handle routine
+  import_tasks: "{{ role_path }}/tasks/routine.yml"

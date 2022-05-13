@@ -1,3 +1,72 @@
----
+# THIS FILES IS SHARED BETWEEN M4E.M4E AND PHPFPM.M4E CRD
+
+# moodle php-fpm envvars
+moodle_php_fpm_envvar_config:
+  name: MOODLE_CONFIG_DIR
+  value: "{{ moodle_config_path }}"
+moodle_php_fpm_envvar_redis:
+  name: REDIS_PASSWORD
+  source: |-
+    secretKeyRef:
+      name: "{{ moodle_redis_secret }}"
+      key: "{{ moodle_redis_secret_auth_key }}"
+moodle_php_fpm_envvars_base: "{{ [moodle_php_fpm_envvar_config] +
+  ([moodle_php_fpm_envvar_redis] if moodle_redis_secret else []) }}"
+moodle_php_fpm_envvars_extra: []
+
+# moodle php-fpm volumes
+moodle_php_fpm_volume_config:
+  name: config-php
+  mount_path: "{{ moodle_config_path }}/config.php"
+  sub_path: config.php
+  read_only: true
+  source: |-
+    secret:
+      secretName: "{{ moodle_secret_config }}"
+      items:
+      - key: config.php
+        path: config.php
+moodle_php_fpm_volume_localcache:
+  name: localcache
+  mount_path: "{{ moodle_config_localcachedir }}"
+  source: |-
+    emptyDir: {}
+moodle_php_fpm_volume_moodledata: "{{ moodle_volume_moodledata }}"
+moodle_php_fpm_volume_scripts:
+  name: scripts
+  mount_path: "{{ moodle_scripts_path }}"
+  source: |-
+    configMap:
+      name: "{{ moodle_cm_scripts }}"
+      defaultMode: 0555
+moodle_php_fpm_volumes_base: "{{ [moodle_php_fpm_volume_config] +
+  [moodle_php_fpm_volume_moodledata] + [moodle_php_fpm_volume_localcache] + [moodle_php_fpm_volume_scripts] }}"
+moodle_php_fpm_volumes_extra: []
+
+# php-fpm
+php_fpm_appname: "{{ meta_name }}-php-fpm"
+php_fpm_cm: "{{ php_fpm_appname }}-cm"
+php_fpm_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}"
+
+# php-fpm deploy
+# php_fpm_size: 1
+php_fpm_image: "{{ moodle_image }}"
+php_fpm_container: "moodle-php-fpm"
+php_fpm_startup_probe: "{{ not _moodle_k8s_wait | default(true) }}"
+php_fpm_startup_command: "{{ moodle_readiness_command }}"
+php_fpm_readiness_probe: true
+php_fpm_readiness_command: "{{ moodle_readiness_command }}"
+php_fpm_liveness_probe: true
+php_fpm_liveness_command: "{{ moodle_liveness_command }}"
+php_fpm_connects_to: "{{ moodle_postgres_meta_name }}"
+## php.ini extra ini config
+# php_fpm_php_extra_ini: ''
+## php-fpm extra conf
+# php_fpm_extra_config: ''
+
+# deploy
+php_fpm_envvars: "{{ moodle_php_fpm_envvars_base + moodle_php_fpm_envvars_extra }}"
+php_fpm_volumes: "{{ moodle_php_fpm_volumes_base + moodle_php_fpm_volumes_extra }}"
+
 # php-fpm config
 php_fpm_config_process_control_timeout: 20

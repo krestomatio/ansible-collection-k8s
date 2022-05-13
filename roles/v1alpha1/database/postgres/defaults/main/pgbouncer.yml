@@ -5,7 +5,7 @@ pgbouncer_appname: "{{ meta_name }}-pgbouncer"
 pgbouncer_readonly_appname: "{{ meta_name }}-pgbouncer-readonly"
 
 # pgbouncer deploy
-pgbouncer_image: quay.io/krestomatio/pgbouncer@sha256:71668f4469b8d0925e2f9e85646e1d46ac585ed2765f90609fad426b99fa3235
+pgbouncer_image: quay.io/krestomatio/pgbouncer@sha256:30e61d2b2e24f9caa0e04170baede3196823e7a0dd082551e3f854322fde1601
 pgbouncer_image_pull_secret: "{{ image_pull_secret }}"
 pgbouncer_deploy: "{{ pgbouncer_appname }}-deploy"
 pgbouncer_container: "pgbouncer"
@@ -63,13 +63,8 @@ pgbouncer_secret_data: |
     resource_name=pgbouncer_secret).data.pgbouncer_admin_password |
     default(pgbouncer_admin_password |
     b64encode,true) }}
-  database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-    resource_name=pgbouncer_secret).data.database_url |
-    default(('postgres://' + postgres_database_user + ':' + postgres_database_password
-    + '@' + pgbouncer_service + ':' + pgbouncer_port | string + '/' + postgres_database_name) |
-    b64encode,true) }}
-  database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-    resource_name=pgbouncer_secret).data.database_url |
+  pgbouncer_database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=pgbouncer_secret).data.pgbouncer_database_url |
     default(('postgres://' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_user | default(postgres_database_user)
     + ':' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
@@ -97,8 +92,8 @@ pgbouncer_readonly_secret_data: |
     resource_name=pgbouncer_readonly_secret).data.pgbouncer_readonly_admin_password |
     default(pgbouncer_readonly_admin_password |
     b64encode,true) }}
-  database_readonly_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-    resource_name=pgbouncer_readonly_secret).data.database_url |
+  pgbouncer_readonly_database_url: {{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+    resource_name=pgbouncer_readonly_secret).data.pgbouncer_readonly_database_url |
     default(('postgres://' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
     resource_name=postgres_secret).data.database_user | default(postgres_database_user)
     + ':' + lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
@@ -162,4 +157,5 @@ pgbouncer_readonly_cm_data: |
   pgbouncer-extra-users.ini: |
     {{ pgbouncer_readonly_extra_users_config | default(pgbouncer_extra_users_config) | default('') | indent(2) }}
   pgbouncer-extra-databases.ini: |
-    {{ pgbouncer_readonly_extra_databases_config | default(pgbouncer_extra_databases_config) | default('') | indent(2) }}
+    {{ pgbouncer_readonly_extra_databases_config | default(pgbouncer_extra_databases_config)
+    | default('') | indent(2) }}

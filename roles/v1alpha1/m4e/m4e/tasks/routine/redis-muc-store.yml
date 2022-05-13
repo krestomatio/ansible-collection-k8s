@@ -1,9 +1,7 @@
-- name: enforce redis muc store config
-  when:
-    - moodle_redis_muc_store | bool
-    - moodle_redis_muc_store_routine | bool
-  vars:
-    moodle_redis_muc_store_overwrite: true
+- name: routine to enforce redis muc store config
+  when: routine_redis_muc_store | bool
   run_once: true
-  register: redis_muc_store_task
-  command: "{{ moodle_redis_muc_store_routine_script }}"
+  register: routine_redis_muc_store_task
+  command: "{{ routine_redis_muc_store_script if
+    routine_redis_muc_store_script is search(' -o ') else
+    routine_redis_muc_store_script + ' -o ' }}"

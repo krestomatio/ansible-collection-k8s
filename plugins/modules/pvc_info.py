@@ -54,30 +54,30 @@ EXAMPLES = r'''
 RETURN = r'''
 status:
   type: complex
-  description: A dictionary of mount/pvc expand status output
+  description: A dictionary of mount/pvc expand status output. Fields are camelCase
   returned: only when release exists
   contains:
-    size_available_gib:
+    sizeAvailableGib:
         description: Current available storage (GiB)
         type: float
         returned: success
         sample: 0.5
-    size_total_gib:
+    sizeTotalGib:
         description: Current total storage(GiB)
         type: float
         returned: success
         sample: 5.0
-    expansion_required:
+    expansionRequired:
         description: Whether expansion is required if storage available is below percentage
         type: bool
         returned: always
         sample: false
-    recommended_size_gib:
+    recommendedSizeGib:
         description: Recommended size after checking available and total storage
         type: int
         returned: success
         sample: 10
-    cap_reached:
+    capReached:
         description: Whether cap / max recommendation has been reached
         type: bool
         returned: success
@@ -158,9 +158,9 @@ def run_module():
     if below_twenty_pct(size_available, size_total) and size_available_gib < increment_gib:
         expansion_required = True
 
-    status['size_available_gib'] = b_to_gib(size_available)
-    status['size_total_gib'] = b_to_gib(size_total)
-    status['expansion_required'] = expansion_required
+    status['sizeAvailableGib'] = b_to_gib(size_available)
+    status['sizeTotalGib'] = b_to_gib(size_total)
+    status['expansionRequired'] = expansion_required
 
     if recommend_size:
         this_recommended_size_gib = recommended_size_gib(
@@ -169,8 +169,8 @@ def run_module():
             cap_gib,
             expansion_required
         )
-        status['recommended_size_gib'] = this_recommended_size_gib
-        status['cap_reached'] = bool(this_recommended_size_gib >= cap_gib)
+        status['recommendedSizeGib'] = this_recommended_size_gib
+        status['capReached'] = bool(this_recommended_size_gib >= cap_gib)
 
     result['status'] = status
 

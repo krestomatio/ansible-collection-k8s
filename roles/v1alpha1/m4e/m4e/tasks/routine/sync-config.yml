@@ -1,15 +1,15 @@
-- name: keep config.php in sync
+- name: routine to keep config.php in sync
   run_once: false
   no_log: true
   when:
-    - moodle_config_autosync
-    - sync_config_php is defined and sync_config_php
+    - routine_moodle_config_autosync
+    - routine_sync_config_php is defined and routine_sync_config_php
   vars:
-    sync_config_php: "{{ lookup('k8s', kind='Secret', namespace=meta_namespace,
-      resource_name=moodle_secret_config ).data['config.php'] |
+    routine_sync_config_php: "{{ lookup('k8s', kind='Secret', namespace=routine_reconcile_trigger_cr_namespace,
+      resource_name=routine_moodle_secret_config ).data['config.php'] |
       default('') | b64decode }}"
   copy:
-    content: "{{ sync_config_php }}"
-    dest: "{{ moodle_app }}/config.php"
+    content: "{{ routine_sync_config_php }}"
+    dest: "{{ routine_moodle_app }}/config.php"
     mode: 0400
     validate: /usr/bin/php -l %s

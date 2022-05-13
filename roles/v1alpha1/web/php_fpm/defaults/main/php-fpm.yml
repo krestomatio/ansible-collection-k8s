@@ -1,0 +1,85 @@
+---
+# php-fpm
+php_fpm_state: "{{ state }}"
+php_fpm_appname: "{{ meta_name }}-php-fpm"
+
+# php-fpm deploy
+php_fpm_size: 1
+php_fpm_image: quay.io/krestomatio/php-fpm@sha256:f8c03f70b0c15a27be37e0a71c4dc7d186a8053f613e7f44e67263cbf297212e
+php_fpm_image_pull_secret: "{{ image_pull_secret }}"
+php_fpm_deploy: "{{ php_fpm_appname }}-deploy"
+php_fpm_port: 9000
+php_fpm_host: "{{ php_fpm_ingress_host }}"
+php_fpm_args: "['php-fpm']"
+php_fpm_container: "php-fpm"
+php_fpm_container_group: "{{ php_fpm_container.replace('-', '_') }}"
+php_fpm_startup_probe: false
+php_fpm_startup_command: "['/usr/libexec/check-container-php', '-t', '-r']"
+php_fpm_startup_initial: 5
+php_fpm_startup_period: 30
+php_fpm_startup_timeout: 3
+php_fpm_startup_success: 1
+php_fpm_startup_failure: 6
+php_fpm_readiness_probe: false
+php_fpm_readiness_command: "['/usr/libexec/check-container-php', '-t', '-r']"
+php_fpm_readiness_initial: 5
+php_fpm_readiness_period: 30
+php_fpm_readiness_timeout: 3
+php_fpm_readiness_success: 1
+php_fpm_readiness_failure: 10
+php_fpm_liveness_probe: false
+php_fpm_liveness_command: "['/usr/libexec/check-container-php', '-t', '-l']"
+php_fpm_liveness_initial: 5
+php_fpm_liveness_period: 10
+php_fpm_liveness_timeout: 3
+php_fpm_liveness_success: 1
+php_fpm_liveness_failure: 3
+php_fpm_resource_requests: true
+php_fpm_resource_requests_cpu: 75m
+php_fpm_resource_requests_memory: 256Mi
+php_fpm_resource_limits: false
+php_fpm_resource_limits_cpu: 1
+php_fpm_resource_limits_memory: 1Gi
+php_fpm_term_grace_period: 30
+php_fpm_tolerations: false
+php_fpm_connects_to: false
+# php_fpm_envvars:
+#   - name: PHP_FPM_HOST
+#     value: php-service
+# php_fpm_volumes:
+#   - name: html
+#     mount_path: /var/www/html
+#     source: |-
+#       persistentVolumeClaim:
+#         claimName: metadata-pvc
+
+# php-fpm config map
+php_fpm_cm: "{{ php_fpm_appname }}-cm"
+php_fpm_cm_data: |
+  php-extra.ini: |
+    {{ php_fpm_php_extra_ini | indent(2) }}
+  php-fpm-extra.conf: |
+    {{ php_fpm_extra_config | indent(2) }}
+## php.ini extra ini config
+php_fpm_php_extra_ini: ''
+## php-fpm extra conf
+php_fpm_extra_config: ''
+
+# php-fpm service
+php_fpm_service: "{{ php_fpm_appname }}-service"
+php_fpm_service_type: ClusterIP
+php_fpm_service_spec: |
+  type: {{ php_fpm_service_type }}
+  sessionAffinity: {{ php_fpm_service_session_affinity | default('None') }}
+  {% if php_fpm_service_session_affinity_timeout is defined %}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ php_fpm_service_session_affinity_timeout }}
+  {% endif %}
+  ports:
+  - name: http
+    port: {{ php_fpm_port }}
+    protocol: TCP
+    targetPort: {{ php_fpm_port }}
+  selector:
+    app: '{{ php_fpm_appname }}'

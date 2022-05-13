@@ -1,0 +1,10 @@
+- name: suspend cronjob
+  include_tasks: resource/cronjob.yml
+
+- name: moodle update
+  vars:
+    moodle_component: "job"
+  block:
+    - include_tasks: resource/job-update.yml
+
+    - include_tasks: routine/status.yml

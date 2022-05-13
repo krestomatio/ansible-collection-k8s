@@ -36,13 +36,13 @@ metadata:
 {% if extra_labels | default(false) != false %}
     {{ extra_labels | indent(width=4) }}
 {% endif %}
-{% if (annotations | default(false) != false) or (connects_to | default(false) != false) or (annotation_inventory_hostvars | default(false) != false and inventory_include)%}
+{% if (annotations | default(false) != false) or (connects_to | default(false) != false) or (inventory_annotation_hostvars | default(false) != false and inventory_include)%}
   annotations:
 {% if connects_to | default(false) != false %}
     app.openshift.io/connects-to: '{{ connects_to }}'
 {% endif %}
-{% if annotation_inventory_hostvars | default(false) != false and inventory_include %}
-    {{ cr_group }}/inventory-hostvars: '{{ annotation_inventory_hostvars | to_json | indent( width=4) }}'
+{% if inventory_annotation_hostvars | default(false) != false and inventory_include %}
+    {{ cr_group }}/inventory-hostvars: '{{ inventory_annotation_hostvars | to_json | indent( width=4) }}'
 {% endif %}
 {% if annotation_version_hash | default(false) != false %}
     {{ cr_group }}/version-hash: '{{ annotation_version_hash }}'

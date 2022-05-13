@@ -1,0 +1,4 @@
+- import_tasks: "{{ common_path }}/routine/pvc-info.yml"
+
+- when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
+  import_tasks: "{{ common_path }}/routine/reconcile-trigger.yml"

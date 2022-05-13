@@ -12,7 +12,7 @@ Role Variables
 --------------
 
 - See [`defaults/main/main.yml`](defaults/main/main.yml)
-- See [`defaults/main/nginx.yml`](defaults/main/postgres.yml)
+- See [`defaults/main/nginx.yml`](defaults/main/nginx.yml)
 
 Dependencies
 ------------
@@ -32,7 +32,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "nginx"
+        name: "krestomatio.k8s.v1alpha1.web.nginx"
 ```
 License
 -------

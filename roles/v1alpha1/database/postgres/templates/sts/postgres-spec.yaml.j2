@@ -94,14 +94,23 @@ template:
       {{ postgres_args | to_nice_yaml(indent=2) | indent(6) }}
 {%   endif %}
 {% endif %}
-{% if postgres_startup_probe | bool %}
+{% if postgres_startup_probe %}
       startupProbe:
+{%   if postgres_startup_command is defined and postgres_startup_command %}
         exec:
-{%   if postgres_startup_command is string %}
+{%     if postgres_startup_command is string %}
           command: {{ postgres_startup_command }}
-{%   elif postgres_startup_command | type_debug == 'list' %}
+{%     elif postgres_startup_command | type_debug == 'list' %}
           command:
           {{ postgres_startup_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif postgres_startup_path is defined and postgres_startup_path %}
+        httpGet:
+          path: '{{ postgres_startup_path }}'
+          port: {{ postgres_startup_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ postgres_startup_host }}'
 {%   endif %}
         initialDelaySeconds: {{ postgres_startup_initial }}
         periodSeconds: {{ postgres_startup_period }}
@@ -109,14 +118,23 @@ template:
         successThreshold: {{ postgres_startup_success }}
         failureThreshold: {{ postgres_startup_failure }}
 {% endif %}
-{% if postgres_readiness_probe | bool %}
+{% if postgres_readiness_probe %}
       readinessProbe:
+{%   if postgres_readiness_command is defined and postgres_readiness_command %}
         exec:
-{%   if postgres_readiness_command is string %}
+{%     if postgres_readiness_command is string %}
           command: {{ postgres_readiness_command }}
-{%   elif postgres_readiness_command | type_debug == 'list' %}
+{%     elif postgres_readiness_command | type_debug == 'list' %}
           command:
           {{ postgres_readiness_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif postgres_readiness_path is defined and postgres_readiness_path %}
+        httpGet:
+          path: '{{ postgres_readiness_path }}'
+          port: {{ postgres_readiness_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ postgres_readiness_host }}'
 {%   endif %}
         initialDelaySeconds: {{ postgres_readiness_initial }}
         periodSeconds: {{ postgres_readiness_period }}
@@ -124,14 +142,23 @@ template:
         successThreshold: {{ postgres_readiness_success }}
         failureThreshold: {{ postgres_readiness_failure }}
 {% endif %}
-{% if postgres_liveness_probe | bool %}
+{% if postgres_liveness_probe %}
       livenessProbe:
+{%   if postgres_liveness_command is defined and postgres_liveness_command %}
         exec:
-{%   if postgres_liveness_command is string %}
+{%     if postgres_liveness_command is string %}
           command: {{ postgres_liveness_command }}
-{%   elif postgres_liveness_command | type_debug == 'list' %}
+{%     elif postgres_liveness_command | type_debug == 'list' %}
           command:
           {{ postgres_liveness_command | to_nice_yaml(indent=2) | indent(10) }}
+{%     endif %}
+{%   elif postgres_liveness_path is defined and postgres_liveness_path %}
+        httpGet:
+          path: '{{ postgres_liveness_path }}'
+          port: {{ postgres_liveness_port }}
+          httpHeaders:
+          - name: 'Host'
+            value: '{{ postgres_liveness_host }}'
 {%   endif %}
         initialDelaySeconds: {{ postgres_liveness_initial }}
         periodSeconds: {{ postgres_liveness_period }}

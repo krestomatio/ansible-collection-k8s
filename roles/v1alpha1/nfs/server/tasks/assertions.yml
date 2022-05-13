@@ -1,2 +1,26 @@
 - name: common assertions
   import_tasks: "{{ common_path }}/assertions.yml"
+
+- name: server export directory mode is string
+  when: server_export_mode is defined and server_export_mode
+  assert:
+    that: server_export_mode | type_debug in ['str', 'AnsibleUnicode', 'AnsibleUnsafeText']
+    fail_msg: "Server export mode property is not a string"
+    quiet: true
+
+- name: server export directory mode is string
+  when: server_generated_nfs_sc_mount_permissions is defined and server_generated_nfs_sc_mount_permissions
+  assert:
+    that: server_generated_nfs_sc_mount_permissions | type_debug in ['str', 'AnsibleUnicode', 'AnsibleUnsafeText']
+    fail_msg: "Server mount permissions property is not a string"
+    quiet: true
+
+- name: server export mode and mount permissions match
+  when:
+    - server_export_mode is defined and server_export_mode
+    - server_generated_nfs_sc_mount_permissions is defined and server_generated_nfs_sc_mount_permissions
+    - server_export_owner_mode_set
+  assert:
+    that: server_export_mode != server_generated_nfs_sc_mount_permissions
+    fail_msg: "Set export permissions with either server export mode property or mount permissions"
+    quiet: true

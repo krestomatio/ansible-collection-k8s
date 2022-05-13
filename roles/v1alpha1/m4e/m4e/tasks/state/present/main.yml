@@ -1,23 +1,17 @@
 - name: import tasks
   block:
-    - name: include not created status
-      when: not (cr_status_properties.created | default('False') | bool)
-      import_tasks: condition/created/not-created.yml
-
     - name: make assertions
       import_tasks: "assertions.yml"
 
-    - name: handle postgres
-      import_tasks: postgres.yml
+    - name: handle creating
+      when: moodle_status_not_created_condition_needed
+      import_tasks: condition/created/not-created.yml
 
     - name: handle moodle
-      import_tasks: moodle.yml
+      import_tasks: "{{ role_path }}/tasks/moodle/main.yml"
 
-    - name: handle nginx
-      import_tasks: nginx.yml
-
-    - name: end play without successful status
-      when: not cr_status_properties.uptodate | default('True') | bool
+    - name: end play without successful status when not up to date
+      when: not moodle_status_uptodate
       meta: end_play
 
     - name: include successful status

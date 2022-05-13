@@ -4,36 +4,12 @@ moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
 
 # moodle deploy
-moodle_size: 1
-moodle_image: quay.io/krestomatio/moodle_web@sha256:a59b8922c5b91dc1dd8f668b979dee207e5f6f340c6341e5723ceb42a347ce38
+moodle_image: quay.io/krestomatio/moodle_web@sha256:0a5ad13a14dbc899780e4da96bc1606accfffe2bdf642c3216091c4e928b46e8
 moodle_image_pull_secret: "{{ image_pull_secret }}"
-moodle_deploy: "{{ moodle_appname }}-deploy"
-moodle_container_args: "['php-fpm']"
 moodle_container: "moodle-php-fpm"
 moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
-moodle_readiness_probe: true
 moodle_readiness_command: "['/usr/libexec/check-container-php', '-t', '-r']"
-moodle_readiness_initial: 5
-moodle_readiness_period: 30
-moodle_readiness_timeout: 3
-moodle_readiness_success: 1
-moodle_readiness_failure: 6
-moodle_liveness_probe: true
 moodle_liveness_command: "['/usr/libexec/check-container-php', '-t', '-l']"
-moodle_liveness_initial: 5
-moodle_liveness_period: 10
-moodle_liveness_timeout: 3
-moodle_liveness_success: 1
-moodle_liveness_failure: 3
-moodle_resource_requests: true
-moodle_resource_requests_cpu: 150m
-moodle_resource_requests_memory: 256Mi
-moodle_resource_limits: false
-moodle_resource_limits_cpu: 1
-moodle_resource_limits_memory: 1Gi
-moodle_term_grace_period: 30
-moodle_tolerations: false
-moodle_connects_to: "{{ moodle_database_appname }}"
 
 # moodle service
 moodle_service: "{{ moodle_appname }}-service"
@@ -55,7 +31,7 @@ moodle_service_spec: |
 
 # moodle app
 moodle_app: /var/www/html
-moodle_data: /var/moodledata
+moodle_data_path: /var/moodledata
 moodle_config_path: /config
 moodle_scripts_path: "{{ moodle_config_path }}/scripts"
 moodle_host: "m4e.krestomat.io"
@@ -83,20 +59,28 @@ moodle_new_instance_job_resource_requests_memory: 256Mi
 moodle_new_instance_job_resource_limits: false
 moodle_new_instance_job_resource_limits_cpu: 1
 moodle_new_instance_job_resource_limits_memory: 1Gi
-moodle_new_instance_job_command_snippet: |
+moodle_new_instance_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
+moodle_new_instance_command:
+  - '/bin/bash'
+  - '-c'
+  - |
+    container-entrypoint
+    {{ moodle_new_instance_job_command_snippet | indent(2) }}
+moodle_new_instance_job_command_snippet: |-
   echo "Instantiating moodle..."
   /usr/libexec/check-container-php -d
   exit_code=$?
   if [ $exit_code -eq 2 ]; then
     echo "Installing..."
-    php admin/cli/install_database.php \
-      --lang={{ moodle_new_instance_lang | quote }} \
-      --fullname={{ moodle_new_instance_fullname | quote }} \
-      --shortname={{ moodle_new_instance_shortname | quote }} \
-      --summary={{ moodle_new_instance_summary | quote }} \
-      --adminuser={{ moodle_new_instance_adminuser | quote }} \
-      --adminpass={{ moodle_new_adminpass | default(lookup('password', '/dev/null length=15')) }} \
-      --adminemail={{ moodle_new_instance_adminmail | quote }} \
+    php {{ '-d memory_limit=' + moodle_new_instance_job_php_max_memory if
+    moodle_new_instance_job_php_max_memory else '' }} admin/cli/install_database.php \
+      --lang='{{ moodle_new_instance_lang }}' \
+      --fullname='{{ moodle_new_instance_fullname }}' \
+      --shortname='{{ moodle_new_instance_shortname }}' \
+      --summary='{{ moodle_new_instance_summary }}' \
+      --adminuser='{{ moodle_new_instance_adminuser }}' \
+      --adminpass='{{ moodle_new_adminpass | default(lookup('password', '/dev/null length=15')) }}' \
+      --adminemail='{{ moodle_new_instance_adminmail }}' \
       --agree-license
   elif [ $exit_code -eq 0 ]; then
     echo "WARNING: database already instantiated"
@@ -112,15 +96,17 @@ moodle_new_instance_job_command_snippet: |
   echo "Setting redis MUC store"
   {{ moodle_redis_muc_store_script }}
   {% endif %}
-moodle_new_instance_job_readiness_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
+moodle_new_instance_job_php_max_memory: ''
+moodle_new_instance_job_startup_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
+moodle_new_instance_job_startup_failure: 6
 moodle_new_instance_job_tolerations: false
 
 # moodle auto update
 moodle_update_minor: true
 moodle_update_major: false
-moodle_update_job: "{{ moodle_appname }}-update-{{ status_version_update.allversionshash[:10]
-  if status_version_update.allversionshash | default(false) else
-  now(utc=True).timestamp() | int }}-job"
+moodle_update_job:
+  "{{ moodle_appname }}-update-{{ moodle_status_version.allVersionsHash[:10]
+  | default(now(utc=True).timestamp() | int) }}-job"
 moodle_update_job_ttl_seconds_after_finished: 604800
 moodle_update_job_wait_timeout: 900
 moodle_update_job_active_deadline_seconds: "{{ moodle_update_job_wait_timeout }}"
@@ -130,88 +116,89 @@ moodle_update_job_resource_requests_memory: 256Mi
 moodle_update_job_resource_limits: false
 moodle_update_job_resource_limits_cpu: 1
 moodle_update_job_resource_limits_memory: 1Gi
-moodle_update_job_command_snippet: php admin/cli/upgrade.php --non-interactive
-moodle_update_job_readiness_command: "{{ moodle_readiness_command }}"
+moodle_update_job_command:
+  - '/bin/bash'
+  - '-c'
+  - |
+    container-entrypoint
+    {{ moodle_update_job_command_snippet | indent(2) }}
+moodle_update_job_command_snippet: |-
+  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if
+  moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
+moodle_update_job_php_max_memory: ''
+moodle_update_job_startup_command: "{{ moodle_readiness_command }}"
+moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
-
-# moodle routine
-moodle_routine: "{{ moodle_appname }}-routine"
-moodle_routine_spec: |
-  k8s_status_api_version: '{{ cr_api_version }}'
-  k8s_status_kind: '{{ cr_kind }}'
-  k8s_status_name: '{{ meta_name }}'
-  k8s_status_namespace: '{{ meta_namespace }}'
-  {% if notify_status is defined and notify_status %}
-  notify_status:
-    {{ notify_status | to_nice_yaml | indent(2) }}
-  {% endif %}
-  pods_ready_group: '{{ pods_ready_group }}'
-  moodle_container_group: '{{ moodle_container_group }}'
-  moodle_secret_config: '{{ moodle_secret_config }}'
-  moodle_config_autosync: {{ moodle_config_autosync }}
-  moodle_app: '{{ moodle_app }}'
-  moodle_status_script: '{{ moodle_status_script }}'
-  moodle_status_usage: {{ moodle_status_usage }}
-  {% if moodle_status_checks is defined and moodle_status_checks %}
-  moodle_status_checks: '{{ moodle_status_checks }}'
-  {% endif %}
-  moodle_status_version: false
-  {% if moodle_redis_muc_store | bool and moodle_redis_muc_store_routine | bool %}
-  moodle_redis_host: '{{ moodle_redis_host }}'
-  moodle_redis_secret_auth_secret: '{{ moodle_redis_secret_auth_secret }}'
-  moodle_redis_secret_auth_key: '{{ moodle_redis_secret_auth_key }}'
-  {%    if moodle_redis_secret_auth_secret | string == 'False' %}
-  moodle_redis_password: '{{ moodle_redis_password }}'
-  {%    endif %}
-  {%    if moodle_redis_muc_store_routine_script != moodle_redis_muc_store_script %}
-  moodle_redis_muc_store_routine_script: '{{ moodle_redis_muc_store_routine_script }}'
-  {%    else %}
-  moodle_redis_muc_store: {{ moodle_redis_muc_store }}
-  moodle_redis_muc_store_routine: {{ moodle_redis_muc_store_routine }}
-  moodle_redis_muc_store_overwrite: true
-  moodle_redis_muc_store_reset: {{ moodle_redis_muc_store_reset }}
-  moodle_redis_muc_store_plugin: '{{ moodle_redis_muc_store_plugin }}'
-  moodle_redis_muc_store_name: '{{ moodle_redis_muc_store_name }}'
-  moodle_redis_muc_store_script_extra_config: '{{ moodle_redis_muc_store_script_extra_config }}'
-  {%    endif %}
-  {% endif %}
-
-# moodle status
-moodle_status_script: "{{ moodle_scripts_path }}/status.php"
-moodle_status_version: true
-moodle_status_usage: false
-moodle_status_checks: critical,error
 
 # moodle cronjob
 moodle_cronjob: "{{ moodle_appname }}-cronjob"
 moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
 moodle_cronjob_failed_limit: 1
-moodle_cronjob_suspend: "{{ not cr_status_properties.uptodate | default('True') | bool }}"
+moodle_cronjob_parallelism: 1
+moodle_cronjob_backoff_limit: 2
+moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
-moodle_cronjob_args: "['php', 'admin/cli/cron.php']"
+moodle_cronjob_command:
+  - '/bin/bash'
+  - '-c'
+  - |
+    container-entrypoint
+    {{ moodle_cronjob_command_snippet | indent(2) }}
+moodle_cronjob_command_snippet: |-
+  php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
+  moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
+moodle_cronjob_php_max_memory: ''
+moodle_cronjob_startup_command: "{{ moodle_readiness_command }}"
 moodle_cronjob_resource_requests: true
 moodle_cronjob_resource_requests_cpu: 50m
 moodle_cronjob_resource_requests_memory: 128Mi
 moodle_cronjob_resource_limits: false
 moodle_cronjob_resource_limits_cpu: 1
 moodle_cronjob_resource_limits_memory: 1Gi
+moodle_cronjob_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_cronjob_tolerations: false
 
-# moodle pvc
-moodle_pvc_moodledata: "{{ moodle_appname }}-moodledata-pvc"
-moodle_pvc_moodledata_size: 1Gi
-moodle_pvc_moodledata_storage_access_mode: ReadWriteOnce
-moodle_pvc_moodledata_storage_class_name: false
-moodle_pvc_moodledata_spec: |
-  {% if moodle_pvc_moodledata_storage_class_name is defined and moodle_pvc_moodledata_storage_class_name %}
-  storageClassName: {{ moodle_pvc_moodledata_storage_class_name }}
+# moodle data pvc
+moodle_pvc_data: "{{ moodle_appname }}-moodledata-pvc"
+moodle_pvc_data_size: 1Gi
+moodle_pvc_data_storage_access_mode: ReadWriteOnce
+moodle_pvc_data_storage_class_name: false
+moodle_pvc_data_spec: |
+  {% if moodle_pvc_data_storage_class_name is defined and moodle_pvc_data_storage_class_name %}
+  storageClassName: {{ moodle_pvc_data_storage_class_name }}
   {% endif %}
   accessModes:
-    - '{{ moodle_pvc_moodledata_storage_access_mode }}'
+    - '{{ moodle_pvc_data_storage_access_mode }}'
   resources:
     requests:
-      storage: '{{ moodle_pvc_moodledata_size }}'
+      storage: '{{ moodle_pvc_data_size }}'
+moodle_pvc_data_source: |-
+  persistentVolumeClaim:
+    claimName: "{{ moodle_pvc_data }}"
+
+# optional moodle data nfs volume instead of pvc
+moodle_nfs_meta_name: false
+moodle_nfs_meta_namespace: "{{ meta_namespace }}"
+moodle_nfs_service: "{{ moodle_nfs_meta_name + '-nfs-service' if moodle_nfs_meta_name else '' }}"
+moodle_nfs_data_source: |-
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeAttributes:
+      server: "{{ moodle_nfs_data_server | default(moodle_nfs_service + '.' + moodle_nfs_meta_namespace) }}"  # required
+      share: "{{ moodle_nfs_data_share | default('/') }}"  # required
+      {% if moodle_nfs_data_mount_options is defined and moodle_nfs_data_mount_options %}
+      mountOptions: "{{ moodle_nfs_data_mount_options }}"  # optional
+      {% endif %}
+      {% if moodle_nfs_data_mount_permissions is defined and moodle_nfs_data_mount_permissions %}
+      mountPermissions: "{{ moodle_nfs_data_mount_permissions | default('0777') }}"  # optional
+      {% endif %}
+
+# moodledata volume
+moodle_volume_moodledata:
+  name: moodledata
+  mount_path: "{{ moodle_data_path }}"
+  source: "{{ moodle_nfs_data_source if moodle_nfs_meta_name else moodle_pvc_data_source }}"
 
 # moodle secrets
 moodle_secret_config: "{{ moodle_appname }}-secret-config"
@@ -224,40 +211,31 @@ moodle_secret_admin_data: |
 # moodle config map
 moodle_cm_scripts: "{{ moodle_appname }}-cm-scripts"
 moodle_cm_scripts_data: |
-  muc-store.php: |-
+  muc-store.php: |
     {{ lookup('template', moodle_script_muc_store_template) | indent(2) }}
-  status.php: |-
+  status.php: |
     {{ lookup('template', moodle_script_status_template) | indent(2) }}
 
 # database
-## deploy own database for moodle using postgres
-moodle_database_deploy: true
-moodle_database_appname: "{{ postgres_appname | default(meta_name + '-postgres') }}"
-moodle_database_service: "{{ postgres_service | default(moodle_database_appname + '-service') }}"
-moodle_database_secret: "{{ postgres_secret | default(moodle_database_appname + '-secret') }}"
+moodle_postgres_meta_name: false
+moodle_database_service: "{{ moodle_postgres_meta_name + '-pgbouncer-service' if moodle_postgres_meta_name else '' }}"
+moodle_database_secret: "{{ moodle_postgres_meta_name + '-postgres-secret' if moodle_postgres_meta_name else '' }}"
 moodle_database_secret_dbname_key: database_name
 moodle_database_secret_dbuser_key: database_user
 moodle_database_secret_dbpass_key: database_password
 
 # redis
-moodle_redis_host: "127.0.0.1"
+moodle_keydb_meta_name: false
+## redis host
+moodle_redis_service: "{{ moodle_keydb_meta_name + '-keydb-service' if moodle_keydb_meta_name else '' }}"
+## secret name to get auth from
+moodle_redis_secret: "{{ moodle_keydb_meta_name + '-keydb-secret' if moodle_keydb_meta_name else '' }}"
+moodle_redis_secret_auth_key: keydb_password
+moodle_redis_host: "{{ moodle_redis_service }}"
 ## whether redis will be used as session store
 moodle_redis_session_store: false
 ## whether redis will be used as muc store
 moodle_redis_muc_store: false
-## whether redis muc store config will be enforce in periodic routine
-moodle_redis_muc_store_routine: false
-## secret name to get auth from
-moodle_redis_secret_auth_secret: false
-moodle_redis_secret_auth_key: redis_password
-moodle_redis_password:
-  "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-      resource_name=moodle_redis_secret_auth_secret).data
-      [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode
-    if
-      moodle_redis_secret_auth_secret | string != 'False' and (moodle_config_session_redis | bool or moodle_redis_muc_store | bool)
-    else
-      false }}"
 ## muc store
 moodle_redis_muc_store_script: >-
   {{ moodle_scripts_path }}/muc-store.php
@@ -270,10 +248,9 @@ moodle_redis_muc_store_script: >-
   -p='{{ moodle_redis_muc_store_plugin }}'
   -n='{{ moodle_redis_muc_store_name }}'
   -s='{{ moodle_redis_host }}'
-  -a='{{ moodle_redis_password }}'
+  -a="${REDIS_PASSWORD}"
   -m='application,session'
   -e='{{ moodle_redis_muc_store_script_extra_config }}'
-moodle_redis_muc_store_routine_script: "{{ moodle_redis_muc_store_script }}"
 moodle_redis_muc_store_overwrite: false
 moodle_redis_muc_store_reset: false
 moodle_redis_muc_store_plugin: redis
@@ -289,17 +266,20 @@ moodle_redis_muc_store_script_extra_config:
 # moodle config.php
 moodle_config_dbhost: "{{ moodle_database_service }}"
 ## by default, database credential will be read from postgres secret:
-moodle_config_dbname: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+moodle_config_dbname: "{{ '' if not moodle_database_secret else
+  lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
   resource_name=moodle_database_secret).data[moodle_database_secret_dbname_key] |
   default('') | b64decode }}"
-moodle_config_dbuser: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+moodle_config_dbuser: "{{ '' if not moodle_database_secret else
+  lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
   resource_name=moodle_database_secret).data[moodle_database_secret_dbuser_key] |
   default('') | b64decode }}"
-moodle_config_dbpass: "{{ lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+moodle_config_dbpass: "{{ '' if not moodle_database_secret else
+  lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
   resource_name=moodle_database_secret).data[moodle_database_secret_dbpass_key] |
   default('') | b64decode }}"
 moodle_config_wwwroot: "{{ moodle_url }}"
-moodle_config_dataroot: "{{ moodle_data }}"
+moodle_config_dataroot: "{{ moodle_data_path }}"
 # moodle_config_context_cache_max_size: 7500
 # moodle_config_dbtype: pgsql
 # moodle_config_dblibrary: native
@@ -307,7 +287,8 @@ moodle_config_dataroot: "{{ moodle_data }}"
 # moodle_config_dbpersist: "false"
 # moodle_config_dbsocket: "false"
 # moodle_config_dbport: "''"
-# moodle_config_dbhandlesoptions: "false"
+moodle_config_dbhandlesoptions: "{{ moodle_database_service is search('pgbouncer') if
+  moodle_postgres_meta_name else false }}"
 # moodle_config_dbcollation: "utf8mb4_unicode_ci"
 # moodle_config_fetchbuffersize: "100000"
 # moodle_config_directorypermissions: "02777"
@@ -320,7 +301,10 @@ moodle_config_session_redis: "{{ moodle_redis_session_store }}"
 moodle_config_session_redis_host: '{{ moodle_redis_host }}'
 # moodle_config_session_redis_port: 6379
 # moodle_config_session_redis_database: 0
-moodle_config_session_redis_auth: "{{ moodle_redis_password | default('') }}"
+moodle_config_session_redis_auth: "{{ '' if not moodle_redis_secret else
+  lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+  resource_name=moodle_redis_secret).data
+  [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode }}"
 # moodle_config_session_redis_prefix: ''
 moodle_config_session_redis_acquire_lock_timeout: 120
 moodle_config_session_redis_lock_expire: 7200

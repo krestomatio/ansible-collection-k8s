@@ -1,0 +1,35 @@
+- name: set (nfs) server volume claim template
+  vars:
+    metadata_name: "{{ server_pvc_data }}"
+    annotations: "{{ server_pvc_data_annotations | default(false) }}"
+    extra_labels: "{{ server_pvc_data_extra_labels | default(false) }}"
+    namespaced: false
+    pvc_spec: "{{ server_pvc_data_spec }}"
+  set_fact:
+    server_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
+
+- name: set (nfs) server statefulset spec
+  when: server_sts_spec is not defined
+  vars:
+    annotations: "{{ server_sts_spec_annotations | default(false) }}"
+    extra_labels: "{{ server_sts_spec_extra_labels | default(false) }}"
+    inventory_include: true
+  set_fact:
+    server_sts_spec: "{{ lookup('template', server_sts_spec_template) }}"
+
+- name: (nfs) server statefulset resource definition
+  vars:
+    k8s_kind: StatefulSet
+    k8s_state: "{{ server_sts_state | default(server_state) }}"
+    k8s_wait: "{{ server_sts_wait | default(true) }}"
+    k8s_wait_timeout: "{{ server_sts_wait_timeout | default(200) }}"
+    template: "{{ sts_template }}"
+    metadata_name: "{{ server_sts }}"
+    annotations: "{{ server_sts_annotations | default(false) }}"
+    runtime: ganesha
+    sts_spec: "{{ server_sts_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save (nfs) server statefulset resource definition task output
+  set_fact:
+    k8s_server_sts: "{{ k8s_object_task }}"

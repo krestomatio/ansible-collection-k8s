@@ -1,0 +1,18 @@
+- name: set state absent
+  set_fact:
+    state: absent
+    k8s_wait: true
+
+- name: import tasks
+  block:
+    - name: start terminating condition
+      import_tasks: "{{ common_path }}/condition/terminating/start.yml"
+
+    - name: handle php-fpm removal
+      import_tasks: "{{ role_path }}/tasks/php-fpm.yml"
+
+    - name: end terminating condition
+      import_tasks: "{{ common_path }}/condition/terminating/end.yml"
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"

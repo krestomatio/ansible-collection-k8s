@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Role to allocate nfs servers for RWX using Ansible Operator SDK and rook nfs
+Role to create NFSv4 Ganesha servers for RWX storage in Kubernetes, using Ansible Operator SDK
 
 Requirements
 ------------
@@ -32,7 +32,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: krestomatio.k8s.server
+        name: krestomatio.k8s.v1alpha1.nfs.server
 ```
 License
 -------

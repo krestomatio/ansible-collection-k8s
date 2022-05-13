@@ -1,0 +1,43 @@
+- name: moodle nginx resource definition
+  vars:
+    k8s_kind: Nginx
+    k8s_state: "{{ moodle_nginx_state | default(moodle_state) }}"
+    template: "{{ nginx_template }}"
+    metadata_name: "{{ moodle_nginx }}"
+    annotations: "{{ moodle_nginx_annotations | default(false) }}"
+    nginx_spec: "{{ moodle_nginx_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save moodle nginx resource definition task
+  set_fact:
+    k8s_moodle_nginx: "{{ k8s_object_task }}"
+
+- name: wait for moodle nginx resource
+  when:
+    - not ansible_check_mode
+    - moodle_nginx_state | default(moodle_state) != 'absent'
+    - moodle_nginx_wait | default(_moodle_k8s_wait) | default(true)
+    - k8s_moodle_nginx is defined and k8s_moodle_nginx is changed
+  retries: 12
+  delay: 5
+  until:
+    - k8s_moodle_nginx_previous_resource_version != k8s_moodle_nginx_resource_version
+    - k8s_moodle_nginx_condition_ready and k8s_moodle_nginx_condition_ready.status is match('True')
+    - k8s_moodle_nginx_condition_successful and k8s_moodle_nginx_condition_successful.status is match('True')
+  vars:
+    k8s_moodle_nginx_previous_resource_version:
+      "{{ k8s_moodle_nginx.result.metadata.resourceVersion | default('1') }}"
+    k8s_moodle_nginx_resource_version: "{{ (k8s_moodle_nginx_wait.resources |
+      default([]) | first).metadata.resourceVersion | default('2') }}"
+    k8s_moodle_nginx_object: "{{ k8s_moodle_nginx_wait.resources | default([]) | first | default([]) }}"
+    k8s_moodle_nginx_conditions: "{{ k8s_moodle_nginx_object.status.conditions | default([]) }}"
+    k8s_moodle_nginx_condition_ready: "{{ k8s_moodle_nginx_conditions |
+      selectattr('type', 'equalto', 'Ready') | first | default ([]) }}"
+    k8s_moodle_nginx_condition_successful: "{{ k8s_moodle_nginx_conditions |
+      selectattr('type', 'equalto', 'Successful') | first | default ([]) }}"
+  k8s_info:
+    api_version: "{{ nginx_cr_api_version | default(cr_api_version) }}"
+    kind: Nginx
+    name: "{{ moodle_nginx }}"
+    namespace: "{{ meta_namespace }}"
+  register: k8s_moodle_nginx_wait

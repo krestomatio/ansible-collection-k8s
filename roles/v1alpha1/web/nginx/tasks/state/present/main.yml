@@ -1,0 +1,18 @@
+- name: import tasks
+  block:
+    - name: make assertions
+      import_tasks: "{{ role_path }}/tasks/assertions.yml"
+
+    - name: handle nginx
+      import_tasks: "{{ role_path }}/tasks/nginx.yml"
+
+    - name: include end condition status
+      vars:
+        _end_condition_task:
+          "{{ 'condition/ready/ingress-only.yml' if
+          (nginx_ingress_only | bool or nginx_route_only | bool)
+          else common_path + '/condition/ready/successful.yml' }}"
+      import_tasks: "{{ _end_condition_task }}"
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"

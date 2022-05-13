@@ -1,3 +1,0 @@
-- name: handle nginx
-  include_role:
-    name: "{{ cr_version }}/web/nginx"

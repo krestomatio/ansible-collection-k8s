@@ -1,0 +1,17 @@
+# moodle not created condition
+moodle_status_not_created_condition_needed: "{{ not moodle_status_created }}"
+
+# moodle new instance
+moodle_new_instance_job_needed:
+  "{{ true if ((moodle_new_instance | bool) and not
+  (cr_status_properties.instantiated | default('False') | bool)) else
+  false }}"
+
+# moodle update job
+moodle_update_job_needed:
+  "{{ true if (not moodle_status_uptodate and
+  ((moodle_update_minor and moodle_status_version.type | default('Minor') is match('Minor')) or
+  (moodle_update_major and moodle_status_version.type | default('Minor') is match('Major')))) else false }}"
+
+# moodle data pvc
+moodle_pvc_data_needed: "{{ false if moodle_nfs_meta_name else true }}"

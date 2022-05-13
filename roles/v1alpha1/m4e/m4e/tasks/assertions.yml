@@ -7,6 +7,17 @@
     fail_msg: "Set the variable 'moodle_new_instance_agree_license: true' to accept the license agreement"
     quiet: true
 
+- name: db connection credentials
+  when: moodle_new_adminpass_hash is defined
+  assert:
+    that:
+      - moodle_config_dbhost != ''
+      - moodle_config_dbname != ''
+      - moodle_config_dbuser != ''
+      - moodle_config_dbpass != ''
+    fail_msg: "db connection and credentials not supply completely"
+    quiet: true
+
 - name: password hash format
   when: moodle_new_adminpass_hash is defined
   assert:

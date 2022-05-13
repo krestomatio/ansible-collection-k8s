@@ -8,14 +8,8 @@
     - name: start terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
-    - name: handle nginx removal
-      import_tasks: nginx.yml
-
     - name: handle moodle removal
-      import_tasks: moodle.yml
-
-    - name: handle postgres removal
-      import_tasks: postgres.yml
+      import_tasks: "{{ role_path }}/tasks/state/absent/moodle.yml"
 
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"

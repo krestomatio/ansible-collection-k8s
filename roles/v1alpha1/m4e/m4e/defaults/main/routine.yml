@@ -1,0 +1,17 @@
+# THIS FILES IS SHARED BETWEEN M4E.M4E AND ROUTINE.M4E CRD
+
+# status
+routine_moodle_container_group: "{{ moodle_container_group }}"
+routine_moodle_status_script: "{{ moodle_status_script }}"
+
+# reset admin pass
+routine_moodle_new_adminpass_hash: "{{ moodle_new_adminpass_hash }}"
+
+# redis muc store
+routine_redis_muc_store_script: "{{ moodle_redis_muc_store_script }}"
+routine_redis_muc_store: false
+
+# sync config
+routine_moodle_config_autosync: "{{ moodle_config_autosync }}"
+routine_moodle_secret_config: "{{ moodle_secret_config }}"
+routine_moodle_app: "{{ moodle_app }}"

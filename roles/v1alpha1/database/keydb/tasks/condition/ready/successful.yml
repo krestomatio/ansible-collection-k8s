@@ -1,0 +1,13 @@
+- name: set successful status
+  import_tasks: "{{ common_path }}/routine/status.yml"
+  vars:
+    routine_status_cr_notify_force: true
+    routine_k8s_status_properties:
+      ready: "True"
+      state: Ready
+      service: "{{ keydb_service + '.' + meta_namespace }}"
+    routine_k8s_status_conditions:
+      - type: "Ready"
+        status: "True"
+        reason: "Successful"
+        message: "All tasks completed successfully"

@@ -34,7 +34,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "g12e"
+        name: "krestomatio.k8s.v1alpha1.app.g12e"
 ```
 License
 -------

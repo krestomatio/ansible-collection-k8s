@@ -1,0 +1,21 @@
+- name: nginx resource definitions
+  vars:
+    name: nginx
+    k8s_state: "{{ nginx_state }}"
+    component: nginx
+    metadata_app: "{{ nginx_appname }}"
+  block:
+    - name: handle all resources
+      when: not nginx_ingress_only | bool and not nginx_route_only | bool
+      block:
+        - import_tasks: resource/cm.yml
+
+        - import_tasks: resource/deploy.yml
+
+        - import_tasks: resource/service.yml
+
+    - import_tasks: "resource/{{ nginx_ingress_type }}.yml"
+      vars:
+        # do not wait for ingress if 'nginx_ingress_only' or 'nginx_route_only'
+        _nginx_ingress_wait_for_ip: "{{ false if (nginx_ingress_only | bool
+          or nginx_route_only | bool ) else nginx_ingress_wait_for_ip }}"

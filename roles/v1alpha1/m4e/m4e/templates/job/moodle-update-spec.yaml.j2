@@ -21,32 +21,42 @@ template:
         - '/bin/bash'
         - '-c'
         - |
-          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ moodle_data }}'
-          chmod 0740 {{ moodle_data }}
+          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ moodle_volume_moodledata.mount_path }}'
+          chmod 0740 {{ moodle_volume_moodledata.mount_path }}
       volumeMounts:
-      - mountPath: '{{ moodle_data }}'
-        name: moodledata
+      - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
+        name: "{{ moodle_volume_moodledata.name }}"
 {% endif %}
     containers:
-    - name: 'moodle-new-instance-job'
+    - name: 'moodle-update-job'
       image: '{{ moodle_image }}'
       env:
       - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
-        value: '{{ php_fpm_config_process_control_timeout }}'
+        value: '{{ moodle_update_job_php_fpm_config_process_control_timeout }}'
+{% if moodle_update_job_command is defined and moodle_update_job_command %}
+{%   if moodle_update_job_command is string %}
+      command: {{ moodle_update_job_command }}
+{%   elif moodle_update_job_command | type_debug == 'list' %}
       command:
-      - '/bin/bash'
-      - '-c'
-      - |
-        container-entrypoint
-        {{ moodle_update_job_command_snippet | indent(8) }}
+      {{ moodle_update_job_command | to_nice_yaml(indent=2) | indent(6) }}
+{%   endif %}
+{% endif %}
+{% if moodle_update_job_args is defined and moodle_update_job_args %}
+{%   if moodle_update_job_args is string %}
+      args: {{ moodle_update_job_args }}
+{%   elif moodle_update_job_args | type_debug == 'list' %}
+      args:
+      {{ moodle_update_job_args | to_nice_yaml(indent=2) | indent(6) }}
+{%   endif %}
+{% endif %}
       ports:
       - containerPort: 9000
       imagePullPolicy: IfNotPresent
-      readinessProbe:
+      startupProbe:
         exec:
-          command: {{ moodle_update_job_readiness_command }}
+          command: {{ moodle_update_job_startup_command }}
 {% if moodle_update_job_resource_requests or moodle_update_job_resource_limits %}
       resources:
 {% if moodle_update_job_resource_requests %}
@@ -61,8 +71,14 @@ template:
 {% endif %}
 {% endif %}
       volumeMounts:
-      - mountPath: '{{ moodle_data }}'
-        name: moodledata
+      - mountPath: /etc/php.d/99-php-extra.ini
+        name: php-fpm-extra-config
+        subPath: php-extra.ini
+      - mountPath: /etc/php-fpm.d/zz-php-fpm-extra.conf
+        name: php-fpm-extra-config
+        subPath: php-fpm-extra.conf
+      - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
+        name: "{{ moodle_volume_moodledata.name }}"
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
       - mountPath: '{{ moodle_config_localcachedir }}'
         name: localcache
@@ -74,9 +90,17 @@ template:
       - mountPath: {{ moodle_scripts_path }}
         name: scripts
     volumes:
-    - name: moodledata
-      persistentVolumeClaim:
-        claimName: '{{ moodle_pvc_moodledata }}'
+    - name: php-fpm-extra-config
+      configMap:
+        name: '{{ php_fpm_cm }}'
+        defaultMode: 0664
+        items:
+        - key: php-extra.ini
+          path: php-extra.ini
+        - key: php-fpm-extra.conf
+          path: php-fpm-extra.conf
+    - name: "{{ moodle_volume_moodledata.name }}"
+      {{ moodle_volume_moodledata.source | indent(6) }}
 {% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
     - name: localcache
       emptyDir: {}
@@ -95,7 +119,7 @@ template:
     tolerations:
     {{ moodle_update_job_tolerations | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
-{% if moodle_image_pull_secret  %}
+{% if moodle_image_pull_secret %}
     imagePullSecrets:
     - name: {{ moodle_image_pull_secret }}
 {% endif %}

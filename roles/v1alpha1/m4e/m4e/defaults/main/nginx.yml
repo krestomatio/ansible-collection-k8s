@@ -1,0 +1,43 @@
+# THIS FILES IS SHARED BETWEEN M4E.M4E AND NGINX.M4E CRD
+
+# moodle nginx envvars
+moodle_nginx_envvar_php_fpm_host:
+  name: PHP_FPM_HOST
+  value: "{{ php_fpm_appname }}-service"
+moodle_nginx_envvar_moodle_check_host:
+  name: MOODLE_CHECK_HOST
+  value: "{{ moodle_host }}"
+moodle_nginx_envvars_base: "{{ [moodle_nginx_envvar_php_fpm_host] +
+  [moodle_nginx_envvar_moodle_check_host] }}"
+moodle_nginx_envvars_extra: []
+
+# moodle nginx volumes
+moodle_nginx_volume_moodledata: "{{ moodle_volume_moodledata }}"
+moodle_nginx_volumes_base: "{{ [moodle_nginx_volume_moodledata] }}"
+moodle_nginx_volumes_extra: []
+
+# nginx
+nginx_appname: "{{ meta_name }}-nginx"
+nginx_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + meta_name) | to_uuid }}"
+
+# nginx deploy
+# nginx_size: 1
+nginx_image: "{{ moodle_image }}"
+nginx_container: "moodle-nginx"
+nginx_startup_probe: "{{ not _moodle_k8s_wait | default(true) }}"
+nginx_startup_path: "/login/index.php"
+nginx_readiness_probe: true
+nginx_readiness_path: "/login/index.php"
+nginx_liveness_probe: true
+nginx_liveness_path: "/login/index.php"
+nginx_connects_to: "{{ php_fpm_appname | default(moodle_appname + '-php-fpm') }}"
+## nginx extra conf
+# nginx_extra_config: ''
+
+# ingress
+nginx_ingress_host: "{{ moodle_host }}"
+nginx_ingress_protocol: "{{ moodle_protocol }}"
+
+# deploy
+nginx_envvars: "{{ moodle_nginx_envvars_base + moodle_nginx_envvars_extra }}"
+nginx_volumes: "{{ moodle_nginx_volumes_base + moodle_nginx_volumes_extra }}"

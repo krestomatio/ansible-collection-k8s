@@ -1,3 +1,6 @@
 # tasks file for nfs
+- name: get k8s distribution
+  import_tasks: "{{ common_path }}/k8s/distribution.yml"
+
 - name: import state tasks
   import_tasks: "state/{{ cr_state }}/main.yml"

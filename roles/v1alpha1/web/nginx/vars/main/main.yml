@@ -1,0 +1,6 @@
+---
+# defaults file for m4e
+meta_name_max_length: 26
+
+# templates
+nginx_deploy_spec_template: deploy/nginx-spec.yaml.j2

@@ -1,0 +1,9 @@
+- name: moodle new instance
+  vars:
+    moodle_component: "job"
+  block:
+    - include_tasks: condition/instantiated/not-instantiated.yml
+
+    - include_tasks: resource/job-new-instance.yml
+
+    - include_tasks: condition/instantiated/instantiated.yml
