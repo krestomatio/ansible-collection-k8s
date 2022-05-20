@@ -15,13 +15,13 @@
 - name: wait for moodle php-fpm resource
   when:
     - not ansible_check_mode
+    - k8s_moodle_php_fpm is defined
     - moodle_php_fpm_state | default(moodle_state) != 'absent'
     - moodle_php_fpm_wait | default(_moodle_k8s_wait) | default(true)
-    - k8s_moodle_php_fpm is defined and k8s_moodle_php_fpm is changed
   retries: 12
   delay: 5
   until:
-    - k8s_moodle_php_fpm_previous_resource_version != k8s_moodle_php_fpm_resource_version
+    - not k8s_moodle_php_fpm_old_resource_version
     - k8s_moodle_php_fpm_condition_ready and k8s_moodle_php_fpm_condition_ready.status is match('True')
     - k8s_moodle_php_fpm_condition_successful and k8s_moodle_php_fpm_condition_successful.status is match('True')
   vars:
@@ -29,6 +29,8 @@
       "{{ k8s_moodle_php_fpm.result.metadata.resourceVersion | default('1') }}"
     k8s_moodle_php_fpm_resource_version: "{{ (k8s_moodle_php_fpm_wait.resources |
       default([]) | first).metadata.resourceVersion | default('2') }}"
+    k8s_moodle_php_fpm_old_resource_version: "{{ true if (k8s_moodle_php_fpm is changed and
+      k8s_moodle_php_fpm_previous_resource_version == k8s_moodle_php_fpm_resource_version) else false }}"
     k8s_moodle_php_fpm_object: "{{ k8s_moodle_php_fpm_wait.resources | default([]) | first | default([]) }}"
     k8s_moodle_php_fpm_conditions: "{{ k8s_moodle_php_fpm_object.status.conditions | default([]) }}"
     k8s_moodle_php_fpm_condition_ready: "{{ k8s_moodle_php_fpm_conditions |
