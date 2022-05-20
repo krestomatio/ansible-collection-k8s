@@ -18,7 +18,7 @@
     - k8s_moodle_php_fpm is defined
     - moodle_php_fpm_state | default(moodle_state) != 'absent'
     - moodle_php_fpm_wait | default(_moodle_k8s_wait) | default(true)
-  retries: 12
+  retries: 24
   delay: 5
   until:
     - not k8s_moodle_php_fpm_old_resource_version

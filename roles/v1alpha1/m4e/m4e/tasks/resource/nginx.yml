@@ -18,7 +18,7 @@
     - k8s_moodle_nginx is defined
     - moodle_nginx_state | default(moodle_state) != 'absent'
     - moodle_nginx_wait | default(_moodle_k8s_wait) | default(true)
-  retries: 12
+  retries: 24
   delay: 5
   until:
     - not k8s_moodle_nginx_old_resource_version
