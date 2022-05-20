@@ -87,7 +87,7 @@ postgres_secret_data: |
     default(postgres_database_master_password |
     b64encode,true) }}
 
-# postgres service
+# postgres headless service
 postgres_service: "{{ postgres_appname }}-service"
 postgres_service_spec: |
   selector:
@@ -104,7 +104,7 @@ postgres_service_spec: |
     clientIP:
       timeoutSeconds: {{ postgres_service_session_affinity_timeout }}
   {% endif %}
-# postgres readreplicas service
+# postgres readreplicas headless service
 postgres_readreplicas_service: "{{ postgres_readreplicas_appname }}-service"
 postgres_readreplicas_service_spec: |
   selector:
@@ -122,7 +122,7 @@ postgres_readreplicas_service_spec: |
       timeoutSeconds: {{ postgres_readreplicas_service_session_affinity_timeout }}
   {% endif %}
 # postgres readonly service
-postgres_readonly_service: "{{ postgres_readreplicas_appname }}-service"
+postgres_readonly_service: "{{ postgres_readreplicas_appname }}-readonly-service"
 postgres_readonly_service_spec: |
   type: {{ postgres_service_type | default('ClusterIP') }}
   selector:
