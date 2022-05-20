@@ -15,13 +15,13 @@
 - name: wait for moodle nginx resource
   when:
     - not ansible_check_mode
+    - k8s_moodle_nginx is defined
     - moodle_nginx_state | default(moodle_state) != 'absent'
     - moodle_nginx_wait | default(_moodle_k8s_wait) | default(true)
-    - k8s_moodle_nginx is defined and k8s_moodle_nginx is changed
-  retries: 12
+  retries: 24
   delay: 5
   until:
-    - k8s_moodle_nginx_previous_resource_version != k8s_moodle_nginx_resource_version
+    - not k8s_moodle_nginx_old_resource_version
     - k8s_moodle_nginx_condition_ready and k8s_moodle_nginx_condition_ready.status is match('True')
     - k8s_moodle_nginx_condition_successful and k8s_moodle_nginx_condition_successful.status is match('True')
   vars:
@@ -29,6 +29,8 @@
       "{{ k8s_moodle_nginx.result.metadata.resourceVersion | default('1') }}"
     k8s_moodle_nginx_resource_version: "{{ (k8s_moodle_nginx_wait.resources |
       default([]) | first).metadata.resourceVersion | default('2') }}"
+    k8s_moodle_nginx_old_resource_version: "{{ true if (k8s_moodle_nginx is changed and
+      k8s_moodle_nginx_previous_resource_version == k8s_moodle_nginx_resource_version) else false }}"
     k8s_moodle_nginx_object: "{{ k8s_moodle_nginx_wait.resources | default([]) | first | default([]) }}"
     k8s_moodle_nginx_conditions: "{{ k8s_moodle_nginx_object.status.conditions | default([]) }}"
     k8s_moodle_nginx_condition_ready: "{{ k8s_moodle_nginx_conditions |
