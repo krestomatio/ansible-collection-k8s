@@ -52,6 +52,7 @@ postgres_readreplicas_sts: "{{ postgres_readreplicas_appname }}-sts"
 postgres_readreplicas_args:
   - run-postgresql-slave
 postgres_readreplicas_container: "postgres-readreplica"
+postgres_readreplicas_container_group: "{{ postgres_readreplicas_container.replace('-', '_') }}"
 postgres_readreplicas_startup_probe: "{{ postgres_startup_probe }}"
 postgres_readreplicas_startup_command: "{{ postgres_startup_command }}"
 postgres_readreplicas_startup_initial: "{{ postgres_startup_initial }}"

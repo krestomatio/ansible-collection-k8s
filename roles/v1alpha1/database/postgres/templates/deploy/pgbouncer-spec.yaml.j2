@@ -39,7 +39,7 @@ template:
       ports:
       - containerPort: {{ pgbouncer_port }}
         name: pgbouncer
-      imagePullPolicy: IfNotPresent
+      imagePullPolicy: '{{ pgbouncer_image_pull_policy | default('IfNotPresent') }}'
 {% if pgbouncer_command is defined and pgbouncer_command %}
 {%   if pgbouncer_command is string %}
       command: {{ pgbouncer_command }}
