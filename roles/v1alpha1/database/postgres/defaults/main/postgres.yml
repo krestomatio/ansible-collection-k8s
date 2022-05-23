@@ -51,6 +51,36 @@ postgres_readreplicas_size: 1
 postgres_readreplicas_sts: "{{ postgres_readreplicas_appname }}-sts"
 postgres_readreplicas_args:
   - run-postgresql-slave
+postgres_readreplicas_container: "postgres-readreplica"
+postgres_readreplicas_startup_probe: "{{ postgres_startup_probe }}"
+postgres_readreplicas_startup_command: "{{ postgres_startup_command }}"
+postgres_readreplicas_startup_initial: "{{ postgres_startup_initial }}"
+postgres_readreplicas_startup_period: "{{ postgres_startup_period }}"
+postgres_readreplicas_startup_timeout: "{{ postgres_startup_timeout }}"
+postgres_readreplicas_startup_success: "{{ postgres_startup_success }}"
+postgres_readreplicas_startup_failure: "{{ postgres_startup_failure }}"
+postgres_readreplicas_readiness_probe: "{{ postgres_readiness_probe }}"
+postgres_readreplicas_readiness_command: "{{ postgres_readiness_command }}"
+postgres_readreplicas_readiness_initial: "{{ postgres_readiness_initial }}"
+postgres_readreplicas_readiness_period: "{{ postgres_readiness_period }}"
+postgres_readreplicas_readiness_timeout: "{{ postgres_readiness_timeout }}"
+postgres_readreplicas_readiness_success: "{{ postgres_readiness_success }}"
+postgres_readreplicas_readiness_failure: "{{ postgres_readiness_failure }}"
+postgres_readreplicas_liveness_probe: "{{ postgres_liveness_probe }}"
+postgres_readreplicas_liveness_command: "{{ postgres_liveness_command }}"
+postgres_readreplicas_liveness_initial: "{{ postgres_liveness_initial }}"
+postgres_readreplicas_liveness_period: "{{ postgres_liveness_period }}"
+postgres_readreplicas_liveness_timeout: "{{ postgres_liveness_timeout }}"
+postgres_readreplicas_liveness_success: "{{ postgres_liveness_success }}"
+postgres_readreplicas_liveness_failure: "{{ postgres_liveness_failure }}"
+postgres_readreplicas_resource_requests: "{{ postgres_resource_requests }}"
+postgres_readreplicas_resource_requests_cpu: "{{ postgres_resource_requests_cpu }}"
+postgres_readreplicas_resource_requests_memory: "{{ postgres_resource_requests_memory }}"
+postgres_readreplicas_resource_limits: "{{ postgres_resource_limits }}"
+postgres_readreplicas_resource_limits_cpu: "{{ postgres_resource_limits_cpu }}"
+postgres_readreplicas_resource_limits_memory: "{{ postgres_resource_limits_memory }}"
+postgres_readreplicas_term_grace_period: "{{ postgres_term_grace_period }}"
+postgres_readreplicas_tolerations: "{{ postgres_tolerations }}"
 
 # postgres secret
 postgres_secret: "{{ postgres_appname }}-secret"
@@ -177,8 +207,8 @@ postgres_pvc_data_spec: |
 # postgres readreplicas pvc
 postgres_readreplicas_pvc_data: "{{ postgres_readreplicas_appname }}-data-pvc"
 postgres_readreplicas_pvc_data_size: "{{ postgres_pvc_data_size }}"
-postgres_readreplicas_pvc_data_storage_access_mode: "{{ postgres_readreplicas_pvc_data_storage_access_mode }}"
-postgres_readreplicas_pvc_data_storage_class_name: "{{ postgres_readreplicas_pvc_data_storage_class_name }}"
+postgres_readreplicas_pvc_data_storage_access_mode: "{{ postgres_pvc_data_storage_access_mode }}"
+postgres_readreplicas_pvc_data_storage_class_name: "{{ postgres_pvc_data_storage_class_name }}"
 postgres_readreplicas_pvc_data_spec: "{{ postgres_pvc_data_spec }}"
 
 # set to true to allow a postgres version upgrade with a new image
