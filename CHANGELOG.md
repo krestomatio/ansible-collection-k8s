@@ -2,5 +2,4 @@
 
 ### Code Refactoring
 
-* postgres: rename pgbouncer readonly own variables (Job Céspedes Ortiz)
-* postgres: rename readreplicas variables (Job Céspedes Ortiz)
+* moodle: default for redis stores when integrating with keydb operator (Job Céspedes Ortiz)
