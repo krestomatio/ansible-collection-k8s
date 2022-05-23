@@ -233,9 +233,9 @@ moodle_redis_secret: "{{ moodle_keydb_meta_name + '-keydb-secret' if moodle_keyd
 moodle_redis_secret_auth_key: keydb_password
 moodle_redis_host: "{{ moodle_redis_service }}"
 ## whether redis will be used as session store
-moodle_redis_session_store: false
+moodle_redis_session_store: "{{ true if moodle_keydb_meta_name else false }}"
 ## whether redis will be used as muc store
-moodle_redis_muc_store: false
+moodle_redis_muc_store: "{{ true if moodle_keydb_meta_name else false }}"
 ## muc store
 moodle_redis_muc_store_script: >-
   {{ moodle_scripts_path }}/muc-store.php
@@ -251,7 +251,7 @@ moodle_redis_muc_store_script: >-
   -a="${REDIS_PASSWORD}"
   -m='application,session'
   -e='{{ moodle_redis_muc_store_script_extra_config }}'
-moodle_redis_muc_store_overwrite: false
+moodle_redis_muc_store_overwrite: "{{ true if moodle_keydb_meta_name else false }}"
 moodle_redis_muc_store_reset: false
 moodle_redis_muc_store_plugin: redis
 moodle_redis_muc_store_name: redis
