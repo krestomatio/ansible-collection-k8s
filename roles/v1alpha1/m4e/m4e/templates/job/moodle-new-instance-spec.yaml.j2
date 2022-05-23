@@ -54,10 +54,6 @@ template:
       ports:
       - containerPort: 9000
       imagePullPolicy: IfNotPresent
-      startupProbe:
-        exec:
-          command: {{ moodle_new_instance_job_startup_command }}
-        failureThreshold: {{ moodle_new_instance_job_startup_failure }}
 {% if moodle_new_instance_job_resource_requests or moodle_new_instance_job_resource_limits %}
       resources:
 {% if moodle_new_instance_job_resource_requests %}
