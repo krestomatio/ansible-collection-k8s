@@ -60,7 +60,7 @@ def percentage(part, whole):
     return round(100 * float(part) / float(whole), 1)
 
 
-def recommended_size_gib(
+def autoexpand_size_gib(
     current_gib,
     increment_gib=25,
     cap_gib=1000,

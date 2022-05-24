@@ -163,7 +163,7 @@ server_pvc_data_size:
     lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=meta_namespace,
     resource_name=server_pvc_data).spec.resources.requests.storage | default('1Gi')
   }}"
-server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].recommendedSizeGib
+server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
   | default(server_pvc_data_autoexpansion_increment_gib) }}"
 ## enable autoexpansion
 server_pvc_data_autoexpansion: false

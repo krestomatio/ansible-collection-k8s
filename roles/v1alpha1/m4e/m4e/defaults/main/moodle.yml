@@ -191,7 +191,7 @@ moodle_pvc_data_size:
     lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=meta_namespace,
     resource_name=moodle_pvc_data).spec.resources.requests.storage | default('1Gi')
   }}"
-moodle_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].recommendedSizeGib
+moodle_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
     | default(moodle_pvc_data_autoexpansion_increment_gib) }}"
 ## enable autoexpansion
 moodle_pvc_data_autoexpansion: false

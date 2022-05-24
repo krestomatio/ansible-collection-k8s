@@ -23,12 +23,12 @@ options:
     type: str
   increment_gib:
     description:
-      - Recommended GiB increments if expansion required
+      - GiB increments when expansion criteria is met
     default: 5
     type: int
   cap_gib:
     description:
-      - Cap / max size in GiB to recommend
+      - Cap / max size in GiB to increase
     default: 30
     type: int
 
@@ -66,13 +66,13 @@ status:
         type: bool
         returned: always
         sample: false
-    recommendedSizeGib:
-        description: Recommended size after checking available and total storage
+    autoexpandSizeGib:
+        description: Autoexpansion size after checking available, total storage, and defined cap / max size
         type: int
         returned: success
         sample: 10
     capReached:
-        description: Whether cap / max recommendation has been reached
+        description: Whether defined cap / max size has been reached
         type: bool
         returned: success
         sample: false
@@ -84,7 +84,7 @@ from ansible_collections.krestomatio.k8s.plugins.module_utils.storage import (
     get_mount_info,
     b_to_gib,
     below_twenty_pct,
-    recommended_size_gib
+    autoexpand_size_gib
 )
 
 
@@ -154,14 +154,14 @@ def run_module():
     status['sizeTotalGib'] = b_to_gib(size_total)
     status['expansionRequired'] = expansion_required
 
-    this_recommended_size_gib = recommended_size_gib(
+    this_autoexpand_size_gib = autoexpand_size_gib(
         size_total_gib,
         increment_gib,
         cap_gib,
         expansion_required
     )
-    status['recommendedSizeGib'] = this_recommended_size_gib
-    status['capReached'] = bool(this_recommended_size_gib >= cap_gib)
+    status['autoexpandSizeGib'] = this_autoexpand_size_gib
+    status['capReached'] = bool(this_autoexpand_size_gib >= cap_gib)
     result['status'] = status
 
     # in the event of a successful module execution, you will want to
