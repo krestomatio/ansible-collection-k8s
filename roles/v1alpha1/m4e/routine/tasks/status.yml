@@ -1,9 +1,5 @@
 - import_tasks: routine/status.yml
 
-- name: set uptodate fact
-  set_fact:
-    routine_moodle_status_uptodate: "{{ cr_status_properties.upToDate | default('True') | bool }}"
-
 - import_tasks: "{{ common_path }}/routine/pvc-autoexpand-info.yml"
 
 - when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
