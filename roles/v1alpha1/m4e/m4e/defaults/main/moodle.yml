@@ -69,7 +69,7 @@ moodle_new_instance_command:
 moodle_new_instance_job_command_snippet: |-
   echo "Checking if database is available..."
   database_check_times=24
-  database_check_exit_code=$(/usr/libexec/check-container-php -d &>/dev/null || echo $?)
+  database_check_exit_code=$(/usr/libexec/check-container-php -d &>/dev/null && echo 0 || echo $?)
   until [ ${database_check_times} -lt 0 ] || [ "${database_check_exit_code}" == "0" ] || [ "${database_check_exit_code}" == "2" ]; do
     echo "Waiting for database to be available: ${database_check_times}..."
     sleep 5
