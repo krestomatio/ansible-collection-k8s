@@ -2,13 +2,15 @@
 
 ### New Features
 
-* m4e: wait for db in new instance job (Job Céspedes Ortiz)
+* m4e: add autoexpand feature (Job Céspedes Ortiz)
 
 ### Bug Fixes
 
-* m4e: define zero as exit code for database check (Job Céspedes Ortiz)
+* pvc_autoexpand_info: break at the of the loop (Job Céspedes Ortiz)
+* pvc_autoexpand_info: change loop to correctly identify mount path (Job Céspedes Ortiz)
 
 ### Code Refactoring
 
-* m4e: use startup probe for nginx and php-fpm (Job Céspedes Ortiz)
-* web: adjust startup probe times (Job Céspedes Ortiz)
+* rename references to autoexpand (Job Céspedes Ortiz)
+* m4e: group status and autoexpand task in routine (Job Céspedes Ortiz)
+* m4e: remove unneeded fact (Job Céspedes Ortiz)
