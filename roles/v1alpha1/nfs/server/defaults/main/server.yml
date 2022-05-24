@@ -133,15 +133,12 @@ server_generated_nfs_sc_mount_options: false
 # - hard
 # - nfsvers=4.1
 server_generated_nfs_sc_provisioner: nfs.csi.k8s.io
-server_generated_nfs_sc_allow_volume_expansion: "{{ server_pvc_autoexpansion }}"
+server_generated_nfs_sc_allow_volume_expansion: "{{ server_pvc_data_autoexpansion }}"
 server_generated_nfs_sc_reclaim_policy: Delete
 server_generated_nfs_sc_volume_binding_mode: Immediate
 
 # server pvc
 server_pvc_data: "{{ server_appname }}-data-pvc"
-server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_info_keyname].spec_gib
-  | default(server_pvc_autoexpansion_init_size_gib) }}"
-server_pvc_data_size: 1Gi
 server_pvc_data_storage_access_mode: ReadWriteOnce
 server_pvc_data_storage_class_name: false
 server_pvc_data_mode: "{{ server_export_mode }}"
@@ -156,7 +153,24 @@ server_pvc_data_spec: |
     - '{{ server_pvc_data_storage_access_mode }}'
   resources:
     requests:
-      storage: '{{ server_pvc_datata_size | default(server_pvc_data_size_gib + 'Gi') }}'
+      storage: '{{ server_pvc_datata_size | default((server_pvc_data_size_gib | string + 'Gi'),true) }}'
+server_pvc_data_size:
+  "{{
+    false
+  if
+    server_pvc_data_autoexpansion
+  else
+    lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=meta_namespace,
+    resource_name=server_pvc_data).spec.resources.requests.storage | default('1Gi')
+  }}"
+server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
+  | default(server_pvc_data_autoexpansion_increment_gib) }}"
+## enable autoexpansion
+server_pvc_data_autoexpansion: false
+### Increments in those GiB
+server_pvc_data_autoexpansion_increment_gib: 1
+### No more than those GiB
+server_pvc_data_autoexpansion_cap_gib: 5
 
 # server config map
 server_cm: "{{ server_appname }}-cm"
@@ -234,12 +248,3 @@ server_export_dir: /export
 server_export_userid: 0
 server_export_groupid: 0
 server_export_mode: '0700'
-
-## enable autoexpansion
-server_pvc_autoexpansion: false
-### Initial pvc size
-server_pvc_autoexpansion_init_size_gib: 1
-### Increments in those GiB
-server_pvc_autoexpansion_increment_gib: 5
-### No more than those GiB
-server_pvc_autoexpansion_cap_gib: 250

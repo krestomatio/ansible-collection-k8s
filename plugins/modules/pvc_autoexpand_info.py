@@ -7,13 +7,13 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: pvc_info
+module: pvc_autoexpand_info
 
-short_description: Get expand info
+short_description: Get autoexpand info
 
 version_added: "2.9.0"
 
-description: Get expand info of a mount/pvc.
+description: Get autoexpand info of a mount/pvc.
 
 options:
   path:
@@ -21,19 +21,14 @@ options:
       - Path to the mount point (e.g. C(/mnt/files))
     required: true
     type: str
-  recommend_size:
-    description:
-      - Whether size recommendation is done based on usage, 'increment_gib' and 'cap_gib'
-    default: false
-    type: bool
   increment_gib:
     description:
-      - Recommended GiB increments if expansion required
+      - GiB increments when expansion criteria is met
     default: 5
     type: int
   cap_gib:
     description:
-      - Cap / max size in GiB to recommend
+      - Cap / max size in GiB to increase
     default: 30
     type: int
 
@@ -42,13 +37,12 @@ author:
 '''
 
 EXAMPLES = r'''
-- name: Get expand info of mount/pvc
-  krestomatio.k8s.pvc_info:
+- name: Get autoexpand info of mount/pvc
+  krestomatio.k8s.pvc_autoexpand_info:
     path: /mypvc
-    recommend_size: true
     increment_gib: 5
     cap_gib: 30
-  register: pvc_info
+  register: pvc_autoexpand_info
 '''
 
 RETURN = r'''
@@ -72,13 +66,13 @@ status:
         type: bool
         returned: always
         sample: false
-    recommendedSizeGib:
-        description: Recommended size after checking available and total storage
+    autoexpandSizeGib:
+        description: Autoexpansion size after checking available, total storage, and defined cap / max size
         type: int
         returned: success
         sample: 10
     capReached:
-        description: Whether cap / max recommendation has been reached
+        description: Whether defined cap / max size has been reached
         type: bool
         returned: success
         sample: false
@@ -90,7 +84,7 @@ from ansible_collections.krestomatio.k8s.plugins.module_utils.storage import (
     get_mount_info,
     b_to_gib,
     below_twenty_pct,
-    recommended_size_gib
+    autoexpand_size_gib
 )
 
 
@@ -98,7 +92,6 @@ def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         path=dict(type='str', required=True),
-        recommend_size=dict(type='bool', default=False),
         increment_gib=dict(type='int', default=5),
         cap_gib=dict(type='int', default=30)
     )
@@ -110,7 +103,7 @@ def run_module():
     # for consumption, for example, in a subsequent task
     expansion_required = False
     status = dict(
-        expansion_required=expansion_required
+        expansionRequired=expansion_required
     )
     result = dict(
         changed=False,
@@ -143,7 +136,6 @@ def run_module():
     if not mount_info:
         module.fail_json(msg="Mount path is not present", **result)
 
-    recommend_size = module.params['recommend_size']
     increment_gib = module.params['increment_gib']
     cap_gib = module.params['cap_gib']
     size_available = mount_info['size_available']
@@ -162,16 +154,14 @@ def run_module():
     status['sizeTotalGib'] = b_to_gib(size_total)
     status['expansionRequired'] = expansion_required
 
-    if recommend_size:
-        this_recommended_size_gib = recommended_size_gib(
-            size_total_gib,
-            increment_gib,
-            cap_gib,
-            expansion_required
-        )
-        status['recommendedSizeGib'] = this_recommended_size_gib
-        status['capReached'] = bool(this_recommended_size_gib >= cap_gib)
-
+    this_autoexpand_size_gib = autoexpand_size_gib(
+        size_total_gib,
+        increment_gib,
+        cap_gib,
+        expansion_required
+    )
+    status['autoexpandSizeGib'] = this_autoexpand_size_gib
+    status['capReached'] = bool(this_autoexpand_size_gib >= cap_gib)
     result['status'] = status
 
     # in the event of a successful module execution, you will want to

@@ -20,10 +20,10 @@ routine_k8s_status_namespace: '{{ meta_namespace }}'
 routine_pods_ready_group: "{{ pods_ready_group }}"
 routine_status_cr_notify: false
 routine_status_cr_notify_force: false
-## pvc-info
-routine_pvc_info_name: {}
-routine_pvc_info_keyname: pvc
-routine_pvc_info_pods_ready_group: "{{ pods_ready_group }}"
+## pvc-autoexpand-info
+routine_pvc_autoexpand_info_name: {}
+routine_pvc_autoexpand_info_keyname: pvc
+routine_pvc_autoexpand_info_pods_ready_group: "{{ pods_ready_group }}"
 ## reconcile-trigger
 routine_reconcile_trigger_cr_version: "{{ cr_version }}"
 routine_reconcile_trigger_cr_group: "{{ cr_group }}"
@@ -32,4 +32,4 @@ routine_reconcile_trigger_cr_name: "{{ meta_name }}"
 routine_reconcile_trigger_cr_namespace: "{{ meta_namespace }}"
 
 ## condition
-condition_expand_keyname: "{{ routine_pvc_info_keyname | capitalize }}"
+condition_expand_keyname: "{{ routine_pvc_autoexpand_info_keyname | capitalize }}"
