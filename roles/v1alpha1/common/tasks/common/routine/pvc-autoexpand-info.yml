@@ -11,11 +11,11 @@
     increment_gib: "{{ routine_pvc_autoexpand_info_increment_gib }}"
     cap_gib: "{{ routine_pvc_autoexpand_info_cap_gib }}"
 
-# - name: set pvc status
-#   when: routine_pvc_autoexpand_info_task.status is defined
-#   import_tasks: "{{ common_path }}/condition/expansion/{{ 'required' if
-#     routine_pvc_autoexpand_info_task.status.expansion_required | default(false) else 'not-required' }}.yml"
-#   vars:
-#     _routine_pvc_autoexpand_info_status: "{{ routine_pvc_autoexpand_info_task.status |
-#       combine({'name': routine_pvc_autoexpand_info_name, 'path': routine_pvc_autoexpand_info_path}) }}"
-#     routine_k8s_status_properties: "{{ { routine_pvc_autoexpand_info_keyname : _routine_pvc_autoexpand_info_status } }}"
+- name: set pvc status
+  when: routine_pvc_autoexpand_info_task.status is defined
+  import_tasks: "{{ common_path }}/condition/expansion/{{ 'required' if
+    routine_pvc_autoexpand_info_task.status.expansion_required | default(false) else 'not-required' }}.yml"
+  vars:
+    _routine_pvc_autoexpand_info_status: "{{ routine_pvc_autoexpand_info_task.status |
+      combine({'name': routine_pvc_autoexpand_info_name, 'path': routine_pvc_autoexpand_info_path}) }}"
+    routine_k8s_status_properties: "{{ { routine_pvc_autoexpand_info_keyname : _routine_pvc_autoexpand_info_status } }}"

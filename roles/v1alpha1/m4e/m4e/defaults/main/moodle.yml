@@ -31,7 +31,6 @@ moodle_service_spec: |
 
 # moodle app
 moodle_app: /var/www/html
-moodle_data_path: /var/moodledata
 moodle_config_path: /config
 moodle_scripts_path: "{{ moodle_config_path }}/scripts"
 moodle_host: "m4e.krestomat.io"
@@ -168,9 +167,9 @@ moodle_cronjob_tolerations: false
 
 # moodle data pvc
 moodle_pvc_data: "{{ moodle_appname }}-moodledata-pvc"
-moodle_pvc_data_size: 1Gi
 moodle_pvc_data_storage_access_mode: ReadWriteOnce
 moodle_pvc_data_storage_class_name: false
+moodle_pvc_data_path: /var/moodledata
 moodle_pvc_data_spec: |
   {% if moodle_pvc_data_storage_class_name is defined and moodle_pvc_data_storage_class_name %}
   storageClassName: {{ moodle_pvc_data_storage_class_name }}
@@ -179,10 +178,27 @@ moodle_pvc_data_spec: |
     - '{{ moodle_pvc_data_storage_access_mode }}'
   resources:
     requests:
-      storage: '{{ moodle_pvc_data_size }}'
+      storage: '{{ moodle_pvc_data_size | default((moodle_pvc_data_size_gib | string + 'Gi'),true) }}'
 moodle_pvc_data_source: |-
   persistentVolumeClaim:
     claimName: "{{ moodle_pvc_data }}"
+moodle_pvc_data_size:
+  "{{
+    false
+  if
+    moodle_pvc_data_autoexpansion
+  else
+    lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=meta_namespace,
+    resource_name=moodle_pvc_data).spec.resources.requests.storage | default('1Gi')
+  }}"
+moodle_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].recommendedSizeGib
+    | default(moodle_pvc_data_autoexpansion_increment_gib) }}"
+## enable autoexpansion
+moodle_pvc_data_autoexpansion: false
+### Increments in those GiB
+moodle_pvc_data_autoexpansion_increment_gib: 1
+### No more than those GiB
+moodle_pvc_data_autoexpansion_cap_gib: 5
 
 # optional moodle data nfs volume instead of pvc
 moodle_nfs_meta_name: false
@@ -204,7 +220,7 @@ moodle_nfs_data_source: |-
 # moodledata volume
 moodle_volume_moodledata:
   name: moodledata
-  mount_path: "{{ moodle_data_path }}"
+  mount_path: "{{ moodle_pvc_data_path }}"
   source: "{{ moodle_nfs_data_source if moodle_nfs_meta_name else moodle_pvc_data_source }}"
 
 # moodle secrets
@@ -286,7 +302,7 @@ moodle_config_dbpass: "{{ '' if not moodle_database_secret else
   resource_name=moodle_database_secret).data[moodle_database_secret_dbpass_key] |
   default('') | b64decode }}"
 moodle_config_wwwroot: "{{ moodle_url }}"
-moodle_config_dataroot: "{{ moodle_data_path }}"
+moodle_config_dataroot: "{{ moodle_pvc_data_path }}"
 # moodle_config_context_cache_max_size: 7500
 # moodle_config_dbtype: pgsql
 # moodle_config_dblibrary: native

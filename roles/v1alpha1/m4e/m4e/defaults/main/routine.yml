@@ -3,6 +3,14 @@
 # status
 routine_moodle_container_group: "{{ moodle_container_group }}"
 routine_moodle_status_script: "{{ moodle_status_script }}"
+## pvc-autoexpand-info
+routine_pvc_autoexpand_info_name: "{{ moodle_pvc_data }}"
+routine_pvc_autoexpand_info_path: "{{ moodle_pvc_data_path }}"
+routine_pvc_autoexpand_info_container_group: "{{ moodle_container_group }}"
+### autoexpansion
+routine_pvc_autoexpand_info: "{{ moodle_pvc_data_autoexpansion }}"
+routine_pvc_autoexpand_info_increment_gib: "{{ moodle_pvc_data_autoexpansion_increment_gib }}"
+routine_pvc_autoexpand_info_cap_gib: "{{ moodle_pvc_data_autoexpansion_cap_gib }}"
 
 # reset admin pass
 routine_moodle_new_adminpass_hash: "{{ moodle_new_adminpass_hash }}"
