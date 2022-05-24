@@ -38,7 +38,7 @@ moodle_host: "m4e.krestomat.io"
 moodle_protocol: http
 moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
 moodle_config_autosync: true
-# moodle_new_adminpass_hash: $2b$10$zbRuwPil1wNWQUkvlkchwe3/rOljJvoheydndKH1X0bdIIigy0xim
+moodle_new_adminpass_hash: $2b$10$zbRuwPil1wNWQUkvlkchwe3/rOljJvoheydndKH1X0bdIIigy0xim
 
 # moodle new instance
 moodle_new_instance: true
@@ -67,6 +67,17 @@ moodle_new_instance_command:
     container-entrypoint
     {{ moodle_new_instance_job_command_snippet | indent(2) }}
 moodle_new_instance_job_command_snippet: |-
+  echo "Checking if database is available..."
+  database_check_times=24
+  database_check_exit_code=$(/usr/libexec/check-container-php -d &>/dev/null && echo 0 || echo $?)
+  until [ ${database_check_times} -lt 0 ] || [ "${database_check_exit_code}" == "0" ] || [ "${database_check_exit_code}" == "2" ]; do
+    echo "Waiting for database to be available: ${database_check_times}..."
+    sleep 5
+    (( database_check_times-- ))
+    database_check_exit_code=$(/usr/libexec/check-container-php -d &>/dev/null || echo $?)
+  done
+  [ ${database_check_times} -lt 0 ] && echo "Error: timeout wating for database to be available, exit code: ${database_check_exit_code}" && exit ${database_check_exit_code}
+
   echo "Instantiating moodle..."
   /usr/libexec/check-container-php -d
   exit_code=$?
@@ -79,7 +90,7 @@ moodle_new_instance_job_command_snippet: |-
       --shortname='{{ moodle_new_instance_shortname }}' \
       --summary='{{ moodle_new_instance_summary }}' \
       --adminuser='{{ moodle_new_instance_adminuser }}' \
-      --adminpass='{{ moodle_new_adminpass | default(lookup('password', '/dev/null length=15')) }}' \
+      --adminpass='{{ moodle_new_adminpass | default('changeme') }}' \
       --adminemail='{{ moodle_new_instance_adminmail }}' \
       --agree-license
   elif [ $exit_code -eq 0 ]; then
@@ -97,8 +108,6 @@ moodle_new_instance_job_command_snippet: |-
   {{ moodle_redis_muc_store_script }}
   {% endif %}
 moodle_new_instance_job_php_max_memory: ''
-moodle_new_instance_job_startup_command: "['/usr/libexec/check-container-php', '-t', '-c', '-m']"
-moodle_new_instance_job_startup_failure: 6
 moodle_new_instance_job_tolerations: false
 
 # moodle auto update
@@ -126,7 +135,6 @@ moodle_update_job_command_snippet: |-
   php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if
   moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
 moodle_update_job_php_max_memory: ''
-moodle_update_job_startup_command: "{{ moodle_readiness_command }}"
 moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
 
@@ -149,7 +157,6 @@ moodle_cronjob_command_snippet: |-
   php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
   moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
 moodle_cronjob_php_max_memory: ''
-moodle_cronjob_startup_command: "{{ moodle_readiness_command }}"
 moodle_cronjob_resource_requests: true
 moodle_cronjob_resource_requests_cpu: 50m
 moodle_cronjob_resource_requests_memory: 128Mi

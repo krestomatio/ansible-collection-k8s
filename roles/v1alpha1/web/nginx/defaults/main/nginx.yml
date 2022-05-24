@@ -18,10 +18,10 @@ nginx_startup_path: "/login/index.php"
 nginx_startup_host: "{{ nginx_host }}"
 nginx_startup_port: "{{ nginx_port }}"
 nginx_startup_initial: 5
-nginx_startup_period: 30
+nginx_startup_period: 10
 nginx_startup_timeout: 3
 nginx_startup_success: 1
-nginx_startup_failure: 10
+nginx_startup_failure: 6
 nginx_readiness_probe: false
 nginx_readiness_path: "/login/index.php"
 nginx_readiness_host: "{{ nginx_host }}"
