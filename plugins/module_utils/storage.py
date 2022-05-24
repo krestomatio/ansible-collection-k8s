@@ -18,12 +18,10 @@ def get_mount_info(module):
         (device, mount, fstype, options) = (fields[0], fields[1],
                                             fields[2], fields[3])
 
-        if not device.startswith('/') and ':/' not in device or fstype \
-                == 'none':
+        if ((not device.startswith('/') and ':/' not in device)
+                or (fstype == 'none')
+                or (module.params['path'] != mount)):
             continue
-
-        if module.params['path'] == mount:
-            break
 
         mount_info = get_mount_size(mount)
         mount_info['mount'] = mount
@@ -35,6 +33,9 @@ def get_mount_info(module):
             # only add if not already there, we might have a plain /etc/mtab
             if not lh.MTAB_BIND_MOUNT_RE.match(options):
                 mount_info['options'] += ',bind'
+
+        if module.params['path'] == mount:
+            break
 
     return mount_info
 
