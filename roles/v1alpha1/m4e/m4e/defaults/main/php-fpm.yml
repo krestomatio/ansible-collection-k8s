@@ -52,7 +52,10 @@ php_fpm_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + 
 # php_fpm_size: 1
 php_fpm_image: "{{ moodle_image }}"
 php_fpm_container: "moodle-php-fpm"
-php_fpm_startup_probe: "{{ not _moodle_k8s_wait | default(true) }}"
+php_fpm_startup_probe: true
+php_fpm_startup_initial: 0
+php_fpm_startup_period: 10
+php_fpm_startup_failure: 30
 php_fpm_startup_command: "{{ moodle_readiness_command }}"
 php_fpm_readiness_probe: true
 php_fpm_readiness_command: "{{ moodle_readiness_command }}"

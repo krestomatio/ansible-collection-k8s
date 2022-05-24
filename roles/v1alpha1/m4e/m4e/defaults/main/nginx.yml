@@ -24,7 +24,8 @@ nginx_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + me
 # nginx_size: 1
 nginx_image: "{{ moodle_image }}"
 nginx_container: "moodle-nginx"
-nginx_startup_probe: "{{ not _moodle_k8s_wait | default(true) }}"
+nginx_startup_probe: true
+nginx_startup_initial: 0
 nginx_startup_path: "/login/index.php"
 nginx_readiness_probe: true
 nginx_readiness_path: "/login/index.php"
