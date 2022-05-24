@@ -22,7 +22,7 @@ def get_mount_info(module):
                 == 'none':
             continue
 
-        if module.params['path'] != mount:
+        if module.params['path'] == mount:
             break
 
         mount_info = get_mount_size(mount)
