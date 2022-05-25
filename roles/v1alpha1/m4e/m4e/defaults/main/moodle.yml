@@ -202,19 +202,26 @@ moodle_pvc_data_autoexpansion_cap_gib: 5
 
 # optional moodle data nfs volume instead of pvc
 moodle_nfs_meta_name: false
-moodle_nfs_meta_namespace: "{{ meta_namespace }}"
 moodle_nfs_service: "{{ moodle_nfs_meta_name + '-nfs-service' if moodle_nfs_meta_name else '' }}"
+moodle_nfs_namespace: "{{ meta_namespace }}"
+## append a parent domain, ex: 'svc.cluster.local'
+moodle_nfs_parent_domain: false
+moodle_nfs_domain: "{{ moodle_nfs_namespace +
+  ( '.' + moodle_nfs_parent_domain if moodle_nfs_parent_domain else '') }}"
+moodle_nfs_data_server: "{{ moodle_nfs_service + '.' + moodle_nfs_domain if moodle_nfs_meta_name else '' }}"
+moodle_nfs_data_share: /
+moodle_nfs_data_mount_permissions: '0777'
 moodle_nfs_data_source: |-
   csi:
     driver: nfs.csi.k8s.io
     volumeAttributes:
-      server: "{{ moodle_nfs_data_server | default(moodle_nfs_service + '.' + moodle_nfs_meta_namespace) }}"  # required
-      share: "{{ moodle_nfs_data_share | default('/') }}"  # required
+      server: "{{ moodle_nfs_data_server }}"  # required
+      share: "{{ moodle_nfs_data_share }}"  # required
       {% if moodle_nfs_data_mount_options is defined and moodle_nfs_data_mount_options %}
       mountOptions: "{{ moodle_nfs_data_mount_options }}"  # optional
       {% endif %}
       {% if moodle_nfs_data_mount_permissions is defined and moodle_nfs_data_mount_permissions %}
-      mountPermissions: "{{ moodle_nfs_data_mount_permissions | default('0777') }}"  # optional
+      mountPermissions: "{{ moodle_nfs_data_mount_permissions }}"  # optional
       {% endif %}
 
 # moodledata volume
