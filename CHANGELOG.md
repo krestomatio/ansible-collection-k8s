@@ -1,5 +1,9 @@
 ## Changes
 
-### Chores
+### New Features
 
-* nfs-operator: bump image (Job Céspedes Ortiz)
+* m4e: add nfs parent domain variable (Job Céspedes Ortiz)
+
+### Code Refactoring
+
+* adjust max length of expected CR names (Job Céspedes Ortiz)
