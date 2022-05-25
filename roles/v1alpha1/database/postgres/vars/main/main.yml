@@ -6,7 +6,7 @@ cr_kind: Postgres
 # custom resource state: present, absent
 cr_state: present
 
-meta_name_max_length: 20
+meta_name_max_length: 26
 
 # templates
 postgres_sts_spec_template: sts/postgres-spec.yaml.j2

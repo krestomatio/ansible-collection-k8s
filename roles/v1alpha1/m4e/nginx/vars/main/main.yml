@@ -5,7 +5,7 @@ cr_kind: Nginx
 # custom resource state: present, absent
 cr_state: present
 
-meta_name_max_length: 26
+meta_name_max_length: 38
 
 # inventory
 inventory_uuid: "{{ nginx_inventory_uuid }}"
