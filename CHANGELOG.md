@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### New Features
 
-* m4e: adjust indentantion of nfs source (Job Céspedes Ortiz)
+* m4e: add moodle port (Job Céspedes Ortiz)
