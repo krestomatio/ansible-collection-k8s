@@ -1,9 +1,5 @@
 ## Changes
 
-### New Features
+### Bug Fixes
 
-* m4e: add nfs parent domain variable (Job Céspedes Ortiz)
-
-### Code Refactoring
-
-* adjust max length of expected CR names (Job Céspedes Ortiz)
+* m4e: adjust indentantion of nfs source (Job Céspedes Ortiz)

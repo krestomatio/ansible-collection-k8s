@@ -1,5 +1,5 @@
 REPO_NAME ?= ansible-collection-k8s
-VERSION ?= 0.1.11
+VERSION ?= 0.1.12
 PROJECT_SHORTNAME ?= k8s
 PROJECT_TYPE ?= collection
 
