@@ -1,5 +1,5 @@
 ## Changes
 
-### New Features
+### Bug Fixes
 
-* m4e: add moodle port (Job Céspedes Ortiz)
+* m4e: cast moodle port (Job Céspedes Ortiz)
