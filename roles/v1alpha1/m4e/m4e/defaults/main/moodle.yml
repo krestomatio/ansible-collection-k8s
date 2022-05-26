@@ -34,8 +34,11 @@ moodle_app: /var/www/html
 moodle_config_path: /config
 moodle_scripts_path: "{{ moodle_config_path }}/scripts"
 moodle_host: "m4e.krestomat.io"
+moodle_port: false
+moodle_subpath: false
 moodle_protocol: http
-moodle_url: "{{ moodle_protocol }}://{{ moodle_host }}"
+moodle_healthcheck_subpath: /login/index.php
+moodle_healthcheck_path: "{{ moodle_subpath | default('',true) + moodle_healthcheck_subpath }}"
 moodle_config_autosync: true
 moodle_new_adminpass_hash: $2b$10$zbRuwPil1wNWQUkvlkchwe3/rOljJvoheydndKH1X0bdIIigy0xim
 
@@ -307,7 +310,9 @@ moodle_config_dbpass: "{{ '' if not moodle_database_secret else
   lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
   resource_name=moodle_database_secret).data[moodle_database_secret_dbpass_key] |
   default('') | b64decode }}"
-moodle_config_wwwroot: "{{ moodle_url }}"
+moodle_config_wwwroot: "{{ moodle_protocol }}://{{ moodle_host
+  + ( ':' + moodle_port if moodle_port else '' )
+  + ( moodle_subpath if moodle_subpath else '' ) }}"
 moodle_config_dataroot: "{{ moodle_pvc_data_path }}"
 # moodle_config_context_cache_max_size: 7500
 # moodle_config_dbtype: pgsql
