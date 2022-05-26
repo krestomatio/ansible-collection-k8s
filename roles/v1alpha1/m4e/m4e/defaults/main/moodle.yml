@@ -311,7 +311,7 @@ moodle_config_dbpass: "{{ '' if not moodle_database_secret else
   resource_name=moodle_database_secret).data[moodle_database_secret_dbpass_key] |
   default('') | b64decode }}"
 moodle_config_wwwroot: "{{ moodle_protocol }}://{{ moodle_host
-  + ( ':' + moodle_port if moodle_port else '' )
+  + ( ':' + moodle_port | string if moodle_port else '' )
   + ( moodle_subpath if moodle_subpath else '' ) }}"
 moodle_config_dataroot: "{{ moodle_pvc_data_path }}"
 # moodle_config_context_cache_max_size: 7500
