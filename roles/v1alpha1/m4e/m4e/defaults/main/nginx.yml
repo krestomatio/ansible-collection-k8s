@@ -6,9 +6,12 @@ moodle_nginx_envvar_php_fpm_host:
   value: "{{ php_fpm_appname }}-service"
 moodle_nginx_envvar_moodle_check_host:
   name: MOODLE_CHECK_HOST
-  value: "{{ moodle_host }}"
+  value: "{{ moodle_host + ( ':' + moodle_port if moodle_port else '' ) }}"
+moodle_nginx_envvar_moodle_check_path:
+  name: MOODLE_CHECK_PATH
+  value: "{{ moodle_healthcheck_path }}"
 moodle_nginx_envvars_base: "{{ [moodle_nginx_envvar_php_fpm_host] +
-  [moodle_nginx_envvar_moodle_check_host] }}"
+  [moodle_nginx_envvar_moodle_check_host] + [moodle_nginx_envvar_moodle_check_path] }}"
 moodle_nginx_envvars_extra: []
 
 # moodle nginx volumes
