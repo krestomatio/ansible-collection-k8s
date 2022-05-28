@@ -7,13 +7,13 @@
   block:
     - import_tasks: "{{ role_path }}/tasks/resource/routine.yml"
 
+    - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
+
     - import_tasks: "{{ role_path }}/tasks/resource/nginx.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/php-fpm.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/service.yml"
-
-    - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/cm-scripts.yml"
 
