@@ -276,7 +276,7 @@ template:
 {% endif %}
     volumes:
     - name: nfs-ganesha-lib
-      emptyDir:
+      emptyDir: {}
     - name: nfs-ganesha-tmp
       emptyDir:
         medium: Memory

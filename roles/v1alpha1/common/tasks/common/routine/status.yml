@@ -71,7 +71,7 @@
         url: "{{ _routine_status_cr_notify.url }}"
         user: "{{ _routine_status_cr_notify.user | default(omit) }}"
         password: "{{ _routine_status_cr_notify.password
-          | default(lookup('env','NOTIFY_STATUS_PASSWORD')) | default(omit, true) }}"
+          | default(lookup('env','ROUTINE_STATUS_CR_NOTIFY_PASSWORD')) | default(omit, true) }}"
         validate_certs: "{{ _routine_status_cr_notify.validate_certs | default(omit) }}"
 
     - name: show notify status error
