@@ -12,11 +12,6 @@
   vars:
     k8s_kind: Job
     k8s_state: "{{ moodle_update_job_state | default(moodle_state) }}"
-    k8s_wait: true
-    k8s_wait_timeout: "{{ moodle_update_job_wait_timeout }}"
-    k8s_wait_condition:
-      type: "Complete"
-      status: "True"
     template: "{{ job_template }}"
     metadata_name: "{{ moodle_update_job }}"
     job_spec: "{{ moodle_update_job_spec }}"
