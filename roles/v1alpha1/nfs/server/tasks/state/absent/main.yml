@@ -1,7 +1,6 @@
 - name: set state absent
   set_fact:
     state: absent
-    k8s_wait: true
 
 - name: import tasks
   block:
@@ -9,7 +8,7 @@
       import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
     - name: handle (nfs) server
-      import_tasks: "{{ role_path }}/tasks/state/absent/server.yml" 
+      import_tasks: "{{ role_path }}/tasks/state/absent/server.yml"
 
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"

@@ -1,7 +1,6 @@
 - name: set state absent
   set_fact:
     state: absent
-    k8s_wait: "{{ cr_state_wait | default(false) | bool }}"
 
 - name: import tasks
   block:
