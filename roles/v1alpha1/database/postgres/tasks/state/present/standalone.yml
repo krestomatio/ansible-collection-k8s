@@ -1,0 +1,12 @@
+# task to remove readreplicas resources
+- name: handle removal of readreplicas when changing to standalone
+  when:
+    - cr_status_properties.mode | default('standalone') == 'readreplicas'
+    - "postgres_mode == 'standalone'"
+  include_tasks: "{{ role_path }}/tasks/state/present/readreplicas-to-standalone.yml"
+
+- name: handle postgres
+  import_tasks: "{{ role_path }}/tasks/postgres.yml"
+
+- name: handle pgbouncer
+  import_tasks: "{{ role_path }}/tasks/pgbouncer.yml"

@@ -1,0 +1,36 @@
+- name: remove readreplicas resources when changing to standalone
+  vars:
+    state: absent
+  block:
+    - name: pgbouncer readonly resource definitions
+      vars:
+        name: pgbouncer
+        component: pgbouncer
+        metadata_app: "{{ pgbouncer_readonly_appname }}"
+      block:
+        - include_tasks: "{{ role_path }}/tasks/resource/pgbouncer-readonly/secret.yml"
+
+        - include_tasks: "{{ role_path }}/tasks/resource/pgbouncer-readonly/cm.yml"
+
+        - include_tasks: "{{ role_path }}/tasks/resource/pgbouncer-readonly/svc.yml"
+
+        - include_tasks: "{{ role_path }}/tasks/resource/pgbouncer-readonly/deploy.yml"
+
+    - name: postgres readreplicas resource definitions
+      vars:
+        name: readreplicas
+        component: readreplicas
+        metadata_app: "{{ postgres_readreplicas_appname }}"
+      block:
+        - include_tasks: "{{ role_path }}/tasks/resource/readreplicas/svc.yml"
+
+        - include_tasks: "{{ role_path }}/tasks/resource/readreplicas/svc-readonly.yml"
+
+        - include_tasks: "{{ role_path }}/tasks/resource/readreplicas/sts.yml"
+
+    - name: postgres readreplicas resource cleanup
+      vars:
+        cleanup_label_selector: "app={{ postgres_readreplicas_appname }}"
+        cleanup_kind_list:
+          - PersistentVolumeClaim
+      include_tasks: "{{ common_path }}/cleanup-resources.yml"

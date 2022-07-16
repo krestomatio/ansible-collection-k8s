@@ -1,0 +1,11 @@
+- name: handle postgres
+  import_tasks: "{{ role_path }}/tasks/postgres.yml"
+
+- name: handle pgbouncer
+  import_tasks: "{{ role_path }}/tasks/pgbouncer.yml"
+
+- name: handle postgres read replicas
+  import_tasks: "{{ role_path }}/tasks/readreplicas.yml"
+
+- name: handle pgbouncer readonly
+  import_tasks: "{{ role_path }}/tasks/pgbouncer-readonly.yml"
