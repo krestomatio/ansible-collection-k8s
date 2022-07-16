@@ -6,4 +6,9 @@
 
     - include_tasks: resource/job-new-instance.yml
 
+    - include_tasks: "{{ common_path }}/wait/job.yml"
+      vars:
+        wait_job_name: "{{ moodle_new_instance_job }}"
+        wait_job_conditions: "{{ k8s_moodle_new_instance_job.result.status.conditions | default([]) }}"
+
     - include_tasks: condition/instantiated/instantiated.yml
