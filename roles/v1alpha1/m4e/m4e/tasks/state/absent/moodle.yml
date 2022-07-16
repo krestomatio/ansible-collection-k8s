@@ -5,25 +5,21 @@
     component: "{{ moodle_component | default('moodle') }}"
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
+    # remove crd
     - import_tasks: "{{ role_path }}/tasks/resource/routine.yml"
-
-    - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/nginx.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/php-fpm.yml"
 
-    - import_tasks: "{{ role_path }}/tasks/resource/service.yml"
+    # remove cronjob
+    - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
 
-    - import_tasks: "{{ role_path }}/tasks/resource/cm-scripts.yml"
-
-    - import_tasks: "{{ role_path }}/tasks/resource/secret-admin.yml"
-
-    - import_tasks: "{{ role_path }}/tasks/resource/secret-config.yml"
-
+    # remove pvc
     - import_tasks: "{{ role_path }}/tasks/resource/pvc-moodledata.yml"
       when: moodle_pvc_data_needed | bool
 
+    # remove any remaining job or their pods
     - import_tasks: "{{ common_path }}/cleanup-resources.yml"
       vars:
         cleanup_label_selector: "app={{ metadata_app }}"
