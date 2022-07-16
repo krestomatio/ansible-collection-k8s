@@ -1,4 +1,4 @@
-- name: pgbouncer resource definitions
+- name: pgbouncer readonly resource definitions
   vars:
     name: pgbouncer
     component: pgbouncer

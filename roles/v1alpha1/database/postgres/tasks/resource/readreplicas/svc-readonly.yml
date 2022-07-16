@@ -7,7 +7,7 @@
     template: "{{ service_template }}"
     metadata_name: "{{ postgres_readonly_service }}"
     service_spec: "{{ postgres_readonly_service_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save postgres read only service resource definition task
   set_fact:

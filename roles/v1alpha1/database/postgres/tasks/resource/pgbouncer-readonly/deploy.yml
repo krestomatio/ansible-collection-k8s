@@ -20,7 +20,7 @@
     annotations: "{{ pgbouncer_readonly_deploy_annotations | default(false) }}"
     runtime: pgbouncer
     deploy_spec: "{{ pgbouncer_readonly_deploy_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save pgbouncer readonly deploy resource definition task
   set_fact:

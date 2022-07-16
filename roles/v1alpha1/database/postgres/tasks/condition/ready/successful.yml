@@ -4,6 +4,7 @@
     routine_status_cr_notify_force: true
     routine_k8s_status_properties:
       ready: "True"
+      mode: "{{ postgres_mode }}"
       state: Ready
       service: "{{ pgbouncer_service + '.' + meta_namespace }}"
       serviceReadOnly: "{{ pgbouncer_readonly_service + '.' + meta_namespace
