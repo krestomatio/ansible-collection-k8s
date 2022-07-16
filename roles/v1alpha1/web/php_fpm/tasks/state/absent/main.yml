@@ -9,7 +9,7 @@
       import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
     - name: handle php-fpm removal
-      import_tasks: "{{ role_path }}/tasks/php-fpm.yml"
+      import_tasks: "{{ role_path }}/tasks/state/absent/php-fpm.yml"
 
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"
