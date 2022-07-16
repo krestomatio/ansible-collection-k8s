@@ -1,0 +1,21 @@
+- name: pgbouncer resource definitions
+  vars:
+    name: pgbouncer
+    component: pgbouncer
+    metadata_app: "{{ pgbouncer_appname }}"
+  block:
+    - import_tasks: "{{ role_path }}/tasks/resource/pgbouncer/deploy.yml"
+
+- name: postgres resource definitions
+  vars:
+    name: postgres
+    component: postgres
+    metadata_app: "{{ postgres_appname }}"
+  block:
+    - import_tasks: "{{ role_path }}/tasks/resource/postgres/sts.yml"
+
+    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
+      vars:
+        cleanup_label_selector: "app={{ metadata_app }}"
+        cleanup_kind_list:
+          - PersistentVolumeClaim

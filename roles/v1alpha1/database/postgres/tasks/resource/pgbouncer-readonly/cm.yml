@@ -7,7 +7,7 @@
     template: "{{ cm_template }}"
     metadata_name: "{{ pgbouncer_readonly_cm }}"
     cm_data: "{{ pgbouncer_readonly_cm_data }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save pgbouncer readonly config map resource definition task
   set_fact:
