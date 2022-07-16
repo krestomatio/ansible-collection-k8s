@@ -9,7 +9,7 @@
       import_tasks: "{{ common_path }}/condition/terminating/start.yml"
 
     - name: handle nginx removal
-      import_tasks: "{{ role_path }}/tasks/nginx.yml"
+      import_tasks: "{{ role_path }}/tasks/state/absent/nginx.yml"
 
     - name: end terminating condition
       import_tasks: "{{ common_path }}/condition/terminating/end.yml"
