@@ -1,7 +1,4 @@
 # tasks file for keydb
-- name: get k8s distribution
-  import_tasks: "{{ common_path }}/k8s/distribution.yml"
-
 - name: include keydb mode vars
   when: keydb_mode in ['standalone', 'multimaster']
   include_vars: "{{ keydb_mode }}.yml"
