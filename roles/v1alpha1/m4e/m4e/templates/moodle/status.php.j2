@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 define('CLI_SCRIPT', true);
+define('NO_UPGRADE_CHECK', true);
 
 $MOODLE_COMMIT = getenv('MOODLE_COMMIT') ?: false;
 $MOODLE_APP = getenv('MOODLE_APP') ?: '/var/www/html';
@@ -51,7 +52,8 @@ if($options['url']){
     $json['url'] = "$CFG->wwwroot";
 }
 
-if($options['version']){
+# will not run if upgrade running
+if($options['version'] && empty($CFG->upgraderunning)){
     # Source version to compare with db version later
     require("$CFG->dirroot/version.php");
 
@@ -153,7 +155,8 @@ if($options['usage']){
     $json['usage'][] = $users_total;
 }
 
-if($options['checks']){
+# will not run if upgrade running
+if($options['checks'] && empty($CFG->upgraderunning)){
     if (is_bool($options['checks'])){
         $filter_status = array('critical','error');
     }else{
