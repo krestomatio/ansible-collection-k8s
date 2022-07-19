@@ -1,0 +1,23 @@
+- name: wait resource
+  vars:
+    wait_resource_condition_ready: "{{ wait_resource_conditions
+      | selectattr('type', 'equalto', 'Ready') | first | default([]) }}"
+  block:
+    - name: "check kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}"
+      when:
+        - wait_resource_condition_ready.reason | default('') == 'Error'
+        - wait_resource_condition_ready.status | default('False') | bool
+      fail:
+        msg: "kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}, msg: {{ wait_resource_condition_ready.message | default('error') }}"
+
+    - name: "end play and wait new reconcile for kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}"
+      when: not wait_resource_condition_ready.status | default('False') | bool
+      block:
+        - name: end play msg
+          debug:
+            msg: >-
+              kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}, msg:
+              resource has not been completed, waiting for a new reconciliation once its state changes
+
+        - name: end play
+          meta: end_play
