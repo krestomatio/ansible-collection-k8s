@@ -52,3 +52,9 @@ routine_template: "{{ common_path }}/routine.yaml.j2"
 inventory_refresh_task: not-refresh
 inventory_annotation_extra_cr_cwd: |
   krestomat.io/inventory-extra-cr-cwd: '{{ cr_cwd }}'
+
+# k8s
+k8s_api_resources:
+  "{{ (lookup('pipe','kubectl api-resources --output=name --cached='
+  + api_resources_cached | default(true) | string) | default('')).split('\n') }}"
+k8s_distribution: "{{ 'okd' if 'clusterversions.config.openshift.io' in k8s_api_resources else 'k8s' }}"

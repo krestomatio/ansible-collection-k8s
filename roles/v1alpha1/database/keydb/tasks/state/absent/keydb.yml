@@ -5,12 +5,5 @@
     component: keydb
     metadata_app: "{{ keydb_appname }}"
   block:
+    # remove sts
     - import_tasks: resource/sts.yml
-
-    - import_tasks: resource/svc.yml
-
-    - import_tasks: resource/svc-headless.yml
-
-    - import_tasks: resource/cm.yml
-
-    - import_tasks: resource/secret.yml

@@ -13,9 +13,3 @@
     - import_tasks: resource/postgres/svc.yml
 
     - import_tasks: resource/postgres/sts.yml
-
-    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
-      vars:
-        cleanup_label_selector: "app={{ metadata_app }}"
-        cleanup_kind_list:
-          - PersistentVolumeClaim

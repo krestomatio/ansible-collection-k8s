@@ -9,9 +9,3 @@
     - import_tasks: resource/readreplicas/svc-readonly.yml
 
     - import_tasks: resource/readreplicas/sts.yml
-
-    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
-      vars:
-        cleanup_label_selector: "app={{ metadata_app }}"
-        cleanup_kind_list:
-          - PersistentVolumeClaim

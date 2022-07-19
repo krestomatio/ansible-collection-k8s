@@ -7,4 +7,9 @@
   block:
     - include_tasks: resource/job-update.yml
 
+    - include_tasks: "{{ common_path }}/wait/job.yml"
+      vars:
+        wait_job_name: "{{ moodle_update_job }}"
+        wait_job_conditions: "{{ k8s_moodle_update_job.result.status.conditions | default([]) }}"
+
     - include_tasks: routine/status.yml

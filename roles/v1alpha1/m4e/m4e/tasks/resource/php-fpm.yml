@@ -13,33 +13,13 @@
     k8s_moodle_php_fpm: "{{ k8s_object_task }}"
 
 - name: wait for moodle php-fpm resource
+  vars:
+    wait_resource_conditions: "{{ k8s_moodle_php_fpm.result.status.conditions | default([]) }}"
+    wait_resource_kind: Phpfpm
+    wait_resource_name: "{{ moodle_php_fpm }}"
   when:
     - not ansible_check_mode
     - k8s_moodle_php_fpm is defined
     - moodle_php_fpm_state | default(moodle_state) != 'absent'
     - moodle_php_fpm_wait | default(_moodle_k8s_wait) | default(true)
-  retries: 24
-  delay: 5
-  until:
-    - not k8s_moodle_php_fpm_old_resource_version
-    - k8s_moodle_php_fpm_condition_ready and k8s_moodle_php_fpm_condition_ready.status is match('True')
-    - k8s_moodle_php_fpm_condition_successful and k8s_moodle_php_fpm_condition_successful.status is match('True')
-  vars:
-    k8s_moodle_php_fpm_previous_resource_version:
-      "{{ k8s_moodle_php_fpm.result.metadata.resourceVersion | default('1') }}"
-    k8s_moodle_php_fpm_resource_version: "{{ (k8s_moodle_php_fpm_wait.resources |
-      default([]) | first).metadata.resourceVersion | default('2') }}"
-    k8s_moodle_php_fpm_old_resource_version: "{{ true if (k8s_moodle_php_fpm is changed and
-      k8s_moodle_php_fpm_previous_resource_version == k8s_moodle_php_fpm_resource_version) else false }}"
-    k8s_moodle_php_fpm_object: "{{ k8s_moodle_php_fpm_wait.resources | default([]) | first | default([]) }}"
-    k8s_moodle_php_fpm_conditions: "{{ k8s_moodle_php_fpm_object.status.conditions | default([]) }}"
-    k8s_moodle_php_fpm_condition_ready: "{{ k8s_moodle_php_fpm_conditions |
-      selectattr('type', 'equalto', 'Ready') | first | default ([]) }}"
-    k8s_moodle_php_fpm_condition_successful: "{{ k8s_moodle_php_fpm_conditions |
-      selectattr('type', 'equalto', 'Successful') | first | default ([]) }}"
-  k8s_info:
-    api_version: "{{ php_fpm_cr_api_version | default(cr_api_version) }}"
-    kind: Phpfpm
-    name: "{{ moodle_php_fpm }}"
-    namespace: "{{ meta_namespace }}"
-  register: k8s_moodle_php_fpm_wait
+  include_tasks: "{{ common_path }}/wait/resource.yml"

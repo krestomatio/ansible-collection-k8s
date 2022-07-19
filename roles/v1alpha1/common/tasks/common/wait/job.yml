@@ -1,0 +1,23 @@
+- name: wait job
+  vars:
+    wait_job_condition_failed: "{{ wait_job_conditions
+      | selectattr('type', 'equalto', 'Failed') | first | default([]) }}"
+    wait_job_condition_complete: "{{ wait_job_conditions
+      | selectattr('type', 'equalto', 'Complete') | first | default([]) }}"
+  block:
+    - name: "check kind: Job, name: {{ wait_job_name }}"
+      when: wait_job_condition_failed.status | default('False') | bool
+      fail:
+        msg: "kind: Job, name: {{ wait_job_name }}, msg: {{ wait_job_condition_failed.message | default('failed') }}"
+
+    - name: "end play and wait new reconcile for kind: job, name: {{ wait_job_name }}"
+      when: not wait_job_condition_complete.status | default('False') | bool
+      block:
+        - name: end play msg
+          debug:
+            msg: >-
+              kind: Job, name: {{ wait_job_name }}, msg: job has not been completed,
+              waiting for a new reconciliation once its state changes
+
+        - name: end play
+          meta: end_play
