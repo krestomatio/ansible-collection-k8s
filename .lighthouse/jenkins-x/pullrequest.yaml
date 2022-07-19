@@ -37,7 +37,8 @@ spec:
                 rsync -a /workspace/source/ /workspace/ansible_collections/krestomatio/k8s
 
                 ## pipeline from make
-                make ${JOB_NAME}
+                # make ${JOB_NAME}
+                sleep 400
               resources:
                 requests:
                   cpu: 0.1
