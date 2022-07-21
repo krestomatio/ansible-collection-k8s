@@ -2,7 +2,7 @@ server_state: "{{ state }}"
 server_appname: "{{ meta_name }}-nfs"
 
 # (nfs) server sts
-server_image: quay.io/krestomatio/nfs-ganesha@sha256:c99320d5b376cf222f79a91eb19720ed6bc7dae694fcf68f5cd6e2a85a61340d
+server_image: quay.io/krestomatio/nfs-ganesha@sha256:317ee5ea7b86f1e2d8e444ef79932ada58e18cb76ece3fc9ba0c752823c02684
 server_image_pull_secret: "{{ image_pull_secret }}"
 server_sts: "{{ server_appname }}-sts"
 server_container: "nfs-ganesha"
