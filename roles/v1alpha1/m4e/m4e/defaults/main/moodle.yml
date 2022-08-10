@@ -144,9 +144,10 @@ moodle_update_job_tolerations: false
 moodle_cronjob: "{{ moodle_appname }}-cronjob"
 moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
+moodle_cronjob_starting_deadline_seconds: 45
 moodle_cronjob_failed_limit: 1
 moodle_cronjob_parallelism: 1
-moodle_cronjob_backoff_limit: 2
+moodle_cronjob_backoff_limit: 1
 moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_command:
