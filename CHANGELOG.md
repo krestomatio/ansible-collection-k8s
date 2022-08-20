@@ -1,5 +1,9 @@
 ## Changes
 
-### Chores
+### New Features
 
-* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* m4e: add cronjob start deadline (Job Céspedes Ortiz)
+
+### Code Refactoring
+
+* m4e: add other type of moodle update (Job Céspedes Ortiz)
