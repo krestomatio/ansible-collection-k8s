@@ -113,8 +113,10 @@ moodle_new_instance_job_php_max_memory: ''
 moodle_new_instance_job_tolerations: false
 
 # moodle auto update
-moodle_update_minor: true
-moodle_update_major: false
+moodle_update_allow_types:
+  - Other
+  - Minor
+  # - Major
 moodle_update_job:
   "{{ moodle_appname }}-update-{{ moodle_status_version.allVersionsHash[:10]
   | default(now(utc=True).timestamp() | int) }}-job"
@@ -144,9 +146,10 @@ moodle_update_job_tolerations: false
 moodle_cronjob: "{{ moodle_appname }}-cronjob"
 moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
+moodle_cronjob_starting_deadline_seconds: 45
 moodle_cronjob_failed_limit: 1
 moodle_cronjob_parallelism: 1
-moodle_cronjob_backoff_limit: 2
+moodle_cronjob_backoff_limit: 1
 moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_command:

@@ -48,12 +48,12 @@ function convertBytesToGiB($bytes) {
     return round($bytes / 1024 / 1024 / 1024,1);
 }
 
-if($options['url']){
+if ($options['url']){
     $json['url'] = "$CFG->wwwroot";
 }
 
 # will not run if upgrade running
-if($options['version'] && empty($CFG->upgraderunning)){
+if ($options['version'] && empty($CFG->upgraderunning)){
     # Source version to compare with db version later
     require("$CFG->dirroot/version.php");
 
@@ -62,7 +62,7 @@ if($options['version'] && empty($CFG->upgraderunning)){
     $version_source = $version;
     $version_source_release = $release;
     $version_source_branch = $branch;
-    $version_source_type = "Minor";
+    $version_source_type = "None";
     $version_source_downgrade_error = "False";
     $version_source_allversionshash = $CFG->allversionshash;
     $version_source_pending = "False";
@@ -77,9 +77,13 @@ if($options['version'] && empty($CFG->upgraderunning)){
         $uptodate = "False";
     } else {
         $version_source_allversionshash = core_component::get_all_versions_hash();
-        if($version_source_allversionshash !== $CFG->allversionshash){
+        if ($version_source_allversionshash !== $CFG->allversionshash){
             $uptodate = "False";
-            if($branch !== $CFG->branch){
+            $version_source_type = "Other";
+            if ($version_source > $CFG->version) {
+                $version_source_type = "Minor";
+            }
+            if ($branch !== $CFG->branch){
                 $version_source_type = "Major";
             }
         }
@@ -102,7 +106,7 @@ if($options['version'] && empty($CFG->upgraderunning)){
     );
 }
 
-if($options['usage']){
+if ($options['usage']){
     # get total files in bytes from moodle database
     $files_bytes_sql = "SELECT SUM(d.filesize) AS value
                         FROM (SELECT DISTINCT f.contenthash, f.filesize
@@ -156,7 +160,7 @@ if($options['usage']){
 }
 
 # will not run if upgrade running
-if($options['checks'] && empty($CFG->upgraderunning)){
+if ($options['checks'] && empty($CFG->upgraderunning)){
     if (is_bool($options['checks'])){
         $filter_status = array('critical','error');
     }else{
