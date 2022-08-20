@@ -4,8 +4,8 @@
     routine_k8s_status_conditions:
       - type: "UpToDate"
         status: "False"
-        reason: "{{ moodle_status_version.type | default('Minor') }}UpdatePending"
-        message: "A {{ moodle_status_version.type | default('Minor') }} update of Moodle is pending"
+        reason: "{{ moodle_status_version.type | default('Other') }}UpdatePending"
+        message: "{{ moodle_status_version.type | default('Other') }} update of Moodle is pending"
       - type: "Ready"
         status: "False"
         reason: "UpdatePending"
