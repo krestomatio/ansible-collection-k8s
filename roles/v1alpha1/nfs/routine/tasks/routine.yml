@@ -1,4 +1,3 @@
 - import_tasks: "{{ common_path }}/routine/pvc-autoexpand-info.yml"
 
-- when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
-  import_tasks: "{{ common_path }}/routine/reconcile-trigger.yml"
+- import_tasks: "{{ common_path }}/routine/status-properties-hash.yml"

@@ -1,0 +1,8 @@
+# to trigger reconciliation in parent CR, watchDependentResources=true is required
+- name: add status properties hash annotation
+  vars:
+    add_annotations_status_properties:
+      "{% set copy=routine_k8s_status_task.result.status.copy() %}{% if copy.conditions is defined %}{% set
+      removed=copy.pop('conditions') %}{% endif %}{{ copy }}"
+    add_annotations: "{{ { cr_group + '/status-properties-hash':  add_annotations_status_properties | hash('sha1') } }}"
+  import_tasks: "{{ common_path }}/add-annotations.yml"
