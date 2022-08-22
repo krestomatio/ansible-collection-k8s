@@ -2,8 +2,8 @@
 
 ### New Features
 
-* m4e: add cronjob start deadline (Job Céspedes Ortiz)
+* wait for resources using observedGeneration field (Job Céspedes Ortiz)
 
 ### Code Refactoring
 
-* m4e: add other type of moodle update (Job Céspedes Ortiz)
+* trigger reconcile in Routine parent CR by adding annotation (Job Céspedes Ortiz)
