@@ -14,12 +14,10 @@
 
 - name: wait for moodle nginx resource
   vars:
-    wait_resource_conditions: "{{ k8s_moodle_nginx.result.status.conditions | default([]) }}"
-    wait_resource_kind: Nginx
-    wait_resource_name: "{{ moodle_nginx }}"
+    wait_resource: "{{ k8s_moodle_nginx.result | default([]) }}"
   when:
     - not ansible_check_mode
-    - k8s_moodle_nginx is defined
+    - k8s_moodle_nginx.result | default(false, true)
     - moodle_nginx_state | default(moodle_state) != 'absent'
     - moodle_nginx_wait | default(_moodle_k8s_wait) | default(true)
   include_tasks: "{{ common_path }}/wait/resource.yml"

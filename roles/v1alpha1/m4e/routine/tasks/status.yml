@@ -1,23 +1,5 @@
-- name: status
-  block:
-    - import_tasks: routine/status.yml
+- import_tasks: routine/status.yml
 
-    - name: set status reconcile trigger fact
-      when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
-      set_fact:
-        routine_reconcile_trigger_status: true
+- import_tasks: "{{ common_path }}/routine/pvc-autoexpand-info.yml"
 
-- name: status
-  block:
-    - import_tasks: "{{ common_path }}/routine/pvc-autoexpand-info.yml"
-
-    - name: set autoexpand reconcile trigger fact
-      when: routine_k8s_status_task is defined and routine_k8s_status_task is changed
-      set_fact:
-        routine_reconcile_trigger_autoexpand: true
-
-- name: reconcile trigger
-  when:
-    - routine_reconcile_trigger_status | default(false)
-    - routine_reconcile_trigger_autoexpand | default(false)
-  import_tasks: "{{ common_path }}/routine/reconcile-trigger.yml"
+- import_tasks: "{{ common_path }}/routine/status-properties-hash.yml"
