@@ -2,15 +2,23 @@
   import_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     routine_status_cr_notify_force: true
-    routine_k8s_status_properties:
-      ready: "True"
+    _routine_k8s_status_properties:
       mode: "{{ postgres_mode }}"
+      ready: "True"
       state: Ready
       service: "{{ pgbouncer_service + '.' + meta_namespace }}"
       serviceReadOnly: "{{ pgbouncer_readonly_service + '.' + meta_namespace
         if postgres_mode == 'readreplicas' else '' }}"
+    routine_k8s_status_properties:
+      "{{ _routine_k8s_status_properties | combine({'observedGeneration': cr_status_generation | int}) }}"
     routine_k8s_status_conditions:
       - type: "Ready"
         status: "True"
         reason: "Successful"
         message: "All tasks completed successfully"
+
+# to trigger reconciliation in parent CR, watchDependentResources=true is required
+- name: add observed generation annotation
+  vars:
+    add_annotations: "{{ { cr_group + '/observedGeneration':  cr_status_generation } }}"
+  import_tasks: "{{ common_path }}/add-annotations.yml"

@@ -13,6 +13,8 @@ cr_uid: "{{ cr_object.metadata.uid | default('', true) }}"
 cr_status: "{{ routine_k8s_status_task.result.status | default(cr_object.status,true) | default({},true) }}"
 cr_status_ready: "{{ cr_status_properties.ready | default(false) | bool }}"
 cr_status_conditions: "{{ cr_status.conditions | default([]) }}"
+cr_status_generation: "{{ cr_object.metadata.generation | default(1, true) | int }}"
+cr_status_observed_generation: "{{ cr_status_properties.observedGeneration | default(0, true) | int }}"
 cr_status_properties:
   "{% set copy=cr_status.copy() %}{% if copy.conditions is defined %}{% set
   removed=copy.pop('conditions') %}{% endif %}{{ copy }}"

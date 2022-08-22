@@ -14,12 +14,10 @@
 
 - name: wait for moodle php-fpm resource
   vars:
-    wait_resource_conditions: "{{ k8s_moodle_php_fpm.result.status.conditions | default([]) }}"
-    wait_resource_kind: Phpfpm
-    wait_resource_name: "{{ moodle_php_fpm }}"
+    wait_resource: "{{ k8s_moodle_php_fpm.result | default([]) }}"
   when:
     - not ansible_check_mode
-    - k8s_moodle_php_fpm is defined
+    - k8s_moodle_php_fpm.result | default(false, true)
     - moodle_php_fpm_state | default(moodle_state) != 'absent'
     - moodle_php_fpm_wait | default(_moodle_k8s_wait) | default(true)
   include_tasks: "{{ common_path }}/wait/resource.yml"

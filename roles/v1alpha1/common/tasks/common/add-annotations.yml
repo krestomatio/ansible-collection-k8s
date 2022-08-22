@@ -1,0 +1,16 @@
+- name: add annotations
+  when: add_annotations | default(false, true)
+  vars:
+    add_annotations_api_version: "{{ cr_api_version }}"
+    add_annotations_kind: "{{ cr_kind }}"
+    add_annotations_name: "{{ meta_name }}"
+    add_annotations_namespace: "{{ meta_namespace }}"
+  k8s:
+    state: patched
+    definition:
+      apiVersion: "{{ add_annotations_api_version }}"
+      kind: "{{ add_annotations_kind }}"
+      metadata:
+        name: "{{ add_annotations_name }}"
+        namespace: "{{ add_annotations_namespace }}"
+        annotations: "{{ add_annotations }}"
