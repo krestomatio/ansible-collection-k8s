@@ -153,15 +153,16 @@ server_pvc_data_spec: |
     - '{{ server_pvc_data_storage_access_mode }}'
   resources:
     requests:
-      storage: '{{ server_pvc_datata_size | default((server_pvc_data_size_gib | string + 'Gi'),true) }}'
+      storage: '{{ server_pvc_data_size }}'
+server_pvc_data_current_size: "{{ lookup('k8s', api_version='v1', kind='StatefulSet', namespace=meta_namespace,
+  resource_name=server_sts).spec.volumeClaimTemplates[0].spec.resources.requests.storage | default('') }}"
 server_pvc_data_size:
   "{{
-    false
+    server_pvc_data_size_gib | string + 'Gi'
   if
     server_pvc_data_autoexpansion
   else
-    lookup('k8s', api_version='v1', kind='PersistentVolumeClaim', namespace=meta_namespace,
-    resource_name=server_pvc_data).spec.resources.requests.storage | default('1Gi')
+    server_pvc_data_current_size | default('1Gi', true)
   }}"
 server_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
   | default(server_pvc_data_autoexpansion_increment_gib) }}"
