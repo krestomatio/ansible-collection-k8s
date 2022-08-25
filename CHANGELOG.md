@@ -2,8 +2,8 @@
 
 ### New Features
 
-* wait for resources using observedGeneration field (Job Céspedes Ortiz)
+* nfs: allow sts volume expansion (Job Céspedes Ortiz)
 
 ### Code Refactoring
 
-* trigger reconcile in Routine parent CR by adding annotation (Job Céspedes Ortiz)
+* m4e: add current size var (Job Céspedes Ortiz)
