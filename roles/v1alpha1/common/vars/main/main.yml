@@ -58,6 +58,6 @@ inventory_annotation_extra_cr_cwd: |
 
 # k8s
 k8s_api_resources:
-  "{{ (lookup('pipe','kubectl api-resources --output=name --cached='
-  + api_resources_cached | default(true) | string) | default('')).split('\n') }}"
+  "{{ (lookup('pipe','kubectl api-resources --output=name --cached=' + api_resources_cached | default(true) | string
+  + ' 2> /dev/null || echo \"api_resources_exit_code: $?\"') | default('')).split('\n') }}"
 k8s_distribution: "{{ 'okd' if 'clusterversions.config.openshift.io' in k8s_api_resources else 'k8s' }}"
