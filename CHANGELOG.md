@@ -1,9 +1,9 @@
 ## Changes
 
-### New Features
+### Bug Fixes
 
-* nfs: allow sts volume expansion (Job Céspedes Ortiz)
+* avoid failing when unable to retrieve the complete list of server APIs (Job Céspedes Ortiz)
 
 ### Code Refactoring
 
-* m4e: add current size var (Job Céspedes Ortiz)
+* common: change cr_object_var_name (Job Céspedes Ortiz)
