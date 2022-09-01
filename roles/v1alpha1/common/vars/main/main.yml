@@ -7,8 +7,9 @@ cr_api_version: "{{ cr_group }}/{{ cr_version }}"
 cr_object: "{{ lookup('vars', cr_object_var_name, default='')
   if cr_object_var_name | default(false, true) else '' }}"
 cr_object_var_name:
-  "{{ ('_' + cr_group + '_' + cr_kind) | lower | regex_replace('(\\.|\\-)','_')
-  if (cr_group | default(false, true) and cr_kind | default(false, true)) else '' }}"
+  "{{ ('_' + cr_group + '_' + cr_kind) | default('') | lower | regex_replace(cr_object_var_name_regex_replace,'_')
+  if cr_group is defined and cr_kind is defined else '' }}"
+cr_object_var_name_regex_replace: '(\\.|\\-)'
 cr_uid: "{{ cr_object.metadata.uid | default('', true) }}"
 cr_status: "{{ routine_k8s_status_task.result.status | default(cr_object.status,true) | default({},true) }}"
 cr_status_ready: "{{ cr_status_properties.ready | default(false) | bool }}"
@@ -57,6 +58,6 @@ inventory_annotation_extra_cr_cwd: |
 
 # k8s
 k8s_api_resources:
-  "{{ (lookup('pipe','kubectl api-resources --output=name --cached='
-  + api_resources_cached | default(true) | string) | default('')).split('\n') }}"
+  "{{ (lookup('pipe','kubectl api-resources --output=name --cached=' + api_resources_cached | default(true) | string
+  + ' 2> /dev/null || echo \"api_resources_exit_code: $?\"') | default('')).split('\n') }}"
 k8s_distribution: "{{ 'okd' if 'clusterversions.config.openshift.io' in k8s_api_resources else 'k8s' }}"
