@@ -1,0 +1,81 @@
+- name: set (nfs) ganesha server volume claim template
+  vars:
+    metadata_name: "{{ ganesha_pvc_data }}"
+    annotations: "{{ ganesha_pvc_data_annotations | default(false) }}"
+    extra_labels: "{{ ganesha_pvc_data_extra_labels | default(false) }}"
+    namespaced: false
+    pvc_spec: "{{ ganesha_pvc_data_spec }}"
+  set_fact:
+    ganesha_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
+
+- name: set (nfs) ganesha server statefulset spec
+  when: ganesha_sts_spec is not defined
+  vars:
+    annotations: "{{ ganesha_sts_spec_annotations | default(false) }}"
+    extra_labels: "{{ ganesha_sts_spec_extra_labels | default(false) }}"
+    inventory_include: true
+  set_fact:
+    ganesha_sts_spec: "{{ lookup('template', ganesha_sts_spec_template) }}"
+
+# workaround for sts volume expansion until https://github.com/kubernetes/enhancements/pull/2842
+- name: save (nfs) ganesha server statefulset pvc current and new sizes
+  set_fact:
+    ganesha_sts_pvc_expansion_data_size: "{{ ganesha_pvc_data_size }}"
+    ganesha_sts_pvc_expansion_data_current_size: "{{ ganesha_pvc_data_current_size }}"
+
+- name: allow (nfs) ganesha server statefulset pvc expansion
+  when:
+    - ganesha_sts_pvc_expansion_data_current_size is defined and ganesha_sts_pvc_expansion_data_current_size
+    - ganesha_sts_pvc_expansion_data_current_size != ganesha_sts_pvc_expansion_data_size
+    - ganesha_sts_pvc_expansion_list | length > 0
+    - "ganesha_sts_state | default(ganesha_state) != 'absent'"
+  vars:
+    ganesha_sts_pvc_expansion_label_selector: "app={{ metadata_app }}"
+    ganesha_sts_pvc_expansion_list: "{{ query('k8s', api_version='v1', kind='PersistentVolumeClaim',
+      namespace=meta_namespace,label_selector=ganesha_sts_pvc_expansion_label_selector) | default([]) }}"
+  block:
+    - name: delete (nfs) ganesha server statefulset without removing pods and data
+      k8s:
+        state: absent
+        delete_options:
+          propagationPolicy: Orphan
+        definition:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: "{{ ganesha_sts }}"
+            namespace: "{{ meta_namespace }}"
+      register: k8s_ganesha_sts_delete_orphan_task
+
+    - name: patch (nfs) ganesha server statefulset pvc(s)
+      loop: "{{ ganesha_sts_pvc_expansion_list }}"
+      k8s:
+        state: patched
+        definition:
+          apiVersion: "{{ item.apiVersion }}"
+          kind: "{{ item.kind }}"
+          metadata:
+            name: "{{ item.metadata.name }}"
+            namespace: "{{ item.metadata.namespace }}"
+          spec:
+            resources:
+              requests:
+                storage: "{{ ganesha_sts_pvc_expansion_data_size }}"
+###### end of workaround ######
+
+- name: (nfs) ganesha server statefulset resource definition
+  vars:
+    k8s_kind: StatefulSet
+    k8s_state: "{{ ganesha_sts_state | default(ganesha_state) }}"
+    k8s_wait: "{{ ganesha_sts_wait | default(true) }}"
+    k8s_wait_timeout: "{{ ganesha_sts_wait_timeout | default(200) }}"
+    template: "{{ sts_template }}"
+    metadata_name: "{{ ganesha_sts }}"
+    annotations: "{{ ganesha_sts_annotations | default(false) }}"
+    runtime: ganesha
+    sts_spec: "{{ ganesha_sts_spec }}"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save (nfs) ganesha server statefulset resource definition task output
+  set_fact:
+    k8s_ganesha_sts: "{{ k8s_object_task }}"

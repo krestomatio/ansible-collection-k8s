@@ -1,0 +1,26 @@
+- name: common assertions
+  import_tasks: "{{ common_path }}/assertions.yml"
+
+- name: ganesha server export directory mode is string
+  when: ganesha_export_mode is defined and ganesha_export_mode
+  assert:
+    that: ganesha_export_mode | type_debug in ['str', 'AnsibleUnicode', 'AnsibleUnsafeText']
+    fail_msg: "Ganesha server export mode property is not a string"
+    quiet: true
+
+- name: ganesha server export directory mode is string
+  when: ganesha_generated_nfs_sc_mount_permissions is defined and ganesha_generated_nfs_sc_mount_permissions
+  assert:
+    that: ganesha_generated_nfs_sc_mount_permissions | type_debug in ['str', 'AnsibleUnicode', 'AnsibleUnsafeText']
+    fail_msg: "Ganesha server mount permissions property is not a string"
+    quiet: true
+
+- name: ganesha server export mode and mount permissions match
+  when:
+    - ganesha_export_mode is defined and ganesha_export_mode
+    - ganesha_generated_nfs_sc_mount_permissions is defined and ganesha_generated_nfs_sc_mount_permissions
+    - ganesha_export_owner_mode_set
+  assert:
+    that: ganesha_export_mode != ganesha_generated_nfs_sc_mount_permissions
+    fail_msg: "Set export permissions with either ganesha server export mode property or mount permissions"
+    quiet: true

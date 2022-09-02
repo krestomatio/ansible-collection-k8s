@@ -1,0 +1,13 @@
+- name: import tasks
+  block:
+    - name: make assertions
+      import_tasks: "{{ role_path }}/tasks/assertions.yml"
+
+    - name: handle (nfs) ganesha server
+      import_tasks: "{{ role_path }}/tasks/ganesha.yml"
+
+    - name: include successful status
+      import_tasks: "{{ role_path }}/tasks/condition/ready/successful.yml"
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"
