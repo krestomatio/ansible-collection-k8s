@@ -16,5 +16,5 @@
 # to trigger reconciliation in parent CR, watchDependentResources=true is required
 - name: add observed generation annotation
   vars:
-    add_annotations: "{{ { cr_group + '/observedGeneration':  cr_status_generation } }}"
+    add_annotations: "{{ { cr_group + '/observedGeneration':  cr_status_generation, cr_group + '/ready':  'False'} }}"
   import_tasks: "{{ common_path }}/add-annotations.yml"
