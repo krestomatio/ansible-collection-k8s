@@ -22,9 +22,6 @@
 
     - import_tasks: resource/php-fpm.yml
 
-    - name: refresh inventory
-      meta: refresh_inventory
-
     - import_tasks: routine/status.yml
 
     - include_tasks: update.yml
