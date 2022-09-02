@@ -1,0 +1,20 @@
+# ganesha server routine
+ganesha_routine: "{{ ganesha_appname }}-routine"
+ganesha_routine_spec: |-
+  {% for _routine_varname in query('varnames', '^routine.+')  %}
+  {% if _routine_varname is not match('routine_spec') and _routine_varname is not regex('.*_task$') %}
+  {% set _routine_vartype = lookup('vars', _routine_varname) | type_debug %}
+  {% set _routine_varvalue = lookup('vars', _routine_varname) %}
+  {% if _routine_vartype == 'bool' %}
+  {{ _routine_varname }}: {{ _routine_varvalue }}
+  {% elif _routine_vartype == 'list' or _routine_vartype == 'dict'  %}
+  {{ _routine_varname }}:
+    {{ _routine_varvalue | to_nice_yaml(indent=2) | indent(2) -}}
+  {% elif _routine_varvalue is regex('\n|\t') %}
+  {{ _routine_varname }}: |
+    {{ _routine_varvalue | indent(2) }}
+  {% else %}
+  {{ _routine_varname }}: '{{ _routine_varvalue | regex_replace("'", "''") }}'
+  {% endif %}
+  {% endif %}
+  {% endfor %}
