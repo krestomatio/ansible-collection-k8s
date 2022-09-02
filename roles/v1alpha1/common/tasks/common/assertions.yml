@@ -9,9 +9,12 @@
 - name: assert k8s api-resources is not failed
   tags: skip_ansible_lint
   ignore_errors: true
+  vars:
+    _assert_k8s_api_resource_exit_code:
+      "{{ k8s_api_resources | map('regex_search','^api_resources_exit_code.*') | select('string') | list }}"
   assert:
-    that: not k8s_api_resources | map('regex_search','^api_resources_exit_code.*')
-    fail_msg: "'k8s api-resources' is failing"
+    that: not _assert_k8s_api_resource_exit_code | length > 0
+    fail_msg: "'k8s api-resources' is failing, {{ _assert_k8s_api_resource_exit_code | first | default('') }}"
     quiet: true
 
 - name: assert cr name max length
