@@ -1,0 +1,15 @@
+---
+# defaults file for m4e
+cr_group: nfs.krestomat.io
+cr_kind: Ganesha
+
+# custom resource state: present, absent
+cr_state: present
+
+meta_name_max_length: 55
+
+# templates
+ganesha_sts_spec_template: sts/ganesha-spec.yaml.j2
+
+# common labels
+meta_app_created_by: nfs-operator

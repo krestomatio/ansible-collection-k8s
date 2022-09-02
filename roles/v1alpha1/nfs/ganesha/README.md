@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Role to handle Routine for (NFS) Ganesha server with Ansible Operator SDK
+Role to create NFSv4 Ganesha servers for RWX storage in Kubernetes, using Ansible Operator SDK
 
 Requirements
 ------------
@@ -12,7 +12,7 @@ Role Variables
 --------------
 
 - See [`defaults/main/main.yml`](defaults/main/main.yml)
-- See [`defaults/main/moodle.yml`](defaults/main/moodle.yml)
+- See [`defaults/main/ganesha.yml`](defaults/main/ganesha.yml)
 
 Dependencies
 ------------
@@ -32,7 +32,7 @@ Example Playbook
     - operator_sdk.util
   tasks:
     - import_role:
-        name: "krestomatio.k8s.v1alpha1.m4e.routine"
+        name: krestomatio.k8s.v1alpha1.nfs.ganesha
 ```
 License
 -------

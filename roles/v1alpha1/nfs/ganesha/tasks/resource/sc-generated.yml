@@ -1,0 +1,18 @@
+- name: define generated (nfs) ganesha server storage class resource definition
+  vars:
+    k8s_kind: StorageClass
+    k8s_state: "{{ ganesha_generated_nfs_sc_state | default(ganesha_state) }}"
+    template: "{{ sc_template }}"
+    metadata_name: "{{ ganesha_generated_nfs_sc }}"
+    sc_parameters: "{{ ganesha_generated_nfs_sc_parameters }}"
+    sc_mount_options: "{{ ganesha_generated_nfs_sc_mount_options }}"
+    sc_provisioner: "{{ ganesha_generated_nfs_sc_provisioner }}"
+    sc_allow_volume_expansion: "{{ ganesha_generated_nfs_sc_allow_volume_expansion }}"
+    sc_reclaim_policy: "{{ ganesha_generated_nfs_sc_reclaim_policy }}"
+    sc_volume_binding_mode: "{{ ganesha_generated_nfs_sc_volume_binding_mode }}"
+    namespaced: false
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save generated (nfs) ganesha server storage class resource definition task
+  set_fact:
+    k8s_ganesha_generated_nfs_sc: "{{ k8s_object_task }}"
