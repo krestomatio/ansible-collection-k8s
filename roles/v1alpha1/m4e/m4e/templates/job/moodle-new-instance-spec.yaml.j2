@@ -35,6 +35,13 @@ template:
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
         value: '{{ moodle_new_instance_job_php_fpm_config_process_control_timeout }}'
+{% if moodle_redis_secret | default(false, true) %}
+      - name: REDIS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: "{{ moodle_redis_secret }}"
+            key: "{{ moodle_redis_secret_auth_key }}"
+{% endif %}
 {% if moodle_new_instance_command is defined and moodle_new_instance_command %}
 {%   if moodle_new_instance_command is string %}
       command: {{ moodle_new_instance_command }}
