@@ -17,7 +17,7 @@
 - name: notify cr status
   when:
     - routine_k8s_status_task.result is defined
-    - routine_k8s_status_task is changed or routine_status_cr_notify_force
+    - routine_k8s_status_task is changed or routine_status_cr_notify_force | bool
     - _routine_status_cr_notify
   vars:
     _routine_status_cr_notify: "{{ routine_status_cr_notify }}"
