@@ -1,4 +1,4 @@
-# THIS FILES IS SHARED BETWEEN M4E.M4E AND PHPFPM.M4E CRD
+# THIS FILES IS SHARED BETWEEN MOODLE.M4E AND PHPFPM.M4E CRD
 
 # moodle php-fpm envvars
 moodle_php_fpm_envvar_config:

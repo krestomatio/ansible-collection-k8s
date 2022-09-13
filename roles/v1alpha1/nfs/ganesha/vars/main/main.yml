@@ -1,5 +1,5 @@
 ---
-# defaults file for m4e
+# defaults file for Ganesha
 cr_group: nfs.krestomat.io
 cr_kind: Ganesha
 

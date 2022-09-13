@@ -1,4 +1,4 @@
-# defaults file for m4e
+# defaults file for nfs
 cr_group: nfs.krestomat.io
 cr_kind: Routine
 

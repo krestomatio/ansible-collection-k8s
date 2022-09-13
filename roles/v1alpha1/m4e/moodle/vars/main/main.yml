@@ -1,7 +1,7 @@
 ---
-# defaults file for m4e
+# defaults file for moodle
 cr_group: m4e.krestomat.io
-cr_kind: M4e
+cr_kind: Moodle
 
 # custom resource state: present, absent, suspended, inmaintenance
 cr_state: present
@@ -18,4 +18,4 @@ moodle_update_job_spec_template: job/moodle-update-spec.yaml.j2
 moodle_cronjob_spec_template: cronjob/moodle-spec.yaml.j2
 
 # common labels
-meta_app_created_by: m4e-operator
+meta_app_created_by: moodle-operator

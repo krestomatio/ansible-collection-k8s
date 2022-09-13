@@ -1,4 +1,4 @@
-# THIS FILES IS SHARED BETWEEN M4E.M4E AND NGINX.M4E CRD
+# THIS FILES IS SHARED BETWEEN MOODLE.M4E AND NGINX.M4E CRD
 
 # moodle nginx envvars
 moodle_nginx_envvar_php_fpm_host:

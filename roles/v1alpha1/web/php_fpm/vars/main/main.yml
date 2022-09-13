@@ -1,5 +1,5 @@
 ---
-# defaults file for m4e
+# defaults file for php-fpm
 meta_name_max_length: 38
 
 # templates

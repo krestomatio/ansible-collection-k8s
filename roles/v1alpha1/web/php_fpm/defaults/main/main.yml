@@ -1,5 +1,5 @@
 ---
-# defaults file for m4e
+# defaults file for php-fpm
 cr_group: php-fpm.krestomat.io
 cr_kind: Phpfpm
 

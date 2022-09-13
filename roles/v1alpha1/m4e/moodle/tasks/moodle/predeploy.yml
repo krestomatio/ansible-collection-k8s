@@ -1,4 +1,4 @@
-- name: deploy php-fpm and nginx ingress only without waiting while creating m4e
+- name: deploy php-fpm and nginx ingress only without waiting while creating moodle
   vars:
     _moodle_k8s_wait: false
   block:

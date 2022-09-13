@@ -1,4 +1,4 @@
-# THIS FILES IS SHARED BETWEEN M4E.M4E AND ROUTINE.M4E CRD
+# THIS FILES IS SHARED BETWEEN MOODLE.M4E AND ROUTINE.M4E CRD
 
 # status
 routine_moodle_container_group: "{{ moodle_container_group }}"

@@ -1,4 +1,4 @@
-# defaults file for m4e
+# defaults file for moodle
 cr_group: m4e.krestomat.io
 cr_kind: Routine
 
@@ -8,4 +8,4 @@ cr_state: present
 meta_name_max_length: 56
 
 # common labels
-meta_app_created_by: m4e-operator
+meta_app_created_by: moodle-operator

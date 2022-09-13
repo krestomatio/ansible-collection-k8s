@@ -1,5 +1,3 @@
----
-# tasks file for m4e
 - name: "resource definitions for {{ name }} in state: {{ k8s_state }},
     kind: {{ k8s_kind }}"
   environment:

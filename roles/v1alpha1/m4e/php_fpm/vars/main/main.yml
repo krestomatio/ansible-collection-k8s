@@ -1,4 +1,4 @@
-# defaults file for m4e
+# defaults file for php-fpm
 cr_group: m4e.krestomat.io
 cr_kind: Phpfpm
 
@@ -11,4 +11,4 @@ meta_name_max_length: 38
 inventory_uuid: "{{ php_fpm_inventory_uuid }}"
 
 # common labels
-meta_app_created_by: m4e-operator
+meta_app_created_by: moodle-operator

@@ -1,5 +1,5 @@
 ---
-# defaults file for m4e
+# defaults file for nginx
 cr_group: nginx.krestomat.io
 cr_kind: Nginx
 
