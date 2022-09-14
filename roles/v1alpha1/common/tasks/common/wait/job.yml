@@ -16,8 +16,8 @@
         - name: end play msg
           debug:
             msg: >-
-              kind: Job, name: {{ wait_job_name }}, msg: job has not been completed,
-              waiting for a new reconciliation once its state changes
+              kind: Job, name: {{ wait_job_name }}, msg:
+              waiting for a new reconciliation once its state changes because job has not been completed
 
         - name: end play
           meta: end_play

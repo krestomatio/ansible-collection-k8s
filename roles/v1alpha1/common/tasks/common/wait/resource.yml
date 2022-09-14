@@ -8,24 +8,34 @@
     wait_resource_name: "{{ wait_resource.metadata.name }}"
     wait_resource_condition_ready: "{{ wait_resource_conditions
       | selectattr('type', 'equalto', 'Ready') | first | default([]) }}"
+    wait_resource_generation_match: "{{ wait_resource_generation | int == wait_resource_observed_generation | int }}"
+    wait_resource_condition_ready_status: "{{ wait_resource_condition_ready.status | default('False') | bool }}"
+    wait_resource_condition_ready_reason: "{{ wait_resource_condition_ready.reason | default('') }}"
+    wait_resource_condition_ready_message: "{{ wait_resource_condition_ready.message | default('') }}"
   block:
     - name: "check kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}"
       when:
-        - wait_resource_condition_ready.reason | default('') == 'Error'
-        - wait_resource_condition_ready.status | default('False') | bool
+        - not wait_resource_condition_ready_status
+        - wait_resource_condition_ready_reason == 'Error'
       fail:
-        msg: "kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}, msg: {{ wait_resource_condition_ready.message | default('error') }}"
+        msg: "kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}, msg: {{ wait_resource_condition_ready_message | default('There was an error', true) }}"
 
     - name: "end play and wait new reconcile for kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}"
-      when:
-        - (wait_resource_generation | int != wait_resource_observed_generation | int) or
-          (not wait_resource_condition_ready.status | default('False') | bool)
+      when: not (wait_resource_generation_match and wait_resource_condition_ready_status)
       block:
         - name: end play msg
           debug:
             msg: >-
               kind: {{ wait_resource_kind }}, name: {{ wait_resource_name }}, msg:
-              resource is not ready, waiting for a new reconciliation once its state changes
+              waiting for a new reconciliation once its state changes because resource ready condition is
+              '{{ wait_resource_condition_ready_status | string }}'
+              {%- if wait_resource_condition_ready_reason != '' %}
+              with reason '{{ wait_resource_condition_ready_reason }}'
+              {%- endif %}
+              {%- if not wait_resource_generation_match %}
+              and resource generation ({{ wait_resource_generation }}) and observedGeneration
+              ({{ wait_resource_observed_generation }}) do not match
+              {%- endif %}
 
         - name: end play
           meta: end_play
