@@ -1,5 +1,8 @@
 # to trigger reconciliation in parent CR, watchDependentResources=true is required
 - name: add status properties hash annotation
+  when:
+    - routine_k8s_status_task is defined
+    - routine_k8s_status_task.result is defined
   vars:
     add_annotations_status_properties:
       "{% set copy=routine_k8s_status_task.result.status.copy() %}{% if copy.conditions is defined %}{% set
