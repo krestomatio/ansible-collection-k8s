@@ -95,20 +95,21 @@ moodle_new_instance_job_command_snippet: |-
       --adminpass='{{ moodle_new_adminpass | default('changeme') }}' \
       --adminemail='{{ moodle_new_instance_adminmail }}' \
       --agree-license
+  {% if moodle_new_adminpass_hash is defined %}
+    echo "Setting admin password..."
+    php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
+  {% endif %}
+  {% if moodle_redis_muc_store %}
+    echo "Setting redis MUC store"
+    {{ moodle_redis_muc_store_script }}
+  {% endif %}
   elif [ $exit_code -eq 0 ]; then
     echo "WARNING: database already instantiated"
+    exit 0
   else
     echo "Moodle could not be instantiated, exit code when checking database: '${exit_code}'"
     exit ${exit_code}
   fi
-  {% if moodle_new_adminpass_hash is defined %}
-  echo "Setting admin password..."
-  php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
-  {% endif %}
-  {% if moodle_redis_muc_store %}
-  echo "Setting redis MUC store"
-  {{ moodle_redis_muc_store_script }}
-  {% endif %}
 moodle_new_instance_job_php_max_memory: ''
 moodle_new_instance_job_tolerations: false
 
