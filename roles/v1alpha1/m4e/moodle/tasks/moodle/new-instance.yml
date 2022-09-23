@@ -10,5 +10,6 @@
       vars:
         wait_job_name: "{{ moodle_new_instance_job }}"
         wait_job_conditions: "{{ k8s_moodle_new_instance_job.result.status.conditions | default([]) }}"
+        wait_job_remove_failed: true
 
     - include_tasks: condition/instantiated/instantiated.yml

@@ -7,8 +7,24 @@
   block:
     - name: "check kind: Job, name: {{ wait_job_name }}"
       when: wait_job_condition_failed.status | default('False') | bool
-      fail:
-        msg: "kind: Job, name: {{ wait_job_name }}, msg: {{ wait_job_condition_failed.message | default('failed') }}"
+      block:
+        - name: remove failed job
+          when: wait_job_remove_failed | default(false)
+          k8s:
+            state: absent
+            definition:
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: "{{ wait_job_name }}"
+                namespace: "{{ meta_namespace }}"
+
+        - name: fail
+          fail:
+            msg: >-
+              kind: Job, name: {{ wait_job_name }},
+              msg: {{ wait_job_condition_failed.message | default('failed') }},
+              reason: {{ wait_job_condition_failed.reason | default('') }}
 
     - name: "end play and wait new reconcile for kind: job, name: {{ wait_job_name }}"
       when: not wait_job_condition_complete.status | default('False') | bool
