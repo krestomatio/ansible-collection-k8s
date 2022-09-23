@@ -3,7 +3,7 @@
 
 - name: moodle update
   vars:
-    moodle_component: "job"
+    moodle_component: "job-update"
   block:
     - include_tasks: resource/job-update.yml
 
