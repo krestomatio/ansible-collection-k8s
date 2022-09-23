@@ -32,8 +32,8 @@ pgbouncer_liveness_timeout: 10
 pgbouncer_liveness_success: 1
 pgbouncer_liveness_failure: 3
 pgbouncer_resource_requests: true
-pgbouncer_resource_requests_cpu: 150m
-pgbouncer_resource_requests_memory: 256Mi
+pgbouncer_resource_requests_cpu: 15m
+pgbouncer_resource_requests_memory: 32Mi
 pgbouncer_resource_limits: false
 pgbouncer_resource_limits_cpu: 1
 pgbouncer_resource_limits_memory: 1Gi

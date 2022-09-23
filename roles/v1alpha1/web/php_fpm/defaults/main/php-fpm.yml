@@ -35,8 +35,8 @@ php_fpm_liveness_timeout: 3
 php_fpm_liveness_success: 1
 php_fpm_liveness_failure: 3
 php_fpm_resource_requests: true
-php_fpm_resource_requests_cpu: 75m
-php_fpm_resource_requests_memory: 256Mi
+php_fpm_resource_requests_cpu: 15m
+php_fpm_resource_requests_memory: 32Mi
 php_fpm_resource_limits: false
 php_fpm_resource_limits_cpu: 1
 php_fpm_resource_limits_memory: 1Gi

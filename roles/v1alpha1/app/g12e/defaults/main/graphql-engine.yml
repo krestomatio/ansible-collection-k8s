@@ -28,8 +28,8 @@ graphql_engine_liveness_timeout: 3
 graphql_engine_liveness_success: 1
 graphql_engine_liveness_failure: 3
 graphql_engine_resource_requests: true
-graphql_engine_resource_requests_cpu: 75m
-graphql_engine_resource_requests_memory: 128Mi
+graphql_engine_resource_requests_cpu: 25m
+graphql_engine_resource_requests_memory: 64Mi
 graphql_engine_resource_limits: false
 graphql_engine_resource_limits_cpu: 1
 graphql_engine_resource_limits_memory: 1Gi

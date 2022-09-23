@@ -28,8 +28,8 @@ server_liveness_timeout: 3
 server_liveness_success: 1
 server_liveness_failure: 3
 server_resource_requests: true
-server_resource_requests_cpu: 75m
-server_resource_requests_memory: 128Mi
+server_resource_requests_cpu: 25m
+server_resource_requests_memory: 64Mi
 server_resource_limits: false
 server_resource_limits_cpu: 1
 server_resource_limits_memory: 1Gi

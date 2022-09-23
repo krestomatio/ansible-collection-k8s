@@ -30,8 +30,8 @@ ganesha_liveness_timeout: 10
 ganesha_liveness_success: 1
 ganesha_liveness_failure: 3
 ganesha_resource_requests: true
-ganesha_resource_requests_cpu: 150m
-ganesha_resource_requests_memory: 256Mi
+ganesha_resource_requests_cpu: 25m
+ganesha_resource_requests_memory: 64Mi
 ganesha_resource_limits: false
 ganesha_resource_limits_cpu: 1
 ganesha_resource_limits_memory: 1Gi

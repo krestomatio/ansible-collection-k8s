@@ -56,8 +56,8 @@ moodle_new_instance_job_ttl_seconds_after_finished: false
 moodle_new_instance_job_wait_timeout: 300
 moodle_new_instance_job_active_deadline_seconds: "{{ moodle_new_instance_job_wait_timeout }}"
 moodle_new_instance_job_resource_requests: true
-moodle_new_instance_job_resource_requests_cpu: 150m
-moodle_new_instance_job_resource_requests_memory: 256Mi
+moodle_new_instance_job_resource_requests_cpu: 15m
+moodle_new_instance_job_resource_requests_memory: 32Mi
 moodle_new_instance_job_resource_limits: false
 moodle_new_instance_job_resource_limits_cpu: 1
 moodle_new_instance_job_resource_limits_memory: 1Gi
@@ -125,8 +125,8 @@ moodle_update_job_ttl_seconds_after_finished: 604800
 moodle_update_job_wait_timeout: 300
 moodle_update_job_active_deadline_seconds: "{{ moodle_update_job_wait_timeout }}"
 moodle_update_job_resource_requests: true
-moodle_update_job_resource_requests_cpu: 150m
-moodle_update_job_resource_requests_memory: 256Mi
+moodle_update_job_resource_requests_cpu: 15m
+moodle_update_job_resource_requests_memory: 32Mi
 moodle_update_job_resource_limits: false
 moodle_update_job_resource_limits_cpu: 1
 moodle_update_job_resource_limits_memory: 1Gi
@@ -166,8 +166,8 @@ moodle_cronjob_command_snippet: |-
   moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
 moodle_cronjob_php_max_memory: ''
 moodle_cronjob_resource_requests: true
-moodle_cronjob_resource_requests_cpu: 50m
-moodle_cronjob_resource_requests_memory: 128Mi
+moodle_cronjob_resource_requests_cpu: 15m
+moodle_cronjob_resource_requests_memory: 32Mi
 moodle_cronjob_resource_limits: false
 moodle_cronjob_resource_limits_cpu: 1
 moodle_cronjob_resource_limits_memory: 1Gi

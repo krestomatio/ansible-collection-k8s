@@ -34,8 +34,8 @@ keydb_liveness_timeout: 3
 keydb_liveness_success: 1
 keydb_liveness_failure: 6
 keydb_resource_requests: true
-keydb_resource_requests_cpu: 50m
-keydb_resource_requests_memory: 128Mi
+keydb_resource_requests_cpu: 25m
+keydb_resource_requests_memory: 64Mi
 keydb_resource_limits: false
 keydb_resource_limits_cpu: 1
 keydb_resource_limits_memory: 1Gi
