@@ -67,7 +67,7 @@ moodle_new_instance_command:
   - '-c'
   - |
     container-entrypoint
-    {{ moodle_new_instance_job_command_snippet | indent(2) }}
+    {{ moodle_new_instance_job_command_snippet }}
 moodle_new_instance_job_command_snippet: |-
   echo "Checking if database is available..."
   database_check_times=24
@@ -135,7 +135,7 @@ moodle_update_job_command:
   - '-c'
   - |
     container-entrypoint
-    {{ moodle_update_job_command_snippet | indent(2) }}
+    {{ moodle_update_job_command_snippet }}
 moodle_update_job_command_snippet: |-
   maintenance=$(test -f "{{ moodle_pvc_data_path }}" && echo previous || echo none)
   [ "${maintenance}" != "previous" ] && php admin/cli/maintenance.php --enable
@@ -160,7 +160,7 @@ moodle_cronjob_command:
   - '-c'
   - |
     container-entrypoint
-    {{ moodle_cronjob_command_snippet | indent(2) }}
+    {{ moodle_cronjob_command_snippet }}
 moodle_cronjob_command_snippet: |-
   php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
   moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
