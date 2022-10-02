@@ -10,7 +10,6 @@
 * common: avoid deprecation warning (Job Céspedes Ortiz)
 * moodle: exit new instance job if db already instantiated (Job Céspedes Ortiz)
 * check variable is set when adding annotation (Job Céspedes Ortiz)
-* m4e: add redis password env var to new instance job (Job Céspedes Ortiz)
 
 ### Code Refactoring
 
@@ -24,4 +23,6 @@
 
 ### Chores
 
+* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* release: 0.2.1 (krestomatio-cibot)
 * bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
