@@ -4,7 +4,7 @@ moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
 
 # moodle deploy
-moodle_image: quay.io/krestomatio/moodle@sha256:598babd10fc87efb2ef4394d3b02a6be15f54ab74be67520aa952cfd3ce234bd
+moodle_image: quay.io/krestomatio/moodle:4.0@sha256:9855af7d686581b0afb965d506c4228b1dc1ad2c58f7c7175f01285c8cf85564
 moodle_image_pull_secret: "{{ image_pull_secret }}"
 moodle_container: "moodle-php-fpm"
 moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
