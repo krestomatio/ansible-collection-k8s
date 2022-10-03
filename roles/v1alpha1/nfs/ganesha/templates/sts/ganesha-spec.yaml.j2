@@ -36,7 +36,7 @@ template:
       imagePullPolicy: '{{ ganesha_image_pull_policy | default('IfNotPresent') }}'
       env:
       - name: NFS_GANESHA_CONF_DIR
-        value: "{{ ganesha_ganesha_conf_dir }}"
+        value: "{{ ganesha_conf_dir }}"
       - name: NFS_GANESHA_CONF_FILE
         value: "{{ ganesha_conf_file }}"
       - name: NFS_GANESHA_CONF_EXTRA_FILE
@@ -58,9 +58,9 @@ template:
       - name: NFS_GANESHA_PORT
         value: "{{ ganesha_port }}"
       - name: NFS_GANESHA_RQUOTA_PORT
-        value: "{{ ganesha_ganesha_rquota_port }}"
+        value: "{{ ganesha_rquota_port }}"
       - name: NFS_GANESHA_RUN_DIR
-        value: "{{ ganesha_ganesha_run_dir }}"
+        value: "{{ ganesha_run_dir }}"
       - name: DBUS_RUN_WAIT
         value: "{{ ganesha_dbus_separete_container }}"
 {% if ganesha_envvars is defined and ganesha_envvars %}
@@ -83,13 +83,13 @@ template:
       # - name: nfs-udp
       #   containerPort: {{ ganesha_port }}
       #   protocol: UDP
-{% if ganesha_ganesha_rquota %}
+{% if ganesha_rquota %}
       - name: rquota-tcp
-        containerPort: {{ ganesha_ganesha_rquota_port }}
+        containerPort: {{ ganesha_rquota_port }}
         protocol: TCP
       # Issue: https://github.com/kubernetes/kubernetes/issues/39188
       # - name: rquota-udp
-      #   containerPort: {{ ganesha_ganesha_rquota_port }}
+      #   containerPort: {{ ganesha_rquota_port }}
       #   protocol: UDP
 {% endif %}
 {% if ganesha_command is defined and ganesha_command %}
@@ -218,14 +218,14 @@ template:
       terminationMessagePolicy: "{{ ganesha_termination_message_policy | default('FallbackToLogsOnError') }}"
       volumeMounts:
       - name: nfs-ganesha-run
-        mountPath: '{{ ganesha_ganesha_run_dir }}'
+        mountPath: '{{ ganesha_run_dir }}'
       - name: dbus-run
         mountPath: /var/run/dbus
         readOnly: true
       - name: nfs-ganesha-lib
-        mountPath: '{{ ganesha_ganesha_lib_dir }}'
+        mountPath: '{{ ganesha_lib_dir }}'
       - name: nfs-ganesha-tmp
-        mountPath: '{{ ganesha_ganesha_tmp_dir }}'
+        mountPath: '{{ ganesha_tmp_dir }}'
       - name: ganesha-config
         mountPath: '{{ ganesha_conf_file }}'
         subPath: ganesha.conf
