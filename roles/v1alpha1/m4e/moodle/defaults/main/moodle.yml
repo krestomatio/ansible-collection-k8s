@@ -11,6 +11,7 @@ moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
 moodle_readiness_command: "['{{ moodle_php_fpm_check_container_script }}', '-t', '-r']"
 moodle_liveness_command: "['{{ moodle_php_fpm_check_container_script }}', '-t', '-l']"
 moodle_php_fpm_check_container_script: /usr/libexec/check-container-php-moodle
+moodle_nginx_check_container_script: /usr/libexec/check-container-nginx-moodle
 
 # moodle service
 moodle_service: "{{ moodle_appname }}-service"
