@@ -74,7 +74,6 @@ graphql_engine_service_spec: |
 graphql_engine_ingress: "{{ graphql_engine_appname }}-ingress"
 graphql_engine_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
 graphql_engine_ingress_tls: "{{ true if graphql_engine_ingress_protocol == 'https' else false }}"
-graphql_engine_ingress_tls_secret_name: false
 graphql_engine_ingress_protocol: "http"
 graphql_engine_ingress_host: "example.krestomat.io"
 # graphql_engine_ingress_annotations: |
@@ -85,8 +84,8 @@ graphql_engine_ingress_spec: |
   tls:
   - hosts:
     - '{{ graphql_engine_host }}'
-  {% if graphql_engine_ingress_tls_secret_name is defined and graphql_engine_ingress_tls_secret_name %}
-    secretName: {{ graphql_engine_ingress_tls_secret_name }}
+  {% if graphql_engine_ingress_tls_secret | default(false) %}
+    secretName: {{ graphql_engine_ingress_tls_secret_name | default(graphql_engine_ingress + '-tls') }}
   {% endif %}
   {% endif %}
   rules:

@@ -77,7 +77,6 @@ server_ingress: "{{ server_appname }}-ingress"
 server_ingress_deploy: false
 server_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
 server_ingress_tls: "{{ true if server_ingress_protocol == 'https' else false }}"
-server_ingress_tls_secret_name: false
 server_ingress_protocol: "http"
 server_ingress_host: "example.krestomat.io"
 # server_ingress_annotations: |
@@ -88,8 +87,8 @@ server_ingress_spec: |
   tls:
   - hosts:
     - '{{ server_host }}'
-  {% if server_ingress_tls_secret_name is defined and server_ingress_tls_secret_name %}
-    secretName: {{ server_ingress_tls_secret_name }}
+  {% if server_ingress_tls_secret | default(false) %}
+    secretName: {{ server_ingress_tls_secret_name | default(server_ingress + '-tls') }}
   {% endif %}
   {% endif %}
   rules:
