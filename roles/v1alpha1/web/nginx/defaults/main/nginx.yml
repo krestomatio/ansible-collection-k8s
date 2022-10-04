@@ -89,7 +89,6 @@ nginx_service_spec: |
 nginx_ingress: "{{ nginx_appname }}-ingress"
 nginx_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
 nginx_ingress_tls: "{{ true if nginx_ingress_protocol == 'https' else false }}"
-nginx_ingress_tls_secret_name: false
 nginx_ingress_protocol: "http"
 nginx_ingress_host: "example.krestomat.io"
 ## 'nginx_ingress_only' handle only ingress and ignore other resources
@@ -103,8 +102,8 @@ nginx_ingress_spec: |
   tls:
   - hosts:
     - '{{ nginx_host }}'
-  {% if nginx_ingress_tls_secret_name is defined and nginx_ingress_tls_secret_name %}
-    secretName: {{ nginx_ingress_tls_secret_name }}
+  {% if nginx_ingress_tls_secret | default(false) %}
+    secretName: {{ nginx_ingress_tls_secret_name | default(nginx_ingress + '-tls') }}
   {% endif %}
   {% endif %}
   rules:
