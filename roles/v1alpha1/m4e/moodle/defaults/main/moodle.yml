@@ -4,12 +4,14 @@ moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
 
 # moodle deploy
-moodle_image: quay.io/krestomatio/moodle:4.0@sha256:b925a9cf58ec1ed32bebd5b3da4ab1e1d85f77afdebab1f9fe21f859a7a96ec4
+moodle_image: quay.io/krestomatio/moodle:4.0@sha256:f988a1c6341dd54aa2c9ff7005d5579535f142991f299c503114f818c0b4965f
 moodle_image_pull_secret: "{{ image_pull_secret }}"
 moodle_container: "moodle-php-fpm"
 moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
-moodle_readiness_command: "['/usr/libexec/check-container-php', '-t', '-r']"
-moodle_liveness_command: "['/usr/libexec/check-container-php', '-t', '-l']"
+moodle_readiness_command: "['{{ moodle_php_fpm_check_container_script }}', '-t', '-r']"
+moodle_liveness_command: "['{{ moodle_php_fpm_check_container_script }}', '-t', '-l']"
+moodle_php_fpm_check_container_script: /usr/libexec/check-container-php-moodle
+moodle_nginx_check_container_script: /usr/libexec/check-container-nginx-moodle
 
 # moodle service
 moodle_service: "{{ moodle_appname }}-service"
@@ -53,8 +55,7 @@ moodle_new_instance_lang: en
 moodle_new_instance_agree_license: false
 moodle_new_instance_job: "{{ moodle_appname }}-new-instance-job"
 moodle_new_instance_job_ttl_seconds_after_finished: false
-moodle_new_instance_job_wait_timeout: 900
-moodle_new_instance_job_active_deadline_seconds: "{{ moodle_new_instance_job_wait_timeout }}"
+moodle_new_instance_job_active_deadline_seconds: 900
 moodle_new_instance_job_resource_requests: true
 moodle_new_instance_job_resource_requests_cpu: 15m
 moodle_new_instance_job_resource_requests_memory: 32Mi
@@ -71,17 +72,18 @@ moodle_new_instance_command:
 moodle_new_instance_job_command_snippet: |-
   echo "Checking if database is available..."
   database_check_times=24
-  database_check_exit_code=$(/usr/libexec/check-container-php -d &>/dev/null && echo 0 || echo $?)
+  moodle_php_fpm_check_container_script={{ moodle_php_fpm_check_container_script }}
+  test -f $moodle_php_fpm_check_container_script || { echo "$moodle_php_fpm_check_container_script file does not exists"; exit 1; }
+  database_check_exit_code=$($moodle_php_fpm_check_container_script -d &>/dev/null && echo 0 || echo $?)
   until [ ${database_check_times} -lt 0 ] || [ "${database_check_exit_code}" == "0" ] || [ "${database_check_exit_code}" == "2" ]; do
     echo "Waiting for database to be available: ${database_check_times}..."
     sleep 5
     (( database_check_times-- ))
-    database_check_exit_code=$(/usr/libexec/check-container-php -d &>/dev/null || echo $?)
+    database_check_exit_code=$($moodle_php_fpm_check_container_script -d &>/dev/null || echo $?)
   done
   [ ${database_check_times} -lt 0 ] && echo "Error: timeout wating for database to be available, exit code: ${database_check_exit_code}" && exit ${database_check_exit_code}
-
   echo "Instantiating moodle..."
-  /usr/libexec/check-container-php -d
+  $moodle_php_fpm_check_container_script -d
   exit_code=$?
   if [ $exit_code -eq 2 ]; then
     echo "Installing..."
@@ -122,8 +124,8 @@ moodle_update_job:
   "{{ moodle_appname }}-update-{{ moodle_status_version.allVersionsHash[:10]
   | default(now(utc=True).timestamp() | int) }}-job"
 moodle_update_job_ttl_seconds_after_finished: 604800
-moodle_update_job_wait_timeout: 3600
-moodle_update_job_active_deadline_seconds: "{{ moodle_update_job_wait_timeout }}"
+moodle_update_job_active_deadline_seconds:
+  "{{ 10800 if moodle_status_version.type | default('Other') == 'Major' else 3600 }}"
 moodle_update_job_resource_requests: true
 moodle_update_job_resource_requests_cpu: 15m
 moodle_update_job_resource_requests_memory: 32Mi

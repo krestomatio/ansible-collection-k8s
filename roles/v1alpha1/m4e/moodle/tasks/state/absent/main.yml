@@ -2,6 +2,11 @@
   set_fact:
     state: absent
 
+- name: set routine status cr notify termination
+  when: routine_status_cr_notify_termination is defined and routine_status_cr_notify_termination
+  set_fact:
+    routine_status_cr_notify: "{{ routine_status_cr_notify_termination }}"
+
 - name: import tasks
   block:
     - name: start terminating condition

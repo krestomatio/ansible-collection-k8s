@@ -5,7 +5,7 @@ nginx_appname: "{{ meta_name }}-nginx"
 
 # nginx deploy
 nginx_size: 1
-nginx_image: quay.io/krestomatio/nginx:1.20@sha256:75279b9e6556aad5b950207a5d9126a22c1684a1db746e92dd408feb274609a7
+nginx_image: quay.io/krestomatio/nginx:1.20@sha256:767431199994184ac135107b9a0b6fe880ab05be16bb6ffb46d15f1319d30118
 nginx_image_pull_secret: "{{ image_pull_secret }}"
 nginx_deploy: "{{ nginx_appname }}-deploy"
 nginx_port: 8080
@@ -89,7 +89,6 @@ nginx_service_spec: |
 nginx_ingress: "{{ nginx_appname }}-ingress"
 nginx_ingress_type: "{{ 'route' if (k8s_distribution | default('k8s')) == 'okd' else 'ingress' }}"
 nginx_ingress_tls: "{{ true if nginx_ingress_protocol == 'https' else false }}"
-nginx_ingress_tls_secret_name: false
 nginx_ingress_protocol: "http"
 nginx_ingress_host: "example.krestomat.io"
 ## 'nginx_ingress_only' handle only ingress and ignore other resources
@@ -103,8 +102,8 @@ nginx_ingress_spec: |
   tls:
   - hosts:
     - '{{ nginx_host }}'
-  {% if nginx_ingress_tls_secret_name is defined and nginx_ingress_tls_secret_name %}
-    secretName: {{ nginx_ingress_tls_secret_name }}
+  {% if nginx_ingress_tls_secret | default(false) %}
+    secretName: {{ nginx_ingress_tls_secret_name | default(nginx_ingress + '-tls') }}
   {% endif %}
   {% endif %}
   rules:

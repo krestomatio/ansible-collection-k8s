@@ -2,7 +2,7 @@ ganesha_state: "{{ state }}"
 ganesha_appname: "{{ meta_name }}-nfs"
 
 # (nfs) ganesha server sts
-ganesha_image: quay.io/krestomatio/nfs-ganesha:4.0.7@sha256:94fb979a6ceac5e6b147d0447cd42b0778132d7234f8784ee2249df795b1dce3
+ganesha_image: quay.io/krestomatio/nfs-ganesha:4.0.7@sha256:bb5e52fa6a4cef75a8412b71901b0f06626a2e8b143fa33f9a7fe9c52b0e1f80
 ganesha_image_pull_secret: "{{ image_pull_secret }}"
 ganesha_sts: "{{ ganesha_appname }}-sts"
 ganesha_container: "nfs-ganesha"
@@ -105,16 +105,16 @@ ganesha_service_spec: |
   #   port: {{ ganesha_port }}
   #   protocol: UDP
   #   targetPort: {{ ganesha_port }}
-  {% if ganesha_ganesha_rquota %}
+  {% if ganesha_rquota %}
   - name: rquota-tcp
-    port: {{ ganesha_ganesha_rquota_port }}
+    port: {{ ganesha_rquota_port }}
     protocol: TCP
-    targetPort: {{ ganesha_ganesha_rquota_port }}
+    targetPort: {{ ganesha_rquota_port }}
   # Issue: https://github.com/kubernetes/kubernetes/issues/39188
   # - name: rquota-udp
-  #   port: {{ ganesha_ganesha_rquota_port }}
+  #   port: {{ ganesha_rquota_port }}
   #   protocol: UDP
-  #   targetPort: {{ ganesha_ganesha_rquota_port }}
+  #   targetPort: {{ ganesha_rquota_port }}
   {% endif %}
 
 # ganesha server generated storage class
@@ -177,15 +177,15 @@ ganesha_pvc_data_autoexpansion_cap_gib: 5
 ganesha_cm: "{{ ganesha_appname }}-cm"
 ganesha_cm_data: |
   ganesha.conf: |
-    {{ ganesha_ganesha_config | indent(2) }}
+    {{ ganesha_config | indent(2) }}
   ganesha-extra.conf: |
-    {{ ganesha_ganesha_extra_config | indent(2) }}
+    {{ ganesha_extra_config | indent(2) }}
 ## ganesha server ganesha conf
-ganesha_ganesha_config: |
+ganesha_config: |
   NFS_CORE_PARAM {
       Protocols = 4;
       NFS_Port = {{ ganesha_port }};
-      Rquota_Port = {{ ganesha_ganesha_rquota_port }};
+      Rquota_Port = {{ ganesha_rquota_port }};
       fsid_device = true;
   }
   NFS_KRB5 {
@@ -196,7 +196,7 @@ ganesha_ganesha_config: |
   }
   %include "{{ ganesha_conf_extra_file }}"
 ## ganesha server ganesha extra conf
-ganesha_ganesha_extra_config: |
+ganesha_extra_config: |
   NFSv4 {
       Grace_Period = {{ ganesha_conf_grace_period }};
   }
@@ -218,21 +218,21 @@ ganesha_ganesha_extra_config: |
           ALL = {{ ganesha_conf_log_level }};
       }
   }
-  {% if ganesha_ganesha_extra_block_config is defined and ganesha_ganesha_extra_block_config %}
-  {{ ganesha_ganesha_extra_block_config }}
+  {% if ganesha_extra_block_config is defined and ganesha_extra_block_config %}
+  {{ ganesha_extra_block_config }}
   {% endif %}
-ganesha_ganesha_extra_block_config: ''
+ganesha_extra_block_config: ''
 
 # ganesha server config
 ganesha_dbus_separete_container: true
-ganesha_ganesha_lib_dir: /usr/local/var/lib/nfs/ganesha
-ganesha_ganesha_conf_dir: /usr/local/etc/ganesha
-ganesha_ganesha_run_dir: /usr/local/var/run/ganesha
-ganesha_ganesha_tmp_dir: /tmp
-ganesha_ganesha_rquota: true
-ganesha_ganesha_rquota_port: 875
-ganesha_conf_file: "{{ ganesha_ganesha_conf_dir }}/ganesha.conf"
-ganesha_conf_extra_file: "{{ ganesha_ganesha_conf_dir }}/ganesha-extra.conf"
+ganesha_lib_dir: /usr/local/var/lib/nfs/ganesha
+ganesha_conf_dir: /usr/local/etc/ganesha
+ganesha_run_dir: /usr/local/var/run/ganesha
+ganesha_tmp_dir: /tmp
+ganesha_rquota: true
+ganesha_rquota_port: 875
+ganesha_conf_file: "{{ ganesha_conf_dir }}/ganesha.conf"
+ganesha_conf_extra_file: "{{ ganesha_conf_dir }}/ganesha-extra.conf"
 ganesha_conf_grace_period: 90
 ganesha_conf_export_path: "{{ ganesha_export_dir }}"
 ganesha_conf_export_pseudo: /
