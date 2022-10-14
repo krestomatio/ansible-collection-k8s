@@ -11,10 +11,3 @@
 - name: save graphql-engine ingress resource definition task
   set_fact:
     k8s_graphql_engine_ingress: "{{ k8s_object_task }}"
-
-- name: wait for graphql-engine ingress
-  when:
-    - _graphql_engine_ingress_wait_for_ip | default(graphql_engine_ingress_wait_for_ip) | default(false)
-    - k8s_graphql_engine_ingress is changed
-    - "'absent' not in graphql_engine_ingress_state | default(graphql_engine_state)"
-  include_tasks: "{{ common_path }}/ingress-wait.yml"

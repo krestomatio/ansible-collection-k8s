@@ -11,7 +11,7 @@
       - type: "Ready"
         status: "False"
         reason: "IngressOnly"
-        message: "Only ingress tasks"
+        message: "Only defining ingress"
 
 # to trigger reconciliation in parent CR, watchDependentResources=true is required
 - name: add observed generation annotation

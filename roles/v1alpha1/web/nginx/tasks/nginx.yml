@@ -15,7 +15,3 @@
         - import_tasks: resource/service.yml
 
     - import_tasks: "resource/{{ nginx_ingress_type }}.yml"
-      vars:
-        # do not wait for ingress if 'nginx_ingress_only' or 'nginx_route_only'
-        _nginx_ingress_wait_for_ip: "{{ false if (nginx_ingress_only | bool
-          or nginx_route_only | bool ) else nginx_ingress_wait_for_ip }}"

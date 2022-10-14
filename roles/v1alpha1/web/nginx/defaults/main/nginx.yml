@@ -93,7 +93,6 @@ nginx_ingress_protocol: "http"
 nginx_ingress_host: "example.krestomat.io"
 ## 'nginx_ingress_only' handle only ingress and ignore other resources
 nginx_ingress_only: false
-nginx_ingress_wait_for_ip: false
 nginx_ingress_tls_secret_name: "{{ nginx_ingress + '-tls' if nginx_ingress_annotations | default('') is
   regex('cert-manager.io/(cluster-|)issuer:(?!\ null)') else '' }}"
 # nginx_ingress_annotations: |
