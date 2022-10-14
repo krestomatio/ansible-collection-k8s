@@ -1,11 +1,15 @@
 - name: import tasks
   block:
     - name: make assertions
-      import_tasks: "assertions.yml"
+      import_tasks: "{{ role_path }}/tasks/assertions.yml"
+
+    - name: handle setting-up
+      when: moodle_status_setting_up
+      import_tasks: "{{ role_path }}/tasks/condition/ready/setting-up.yml"
 
     - name: handle creating
-      when: moodle_status_not_created_condition_needed
-      import_tasks: condition/created/not-created.yml
+      when: not moodle_status_created
+      import_tasks: "{{ role_path }}/tasks/condition/created/not-created.yml"
 
     - name: handle moodle
       import_tasks: "{{ role_path }}/tasks/moodle/main.yml"
@@ -15,7 +19,7 @@
       meta: end_play
 
     - name: include successful status
-      when: not moodle_setup_needed
+      when: moodle_status_successful
       import_tasks: "{{ role_path }}/tasks/condition/ready/successful.yml"
   rescue:
     - name: include rescue tasks

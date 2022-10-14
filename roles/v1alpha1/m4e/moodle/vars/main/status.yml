@@ -4,12 +4,17 @@ moodle_status_version: "{{ cr_status_properties.version | default({},true) }}"
 moodle_status_uptodate: "{{ cr_status_properties.upToDate | default('True') | bool }}"
 # whether moodle is created
 moodle_status_created: "{{ cr_status_properties.created | default('False') | bool }}"
+# whether moodle is setting up
+moodle_status_setting_up:
+  "{{ true if lookup('template', moodle_config_template) | sha1 != cr_status.configHash | default('') else false }}"
+# whether moodle is successful
+moodle_status_successful: "{{ not moodle_status_setting_up }}"
 # status script
 moodle_status_script_version: true
 moodle_status_script_usage: true
 moodle_status_script_checks: critical,error
 moodle_status_script: >-
-  {{ moodle_scripts_path }}/status.php -l
+  {{ moodle_scripts_path }}/status.php -ch -l
   {{ '-v' if  moodle_status_script_version else '' }}
   {{ '-u' if  moodle_status_script_usage else '' }}
   {{ '-c=' + moodle_status_script_checks if moodle_status_script_checks is defined

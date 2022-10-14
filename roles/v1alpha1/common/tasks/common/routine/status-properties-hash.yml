@@ -7,5 +7,5 @@
     add_annotations_status_properties:
       "{% set copy=routine_k8s_status_task.result.status.copy() %}{% if copy.conditions is defined %}{% set
       removed=copy.pop('conditions') %}{% endif %}{{ copy }}"
-    add_annotations: "{{ { cr_group + '/status-properties-hash':  add_annotations_status_properties | hash('sha1') } }}"
+    add_annotations: "{{ { cr_group + '/status-properties-hash':  add_annotations_status_properties | sha1 } }}"
   import_tasks: "{{ common_path }}/add-annotations.yml"

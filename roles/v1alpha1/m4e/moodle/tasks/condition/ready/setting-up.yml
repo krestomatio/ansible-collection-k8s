@@ -1,0 +1,13 @@
+- name: set setting-up status
+  include_tasks: "{{ common_path }}/routine/status.yml"
+  vars:
+    last_transition_time: "{{ now(utc=True).isoformat(timespec='seconds') + 'Z' }}"
+    routine_k8s_status_properties:
+      ready: "False"
+      state: SettingUp
+    routine_k8s_status_conditions:
+      - type: "Ready"
+        status: "False"
+        reason: "SettingUp"
+        message: "Setup in progress"
+        lastTransitionTime: "{{ last_transition_time }}"

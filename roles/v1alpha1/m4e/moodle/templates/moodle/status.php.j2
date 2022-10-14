@@ -11,12 +11,14 @@ require_once($CFG->libdir.'/clilib.php');
 list($options, $unrecognized) = cli_get_params([
     'help'    => false,
     'checks' => false,
+    'confighash' => false,
     'version' => false,
     'url' => false,
     'usage' => false
 ], [
     'h' => 'help',
     'c' => 'checks',
+    'ch' => 'confighash',
     'v' => 'version',
     'l' => 'url',
     'u' => 'usage'
@@ -32,6 +34,7 @@ if ($options['help']) {
 Options:
     -h, --help                      Print out this help
     -c, --checks=critical,error     Include moodle checks
+    -ch, --confighash              Include sha1 hash of config.php content
     -l, --url                       Include URL to access moodle
     -u, --usage                     Include moodle usage (storage and registered users)
     -v, --version                   Include moodle properties related with its version
@@ -46,6 +49,10 @@ $json = array();
 # Convert bytes to gigabytes
 function convertBytesToGiB($bytes) {
     return round($bytes / 1024 / 1024 / 1024,1);
+}
+
+if ($options['confighash']){
+    $json['configHash'] = hash_file('sha1', $MOODLE_APP . '/config.php');
 }
 
 if ($options['url']){
