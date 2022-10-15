@@ -120,7 +120,7 @@ ganesha_service_spec: |
 # ganesha server generated storage class
 ganesha_generated_nfs_sc: "{{ ganesha_appname }}-sc"
 ganesha_generated_nfs_sc_needed: true
-ganesha_generated_nfs_sc_mount_permissions: '0777'
+ganesha_generated_nfs_sc_mount_permissions: "{{ ganesha_export_mode }}"
 ganesha_generated_nfs_sc_parameters: |-
   server: "{{ ganesha_service + '.' + meta_namespace }}"
   share: "{{ ganesha_generated_nfs_sc_share | default('/') }}"
