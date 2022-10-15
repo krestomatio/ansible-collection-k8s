@@ -20,6 +20,8 @@ template:
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
         value: '{{ php_fpm_config_process_control_timeout }}'
+      - name: PHP_FPM_CHECK_PORT_TIMEOUT
+        value: '{{ php_fpm_liveness_timeout }}'
 {% if php_fpm_envvars is defined and php_fpm_envvars %}
 {%   for php_fpm_envvar in php_fpm_envvars %}
       - name: {{ php_fpm_envvar.name }}
