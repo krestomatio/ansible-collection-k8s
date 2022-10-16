@@ -4,6 +4,9 @@
 moodle_php_fpm_envvar_data:
   name: MOODLE_DATA
   value: "{{ moodle_pvc_data_path }}"
+moodle_php_fpm_envvar_data_readable:
+  name: MOODLE_DATA_READABLE_DIR
+  value: "'{{ 'true' if k8s_distribution == 'k8s' else 'false' }}'"
 moodle_php_fpm_envvar_config:
   name: MOODLE_CONFIG_DIR
   value: "{{ moodle_config_path }}"
@@ -13,8 +16,8 @@ moodle_php_fpm_envvar_redis:
     secretKeyRef:
       name: "{{ moodle_redis_secret }}"
       key: "{{ moodle_redis_secret_auth_key }}"
-moodle_php_fpm_envvars_base:
-  "{{ [moodle_php_fpm_envvar_data] + [moodle_php_fpm_envvar_config] +
+moodle_php_fpm_envvars_base: "{{ [moodle_php_fpm_envvar_data] +
+  [moodle_php_fpm_envvar_data_readable] + [moodle_php_fpm_envvar_config] +
   ([moodle_php_fpm_envvar_redis] if moodle_redis_secret else []) }}"
 moodle_php_fpm_envvars_extra: []
 
