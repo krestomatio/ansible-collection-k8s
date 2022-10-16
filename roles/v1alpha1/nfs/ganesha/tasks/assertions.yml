@@ -21,6 +21,6 @@
     - ganesha_generated_nfs_sc_mount_permissions is defined and ganesha_generated_nfs_sc_mount_permissions
     - ganesha_export_owner_mode_set
   assert:
-    that: ganesha_export_mode != ganesha_generated_nfs_sc_mount_permissions
-    fail_msg: "Set export permissions with either ganesha server export mode property or mount permissions"
+    that: ganesha_export_mode == ganesha_generated_nfs_sc_mount_permissions
+    fail_msg: "Setting diferent mount permissions between ganesha server export mode property and mount permissions"
     quiet: true

@@ -124,7 +124,9 @@ ganesha_generated_nfs_sc_mount_permissions: "{{ ganesha_export_mode }}"
 ganesha_generated_nfs_sc_parameters: |-
   server: "{{ ganesha_service + '.' + meta_namespace }}"
   share: "{{ ganesha_generated_nfs_sc_share | default('/') }}"
+  {% if ganesha_generated_nfs_sc_mount_permissions is defined and ganesha_generated_nfs_sc_mount_permissions %}
   mountPermissions: "{{ ganesha_generated_nfs_sc_mount_permissions }}"
+  {% endif %}
   {% if ganesha_generated_nfs_sc_extra_parameters is defined and ganesha_generated_nfs_sc_extra_parameters %}
   {{ ganesha_generated_nfs_sc_extra_parameters }}
   {% endif %}
