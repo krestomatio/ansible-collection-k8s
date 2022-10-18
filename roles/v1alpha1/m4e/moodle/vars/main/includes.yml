@@ -6,7 +6,7 @@ moodle_new_instance_job_needed:
 
 # moodle update job
 moodle_update_job_needed:
-  "{{ true if not moodle_status_uptodate and moodle_status_version.type | default('Other') in moodle_update_allow_types else false }}"
+  "{{ true if not moodle_status_uptodate and moodle_status_version.pendingType | default('Other') in moodle_update_allow_pending_types else false }}"
 
 # moodle data pvc
 moodle_pvc_data_needed: "{{ false if moodle_nfs_meta_name else true }}"
