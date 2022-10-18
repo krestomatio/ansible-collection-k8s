@@ -1,9 +1,6 @@
 ## Changes
 
-### Bug Fixes
-
-* moodle: set other version type (Job Céspedes Ortiz)
-
 ### Code Refactoring
 
-* moodle: change version pending type field (Job Céspedes Ortiz)
+* moodle: increase job timeout (Job Céspedes Ortiz)
+* moodle: update pending type ref (Job Céspedes Ortiz)
