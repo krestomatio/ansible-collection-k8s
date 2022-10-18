@@ -80,8 +80,10 @@ if ($options['version'] && empty($CFG->upgraderunning)){
     if ($version_source < $CFG->version) {
         $uptodate = "False";
         $version_source_downgrade_error = "True";
+        $version_source_type = "Other";
     } else if (empty($CFG->version) or empty($CFG->allversionshash)) {
         $uptodate = "False";
+        $version_source_type = "Other";
     } else {
         $version_source_allversionshash = core_component::get_all_versions_hash();
         if ($version_source_allversionshash !== $CFG->allversionshash){
