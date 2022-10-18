@@ -69,7 +69,7 @@ if ($options['version'] && empty($CFG->upgraderunning)){
     $version_source = $version;
     $version_source_release = $release;
     $version_source_branch = $branch;
-    $version_source_type = "None";
+    $version_source_pending_type = "None";
     $version_source_downgrade_error = "False";
     $version_source_allversionshash = $CFG->allversionshash;
     $version_source_pending = "False";
@@ -80,18 +80,20 @@ if ($options['version'] && empty($CFG->upgraderunning)){
     if ($version_source < $CFG->version) {
         $uptodate = "False";
         $version_source_downgrade_error = "True";
+        $version_source_pending_type = "Other";
     } else if (empty($CFG->version) or empty($CFG->allversionshash)) {
         $uptodate = "False";
+        $version_source_pending_type = "Other";
     } else {
         $version_source_allversionshash = core_component::get_all_versions_hash();
         if ($version_source_allversionshash !== $CFG->allversionshash){
             $uptodate = "False";
-            $version_source_type = "Other";
+            $version_source_pending_type = "Other";
             if ($version_source > $CFG->version) {
-                $version_source_type = "Minor";
+                $version_source_pending_type = "Minor";
             }
             if ($branch !== $CFG->branch){
-                $version_source_type = "Major";
+                $version_source_pending_type = "Major";
             }
         }
     }
@@ -107,8 +109,8 @@ if ($options['version'] && empty($CFG->upgraderunning)){
         "branch" => "$version_source_branch",
         "downgradeError" => "$version_source_downgrade_error",
         "pending" => "$version_source_pending",
+        "pendingType" => "$version_source_pending_type",
         "release" => "$version_source_release",
-        "type" => "$version_source_type",
         "version" => "$version_source"
     );
 }
