@@ -1,6 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### Bug Fixes
 
-* moodle: increase job timeout (Job Céspedes Ortiz)
-* moodle: update pending type ref (Job Céspedes Ortiz)
+* nfs: allow only one use bewteen ganesha export_owner_mode_set and ganesha generated_nfs_sc_mount (Job Céspedes Ortiz)
