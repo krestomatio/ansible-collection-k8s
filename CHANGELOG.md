@@ -2,4 +2,8 @@
 
 ### Bug Fixes
 
-* nfs: handle export mode and mount permissions (Job Céspedes Ortiz)
+* moodle: set other version type (Job Céspedes Ortiz)
+
+### Code Refactoring
+
+* moodle: change version pending type field (Job Céspedes Ortiz)
