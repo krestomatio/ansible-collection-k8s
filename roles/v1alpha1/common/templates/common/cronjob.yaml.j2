@@ -1,7 +1,7 @@
 # {{ name }} cronjob
 ---
 kind: CronJob
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 {% include common_path + '/metadata.j2' ignore missing %}
 {% if cronjob_spec != false %}
 spec:
