@@ -30,10 +30,17 @@ spec:
         value: "true"
       - name: PROJECT_TIMESTAMP
         value: midnight
+    - name: multiarch-builder-config
+      workspaces:
+      - name: output
+        workspace: shared-workspace
+      taskRef:
+        name: multiarch-builder-config
     - name: pullrequest
       resources: {}
       runAfter:
       - git-clone-pr
+      - multiarch-builder-config
       workspaces:
       - name: source
         workspace: shared-workspace
@@ -47,6 +54,8 @@ spec:
           env:
           - name: HOME
             value: /workspace
+          - name: DOCKER_CONTEXT
+            value: multiarch-builder-amd64
           resources:
             limits:
               cpu: 400m
@@ -72,16 +81,9 @@ spec:
             requests:
               cpu: 0.1
               memory: 128Mi
-          volumeMounts:
-          - name: libdocker
-            mountPath: /var/lib/docker
           securityContext:
             privileged: true
           workingDir: /workspace/ansible_collections/krestomatio/k8s
-        volumes:
-        - name: libdocker
-          persistentVolumeClaim:
-            claimName: libdocker-0sd6j3-pvc
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 240h0m0s
