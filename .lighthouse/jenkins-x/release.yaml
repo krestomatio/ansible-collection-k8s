@@ -71,9 +71,9 @@ spec:
                 name: ansible-galaxy-api-key
                 key: apikey
           args:
-          - release
+          - "600"
           command:
-          - make
+          - sleep
           resources:
             limits:
               cpu: 750
