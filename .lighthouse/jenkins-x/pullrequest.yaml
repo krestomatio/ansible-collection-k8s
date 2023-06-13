@@ -81,8 +81,6 @@ spec:
             requests:
               cpu: 0.1
               memory: 128Mi
-          securityContext:
-            privileged: true
           workingDir: /workspace/ansible_collections/krestomatio/k8s
   podTemplate: {}
   serviceAccountName: tekton-bot
