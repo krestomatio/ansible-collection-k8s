@@ -1,5 +1,9 @@
 ## Changes
 
-### New Features
+### Bug Fixes
 
-* add node placement options (Job Céspedes Ortiz)
+* correct indent for node selector and affinity (Job Céspedes Ortiz)
+
+### Chores
+
+* update makefiles submodule (Job Céspedes Ortiz)
