@@ -42,6 +42,8 @@ keydb_resource_limits_memory: 1Gi
 keydb_term_grace_period: 30
 keydb_data: /data
 keydb_tolerations: false
+keydb_node_selector: false
+keydb_affinity: false
 keydb_port: 6379
 
 # keydb services

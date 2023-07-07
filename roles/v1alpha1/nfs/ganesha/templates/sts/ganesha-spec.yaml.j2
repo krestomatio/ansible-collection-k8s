@@ -305,5 +305,13 @@ template:
     imagePullSecrets:
     - name: {{ ganesha_image_pull_secret }}
 {% endif %}
+{% if ganesha_node_selector %}
+    nodeSelector:
+    {{ ganesha_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
+{% if ganesha_affinity %}
+    affinity:
+    {{ ganesha_affinity | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
 volumeClaimTemplates:
   {{ ganesha_volume_claim_template | to_nice_yaml(indent=2) | indent(2) }}

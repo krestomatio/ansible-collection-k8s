@@ -119,3 +119,11 @@ jobTemplate:
         imagePullSecrets:
         - name: {{ moodle_image_pull_secret }}
 {% endif %}
+{% if moodle_cronjob_node_selector %}
+        nodeSelector:
+        {{ moodle_cronjob_node_selector | to_nice_yaml(indent=2) | indent(8) }}
+{% endif %}
+{% if moodle_cronjob_affinity %}
+        affinity:
+        {{ moodle_cronjob_affinity | to_nice_yaml(indent=2) | indent(8) }}
+{% endif %}

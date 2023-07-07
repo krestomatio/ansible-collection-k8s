@@ -151,5 +151,13 @@ template:
     imagePullSecrets:
     - name: {{ keydb_image_pull_secret }}
 {% endif %}
+{% if keydb_node_selector %}
+    nodeSelector:
+    {{ keydb_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
+{% if keydb_affinity %}
+    affinity:
+    {{ keydb_affinity | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
 volumeClaimTemplates:
   {{ keydb_volume_claim_template | to_nice_yaml(indent=2) | indent(2) }}
