@@ -49,6 +49,8 @@ nginx_resource_limits_memory: 1Gi
 nginx_term_grace_period: 30
 nginx_run_as_user: 1001
 nginx_tolerations: false
+nginx_node_selector: false
+nginx_affinity: false
 nginx_connects_to: false
 # nginx_envvars:
 #   - name: PHP_FPM_HOST

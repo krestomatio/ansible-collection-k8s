@@ -44,6 +44,8 @@ postgres_resource_limits_memory: 1Gi
 postgres_term_grace_period: 30
 postgres_data: /var/lib/pgsql/data
 postgres_tolerations: false
+postgres_node_selector: false
+postgres_affinity: false
 postgres_port: 5432
 
 # readreplicas sts
@@ -82,6 +84,8 @@ postgres_readreplicas_resource_limits_cpu: "{{ postgres_resource_limits_cpu }}"
 postgres_readreplicas_resource_limits_memory: "{{ postgres_resource_limits_memory }}"
 postgres_readreplicas_term_grace_period: "{{ postgres_term_grace_period }}"
 postgres_readreplicas_tolerations: "{{ postgres_tolerations }}"
+postgres_readreplicas_node_selector: "{{ postgres_node_selector }}"
+postgres_readreplicas_affinity: "{{ postgres_affinity }}"
 
 # postgres secret
 postgres_secret: "{{ postgres_appname }}-secret"

@@ -37,6 +37,8 @@ ganesha_resource_limits_cpu: 1
 ganesha_resource_limits_memory: 1Gi
 ganesha_term_grace_period: 30
 ganesha_tolerations: false
+ganesha_node_selector: false
+ganesha_affinity: false
 ganesha_port: 2049
 ganesha_run_as_user: 0
 ganesha_capabilities: |

@@ -43,6 +43,8 @@ php_fpm_resource_limits_cpu: 1
 php_fpm_resource_limits_memory: 1Gi
 php_fpm_term_grace_period: 30
 php_fpm_tolerations: false
+php_fpm_node_selector: false
+php_fpm_affinity: false
 php_fpm_connects_to: false
 # php_fpm_envvars:
 #   - name: PHP_FPM_HOST

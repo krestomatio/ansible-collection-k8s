@@ -120,3 +120,11 @@ template:
     imagePullSecrets:
     - name: {{ moodle_image_pull_secret }}
 {% endif %}
+{% if moodle_update_job_node_selector %}
+    nodeSelector:
+    {{ moodle_update_job_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}
+{% if moodle_update_job_affinity %}
+    affinity:
+    {{ moodle_update_job_affinity | to_nice_yaml(indent=2) | indent(4) }}
+{% endif %}

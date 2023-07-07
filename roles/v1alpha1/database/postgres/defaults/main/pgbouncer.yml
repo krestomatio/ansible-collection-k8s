@@ -39,6 +39,8 @@ pgbouncer_resource_limits_cpu: 1
 pgbouncer_resource_limits_memory: 1Gi
 pgbouncer_term_grace_period: 30
 pgbouncer_tolerations: false
+pgbouncer_node_selector: false
+pgbouncer_affinity: false
 pgbouncer_port: 5432
 
 # pgbouncer readonly deploy
@@ -74,6 +76,8 @@ pgbouncer_readonly_resource_limits_cpu: "{{ pgbouncer_resource_limits_cpu }}"
 pgbouncer_readonly_resource_limits_memory: "{{ pgbouncer_resource_limits_memory }}"
 pgbouncer_readonly_term_grace_period: "{{ pgbouncer_term_grace_period }}"
 pgbouncer_readonly_tolerations: "{{ pgbouncer_tolerations }}"
+pgbouncer_readonly_node_selector: "{{ pgbouncer_node_selector }}"
+pgbouncer_readonly_affinity: "{{ pgbouncer_affinity }}"
 
 # pgbouncer secret
 pgbouncer_secret: "{{ pgbouncer_appname }}-secret"
