@@ -153,11 +153,11 @@ template:
 {% endif %}
 {% if keydb_node_selector %}
     nodeSelector:
-    {{ keydb_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+      {{ keydb_node_selector | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 {% if keydb_affinity %}
     affinity:
-    {{ keydb_affinity | to_nice_yaml(indent=2) | indent(4) }}
+      {{ keydb_affinity | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 volumeClaimTemplates:
   {{ keydb_volume_claim_template | to_nice_yaml(indent=2) | indent(2) }}

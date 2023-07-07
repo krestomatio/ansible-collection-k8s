@@ -129,9 +129,9 @@ template:
 {% endif %}
 {% if moodle_new_instance_job_node_selector %}
     nodeSelector:
-    {{ moodle_new_instance_job_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+      {{ moodle_new_instance_job_node_selector | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 {% if moodle_new_instance_job_affinity %}
     affinity:
-    {{ moodle_new_instance_job_affinity | to_nice_yaml(indent=2) | indent(4) }}
+      {{ moodle_new_instance_job_affinity | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}

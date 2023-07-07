@@ -173,9 +173,9 @@ template:
 {% endif %}
 {% if pgbouncer_readonly_node_selector %}
     nodeSelector:
-    {{ pgbouncer_readonly_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+      {{ pgbouncer_readonly_node_selector | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 {% if pgbouncer_readonly_affinity %}
     affinity:
-    {{ pgbouncer_readonly_affinity | to_nice_yaml(indent=2) | indent(4) }}
+      {{ pgbouncer_readonly_affinity | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
