@@ -186,9 +186,9 @@ template:
 {% endif %}
 {% if nginx_node_selector %}
     nodeSelector:
-    {{ nginx_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+      {{ nginx_node_selector | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 {% if nginx_affinity %}
     affinity:
-    {{ nginx_affinity | to_nice_yaml(indent=2) | indent(4) }}
+      {{ nginx_affinity | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}

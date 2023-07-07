@@ -203,11 +203,11 @@ template:
 {% endif %}
 {% if postgres_readreplicas_node_selector %}
     nodeSelector:
-    {{ postgres_readreplicas_node_selector | to_nice_yaml(indent=2) | indent(4) }}
+      {{ postgres_readreplicas_node_selector | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 {% if postgres_readreplicas_affinity %}
     affinity:
-    {{ postgres_readreplicas_affinity | to_nice_yaml(indent=2) | indent(4) }}
+      {{ postgres_readreplicas_affinity | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
 volumeClaimTemplates:
   {{ postgres_readreplicas_volume_claim_template | to_nice_yaml(indent=2) | indent(2) }}
