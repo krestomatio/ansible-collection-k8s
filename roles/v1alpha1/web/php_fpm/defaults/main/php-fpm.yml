@@ -86,3 +86,7 @@ php_fpm_service_spec: |
     targetPort: {{ php_fpm_port }}
   selector:
     app: '{{ php_fpm_appname }}'
+
+# php-fpm hpa
+php_fpm_hpa: "{{ php_fpm_appname }}-hpa"
+php_fpm_hpa_spec: false

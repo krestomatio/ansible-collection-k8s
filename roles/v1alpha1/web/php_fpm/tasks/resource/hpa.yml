@@ -1,0 +1,16 @@
+- name: php-fpm hpa resource definition
+  vars:
+    k8s_kind: HorizontalPodAutoscaler
+    k8s_state: "{{ php_fpm_hpa_state | default(php_fpm_state) }}"
+    template: "{{ hpa_template }}"
+    metadata_name: "{{ php_fpm_hpa }}"
+    annotations: "{{ php_fpm_hpa_annotations | default(false) }}"
+    hpa_ref_api_version: apps/v1
+    hpa_ref_kind: Deployment
+    hpa_ref_name: "{{ php_fpm_deploy }}"
+    hpa_spec: "{{ php_fpm_hpa_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save php-fpm hpa resource definition task
+  set_fact:
+    k8s_php_fpm_hpa: "{{ k8s_object_task }}"
