@@ -50,6 +50,7 @@ php_fpm_template: "{{ common_path }}/php-fpm.yaml.j2"
 ingress_template: "{{ common_path }}/ingress.yaml.j2"
 sc_template: "{{ common_path }}/sc.yaml.j2"
 routine_template: "{{ common_path }}/routine.yaml.j2"
+hpa_template: "{{ common_path }}/hpa.yaml.j2"
 
 # inventory
 inventory_refresh_task: not-refresh
