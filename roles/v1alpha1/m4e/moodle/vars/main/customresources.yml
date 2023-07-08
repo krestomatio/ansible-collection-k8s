@@ -3,7 +3,7 @@ moodle_php_fpm: "{{ moodle_appname }}-php-fpm"
 moodle_php_fpm_spec: |-
   {%  if common_labels | default(false) %}
   common_labels: |-
-    {{ common_labels | indent(4) }}
+    {{ common_labels | indent(2) }}
   {% endif %}
   {% for _php_fpm_varname in query('varnames', '^php_fpm.+')  %}
   {% if _php_fpm_varname is not match('php_fpm_spec') and _php_fpm_varname is not regex('.*_task$') %}
@@ -28,7 +28,7 @@ moodle_nginx: "{{ moodle_appname }}-nginx"
 moodle_nginx_spec: |-
   {%  if common_labels | default(false) %}
   common_labels: |-
-    {{ common_labels | indent(4) }}
+    {{ common_labels | indent(2) }}
   {% endif %}
   {% for _nginx_varname in query('varnames', '^nginx.+')  %}
   {% if _nginx_varname is not match('nginx_spec') and _nginx_varname is not regex('.*_task$') %}
@@ -53,7 +53,7 @@ moodle_routine: "{{ moodle_appname }}-routine"
 moodle_routine_spec: |-
   {%  if common_labels | default(false) %}
   common_labels: |-
-    {{ common_labels | indent(4) }}
+    {{ common_labels | indent(2) }}
   {% endif %}
   {% for _routine_varname in query('varnames', '^routine.+')  %}
   {% if _routine_varname is not match('routine_spec') and _routine_varname is not regex('.*_task$') %}
