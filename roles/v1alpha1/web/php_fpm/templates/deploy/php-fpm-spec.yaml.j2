@@ -197,9 +197,9 @@ template:
 {% endif %}
 {% if php_fpm_node_selector %}
     nodeSelector:
-      {{ php_fpm_node_selector | to_nice_yaml(indent=2) | indent(6) }}
+      {{ php_fpm_node_selector | indent(6) }}
 {% endif %}
 {% if php_fpm_affinity %}
     affinity:
-      {{ php_fpm_affinity | to_nice_yaml(indent=2) | indent(6) }}
+      {{ php_fpm_affinity | indent(6) }}
 {% endif %}

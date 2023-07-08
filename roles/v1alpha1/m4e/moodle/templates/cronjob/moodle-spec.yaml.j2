@@ -121,9 +121,9 @@ jobTemplate:
 {% endif %}
 {% if moodle_cronjob_node_selector %}
         nodeSelector:
-          {{ moodle_cronjob_node_selector | to_nice_yaml(indent=2) | indent(10) }}
+          {{ moodle_cronjob_node_selector | indent(10) }}
 {% endif %}
 {% if moodle_cronjob_affinity %}
         affinity:
-          {{ moodle_cronjob_affinity | to_nice_yaml(indent=2) | indent(10) }}
+          {{ moodle_cronjob_affinity | indent(10) }}
 {% endif %}

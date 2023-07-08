@@ -122,9 +122,9 @@ template:
 {% endif %}
 {% if moodle_update_job_node_selector %}
     nodeSelector:
-      {{ moodle_update_job_node_selector | to_nice_yaml(indent=2) | indent(6) }}
+      {{ moodle_update_job_node_selector | indent(6) }}
 {% endif %}
 {% if moodle_update_job_affinity %}
     affinity:
-      {{ moodle_update_job_affinity | to_nice_yaml(indent=2) | indent(6) }}
+      {{ moodle_update_job_affinity | indent(6) }}
 {% endif %}
