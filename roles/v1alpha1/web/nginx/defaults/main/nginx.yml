@@ -145,3 +145,7 @@ nginx_route_spec: |
     insecureEdgeTerminationPolicy: Redirect
   {% endif %}
   wildcardPolicy: None
+
+# nginx hpa
+nginx_hpa: "{{ nginx_appname }}-hpa"
+nginx_hpa_spec: false
