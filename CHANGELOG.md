@@ -2,4 +2,4 @@
 
 ### Bug Fixes
 
-* moodle: add common labels to crd (Job Céspedes Ortiz)
+* moodle: adjust common labels indent (Job Céspedes Ortiz)
