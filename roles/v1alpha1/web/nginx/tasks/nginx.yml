@@ -15,6 +15,9 @@
         - import_tasks: resource/hpa.yml
           when: nginx_hpa_spec is defined and nginx_hpa_spec
 
+        - import_tasks: resource/vpa.yml
+          when: nginx_vpa_spec is defined and nginx_vpa_spec
+
         - import_tasks: resource/service.yml
 
     - import_tasks: "resource/{{ nginx_ingress_type }}.yml"

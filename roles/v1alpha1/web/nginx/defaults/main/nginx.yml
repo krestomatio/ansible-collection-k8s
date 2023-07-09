@@ -149,3 +149,7 @@ nginx_route_spec: |
 # nginx hpa
 nginx_hpa: "{{ nginx_appname }}-hpa"
 nginx_hpa_spec: false
+
+# nginx vpa
+nginx_vpa: "{{ nginx_appname }}-vpa"
+nginx_vpa_spec: false
