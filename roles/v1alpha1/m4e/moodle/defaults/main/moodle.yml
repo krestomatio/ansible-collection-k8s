@@ -181,6 +181,10 @@ moodle_cronjob_php_fpm_config_process_control_timeout: "{{ php_fpm_config_proces
 moodle_cronjob_tolerations: false
 moodle_cronjob_node_selector: false
 moodle_cronjob_affinity: false
+# moodle cronjob vpa
+moodle_cronjob_vpa: "{{ moodle_cronjob }}-vpa"
+moodle_cronjob_vpa_spec: false
+
 
 # moodle data pvc
 moodle_pvc_data: "{{ moodle_appname }}-moodledata-pvc"
