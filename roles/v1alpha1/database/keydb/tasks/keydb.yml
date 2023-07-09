@@ -15,6 +15,9 @@
 
     - import_tasks: resource/sts.yml
 
+    - import_tasks: resource/vpa.yml
+      when: keydb_vpa_spec is defined and keydb_vpa_spec
+
     - import_tasks: "{{ common_path }}/cleanup-resources.yml"
       vars:
         cleanup_label_selector: "app={{ metadata_app }}"

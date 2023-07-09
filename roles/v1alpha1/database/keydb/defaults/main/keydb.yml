@@ -130,3 +130,7 @@ keydb_cm_data: |
 # keydb_sysctls:
 #   - name: net.core.somaxconn
 #     value: "{{ keydb_sysctls_somaxconn | default('1024') }}"
+
+# keydb vpa
+keydb_vpa: "{{ keydb_appname }}-vpa"
+keydb_vpa_spec: false
