@@ -1,5 +1,7 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
+{% if not (nginx_hpa_spec is defined and nginx_hpa_spec) %}
 replicas: {{ nginx_size }}
+{% endif %}
 selector:
   matchLabels:
     app: '{{ nginx_appname }}'

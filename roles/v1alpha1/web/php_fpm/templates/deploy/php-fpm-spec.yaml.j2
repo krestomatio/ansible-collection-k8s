@@ -1,5 +1,7 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
+{% if not (php_fpm_hpa_spec is defined and php_fpm_hpa_spec) %}
 replicas: {{ php_fpm_size }}
+{% endif %}
 selector:
   matchLabels:
     app: '{{ php_fpm_appname }}'
