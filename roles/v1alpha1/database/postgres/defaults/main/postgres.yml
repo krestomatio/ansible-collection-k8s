@@ -222,3 +222,7 @@ postgres_upgrade_readiness_failure: 10
 
 # postgres config
 postgres_config_log_stderr: true
+
+# postgres vpa
+postgres_vpa: "{{ postgres_appname }}-vpa"
+postgres_vpa_spec: false
