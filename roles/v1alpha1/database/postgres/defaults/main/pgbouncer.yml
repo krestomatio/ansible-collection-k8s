@@ -194,3 +194,7 @@ pgbouncer_readonly_cm_data: |
   pgbouncer-extra-databases.ini: |
     {{ pgbouncer_readonly_extra_databases_config | default(pgbouncer_extra_databases_config)
     | default('') | indent(2) }}
+
+# pgbouncer vpa
+pgbouncer_vpa: "{{ pgbouncer_appname }}-vpa"
+pgbouncer_vpa_spec: false
