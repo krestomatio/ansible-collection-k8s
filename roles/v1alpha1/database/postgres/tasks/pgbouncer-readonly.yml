@@ -11,3 +11,6 @@
     - import_tasks: resource/pgbouncer-readonly/svc.yml
 
     - import_tasks: resource/pgbouncer-readonly/deploy.yml
+
+    - import_tasks: resource/pgbouncer-readonly/vpa.yml
+      when: pgbouncer_readonly_vpa_spec is defined and pgbouncer_readonly_vpa_spec

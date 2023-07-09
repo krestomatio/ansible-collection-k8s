@@ -1,4 +1,4 @@
-- name: pgbouncer service resource definition
+- name: pgbouncer readonly service resource definition
   vars:
     k8s_kind: Service
     k8s_state:
@@ -9,6 +9,6 @@
     service_spec: "{{ pgbouncer_readonly_service_spec }}"
   include_tasks: "{{ common_path }}/k8s/object.yml"
 
-- name: save pgbouncer service resource definition task
+- name: save pgbouncer readonly service resource definition task
   set_fact:
     k8s_pgbouncer_readonly_service: "{{ k8s_object_task }}"

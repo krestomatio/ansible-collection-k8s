@@ -198,3 +198,7 @@ pgbouncer_readonly_cm_data: |
 # pgbouncer vpa
 pgbouncer_vpa: "{{ pgbouncer_appname }}-vpa"
 pgbouncer_vpa_spec: false
+
+# pgbouncer readonly vpa
+pgbouncer_readonly_vpa: "{{ pgbouncer_readonly_appname }}-vpa"
+pgbouncer_readonly_vpa_spec: false
