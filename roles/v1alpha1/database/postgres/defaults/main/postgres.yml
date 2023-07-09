@@ -226,3 +226,7 @@ postgres_config_log_stderr: true
 # postgres vpa
 postgres_vpa: "{{ postgres_appname }}-vpa"
 postgres_vpa_spec: false
+
+# postgres readreplicas vpa
+postgres_readreplicas_vpa: "{{ postgres_readreplicas_appname }}-vpa"
+postgres_readreplicas_vpa_spec: false
