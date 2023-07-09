@@ -1,0 +1,16 @@
+- name: postgres vpa resource definition
+  vars:
+    k8s_kind: VerticalPodAutoscaler
+    k8s_state: "{{ postgres_vpa_state | default(postgres_state) }}"
+    template: "{{ vpa_template }}"
+    metadata_name: "{{ postgres_vpa }}"
+    annotations: "{{ postgres_vpa_annotations | default(false) }}"
+    vpa_ref_api_version: apps/v1
+    vpa_ref_kind: StatefulSet
+    vpa_ref_name: "{{ postgres_sts }}"
+    vpa_spec: "{{ postgres_vpa_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save postgres vpa resource definition task
+  set_fact:
+    k8s_postgres_vpa: "{{ k8s_object_task }}"

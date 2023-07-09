@@ -9,4 +9,10 @@
 
     - import_tasks: resource/deploy.yml
 
+    - import_tasks: resource/hpa.yml
+      when: php_fpm_hpa_spec is defined and php_fpm_hpa_spec
+
+    - import_tasks: resource/vpa.yml
+      when: php_fpm_vpa_spec is defined and php_fpm_vpa_spec
+
     - import_tasks: resource/service.yml

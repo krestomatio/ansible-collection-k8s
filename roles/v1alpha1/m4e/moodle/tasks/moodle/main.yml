@@ -31,4 +31,7 @@
 
     - import_tasks: resource/cronjob.yml
 
+    - import_tasks: resource/cronjob-vpa.yml
+      when: moodle_cronjob_vpa_spec is defined and moodle_cronjob_vpa_spec
+
     - import_tasks: resource/routine.yml

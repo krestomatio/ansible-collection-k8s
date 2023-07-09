@@ -252,3 +252,7 @@ ganesha_export_dir: /export
 ganesha_export_userid: 0
 ganesha_export_groupid: 0
 ganesha_export_mode: '0700'
+
+# ganesha vpa
+ganesha_vpa: "{{ ganesha_appname }}-vpa"
+ganesha_vpa_spec: false

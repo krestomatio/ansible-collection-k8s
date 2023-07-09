@@ -9,3 +9,6 @@
     - import_tasks: resource/readreplicas/svc-readonly.yml
 
     - import_tasks: resource/readreplicas/sts.yml
+
+    - import_tasks: resource/readreplicas/vpa.yml
+      when: postgres_readreplicas_vpa_spec is defined and postgres_readreplicas_vpa_spec

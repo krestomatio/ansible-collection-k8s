@@ -1,0 +1,16 @@
+- name: keydb vpa resource definition
+  vars:
+    k8s_kind: VerticalPodAutoscaler
+    k8s_state: "{{ keydb_vpa_state | default(keydb_state) }}"
+    template: "{{ vpa_template }}"
+    metadata_name: "{{ keydb_vpa }}"
+    annotations: "{{ keydb_vpa_annotations | default(false) }}"
+    vpa_ref_api_version: apps/v1
+    vpa_ref_kind: StatefulSet
+    vpa_ref_name: "{{ keydb_sts }}"
+    vpa_spec: "{{ keydb_vpa_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save keydb vpa resource definition task
+  set_fact:
+    k8s_keydb_vpa: "{{ k8s_object_task }}"

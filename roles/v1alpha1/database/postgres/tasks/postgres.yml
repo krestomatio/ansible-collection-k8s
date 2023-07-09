@@ -13,3 +13,6 @@
     - import_tasks: resource/postgres/svc.yml
 
     - import_tasks: resource/postgres/sts.yml
+
+    - import_tasks: resource/postgres/vpa.yml
+      when: postgres_vpa_spec is defined and postgres_vpa_spec

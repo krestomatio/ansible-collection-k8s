@@ -1,0 +1,16 @@
+- name: nginx vpa resource definition
+  vars:
+    k8s_kind: VerticalPodAutoscaler
+    k8s_state: "{{ nginx_vpa_state | default(nginx_state) }}"
+    template: "{{ vpa_template }}"
+    metadata_name: "{{ nginx_vpa }}"
+    annotations: "{{ nginx_vpa_annotations | default(false) }}"
+    vpa_ref_api_version: apps/v1
+    vpa_ref_kind: Deployment
+    vpa_ref_name: "{{ nginx_deploy }}"
+    vpa_spec: "{{ nginx_vpa_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save nginx vpa resource definition task
+  set_fact:
+    k8s_nginx_vpa: "{{ k8s_object_task }}"

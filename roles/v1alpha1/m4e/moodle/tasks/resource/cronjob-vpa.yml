@@ -1,0 +1,16 @@
+- name: moodle cronjob vpa resource definition
+  vars:
+    k8s_kind: VerticalPodAutoscaler
+    k8s_state: "{{ moodle_cronjob_vpa_state | default(moodle_state) }}"
+    template: "{{ vpa_template }}"
+    metadata_name: "{{ moodle_cronjob_vpa }}"
+    annotations: "{{ moodle_cronjob_vpa_annotations | default(false) }}"
+    vpa_ref_api_version: batch/v1
+    vpa_ref_kind: CronJob
+    vpa_ref_name: "{{ moodle_cronjob }}"
+    vpa_spec: "{{ moodle_cronjob_vpa_spec }}"
+  import_tasks: "{{ common_path }}/k8s/object.yml"
+
+- name: save moodle cronjob vpa resource definition task
+  set_fact:
+    k8s_moodle_cronjob_vpa: "{{ k8s_object_task }}"
