@@ -90,3 +90,7 @@ php_fpm_service_spec: |
 # php-fpm hpa
 php_fpm_hpa: "{{ php_fpm_appname }}-hpa"
 php_fpm_hpa_spec: false
+
+# php-fpm vpa
+php_fpm_vpa: "{{ php_fpm_appname }}-vpa"
+php_fpm_vpa_spec: false
