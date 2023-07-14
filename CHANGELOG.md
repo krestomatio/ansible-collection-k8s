@@ -2,4 +2,8 @@
 
 ### Bug Fixes
 
-* web: do not set replica when hpa spec set (Job Céspedes Ortiz)
+* php-fpm: reduce php check timeout below probe timeout (Job Céspedes Ortiz)
+
+### Chores
+
+* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
