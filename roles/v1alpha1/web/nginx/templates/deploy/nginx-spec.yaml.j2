@@ -172,8 +172,8 @@ template:
           path: nginx-extra.conf
 {% if nginx_volumes is defined and nginx_volumes %}
 {%   for volume in nginx_volumes %}
-    - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
+    - name: '{{ volume.name }}'
       {{ volume.source | indent(6) }}
 {%     endif %}
 {%   endfor %}

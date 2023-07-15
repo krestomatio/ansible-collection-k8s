@@ -183,8 +183,8 @@ template:
           path: php-fpm-extra.conf
 {% if php_fpm_volumes is defined and php_fpm_volumes %}
 {%   for volume in php_fpm_volumes %}
-    - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
+    - name: '{{ volume.name }}'
       {{ volume.source | indent(6) }}
 {%     endif %}
 {%   endfor %}
