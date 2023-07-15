@@ -33,9 +33,16 @@ moodle_php_fpm_volume_config:
       items:
       - key: config.php
         path: config.php
+      - key: "{{ moodle_muc_config_json_file | basename }}"
+        path: "{{ moodle_muc_config_json_file | basename }}"
+moodle_php_fpm_volume_muc_config:
+  name: config-php
+  mount_path: "{{ moodle_muc_config_json_file }}"
+  sub_path: "{{ moodle_muc_config_json_file | basename }}"
+  read_only: true
 moodle_php_fpm_volume_localcache:
   name: localcache
-  mount_path: "{{ moodle_config_localcachedir }}"
+  mount_path: "{{ moodle_local_dir }}"
   source: |-
     emptyDir: {}
 moodle_php_fpm_volume_moodledata: "{{ moodle_volume_moodledata }}"
@@ -47,7 +54,8 @@ moodle_php_fpm_volume_scripts:
       name: "{{ moodle_cm_scripts }}"
       defaultMode: 0555
 moodle_php_fpm_volumes_base: "{{ [moodle_php_fpm_volume_config] +
-  [moodle_php_fpm_volume_moodledata] + [moodle_php_fpm_volume_localcache] + [moodle_php_fpm_volume_scripts] }}"
+  [moodle_php_fpm_volume_muc_config] + [moodle_php_fpm_volume_moodledata] +
+  [moodle_php_fpm_volume_localcache] + [moodle_php_fpm_volume_scripts] }}"
 moodle_php_fpm_volumes_extra: []
 
 # php-fpm

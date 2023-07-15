@@ -1,0 +1,5 @@
+- name: routine to enforce redis muc store config
+  when: routine_muc_config | bool
+  run_once: true
+  register: routine_muc_config_task
+  command: "{{ routine_muc_config_script }}"

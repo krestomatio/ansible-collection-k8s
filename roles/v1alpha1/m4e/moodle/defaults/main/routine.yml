@@ -16,8 +16,8 @@ routine_pvc_autoexpand_info_cap_gib: "{{ moodle_pvc_data_autoexpansion_cap_gib }
 routine_moodle_new_adminpass_hash: "{{ moodle_new_adminpass_hash }}"
 
 # redis muc store
-routine_redis_muc_store_script: "{{ moodle_redis_muc_store_script }}"
-routine_redis_muc_store: false
+routine_muc_config_script: "{{ moodle_muc_config_script }}"
+routine_muc_config: false
 
 # sync config
 routine_moodle_config_autosync: "{{ moodle_config_autosync }}"

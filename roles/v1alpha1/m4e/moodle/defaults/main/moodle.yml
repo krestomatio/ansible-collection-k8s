@@ -35,6 +35,7 @@ moodle_service_spec: |
 moodle_app: /var/www/html
 moodle_config_path: /config
 moodle_scripts_path: "{{ moodle_config_path }}/scripts"
+moodle_local_dir: /var/moodlelocal
 moodle_host: "m4e.krestomat.io"
 moodle_port: false
 moodle_subpath: false
@@ -101,9 +102,9 @@ moodle_new_instance_job_command_snippet: |-
     echo "Setting admin password..."
     php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
   {% endif %}
-  {% if moodle_redis_muc_store %}
-    echo "Setting redis MUC store"
-    {{ moodle_redis_muc_store_script }}
+  {% if moodle_muc_config %}
+    echo "Applying MUC config"
+    {{ moodle_muc_config_script }}
   {% endif %}
   elif [ $exit_code -eq 0 ]; then
     echo "WARNING: database already instantiated"
@@ -255,6 +256,7 @@ moodle_volume_moodledata:
 moodle_secret_config: "{{ moodle_appname }}-secret-config"
 moodle_secret_config_data: |
   config.php: '{{ lookup('template', moodle_config_template) | b64encode }}'
+  muc-config.json: '{{ lookup('template', moodle_muc_config_template) | to_json | b64encode }}'
 moodle_secret_admin: "{{ moodle_appname }}-secret-admin"
 moodle_secret_admin_data: |
   password_hash: '{{ moodle_new_adminpass_hash | b64encode }}'
@@ -262,8 +264,8 @@ moodle_secret_admin_data: |
 # moodle config map
 moodle_cm_scripts: "{{ moodle_appname }}-cm-scripts"
 moodle_cm_scripts_data: |
-  muc-store.php: |
-    {{ lookup('template', moodle_script_muc_store_template) | indent(2) }}
+  muc-config.php: |
+    {{ lookup('template', moodle_script_muc_config_template) | indent(2) }}
   status.php: |
     {{ lookup('template', moodle_script_status_template) | indent(2) }}
 
@@ -286,33 +288,26 @@ moodle_redis_host: "{{ moodle_redis_service }}"
 ## whether redis will be used as session store
 moodle_redis_session_store: "{{ true if moodle_keydb_meta_name else false }}"
 ## whether redis will be used as muc store
-moodle_redis_muc_store: "{{ true if moodle_keydb_meta_name else false }}"
+moodle_redis_password: "{{ '' if not moodle_redis_secret else
+  lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
+  resource_name=moodle_redis_secret).data
+  [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode }}"
+moodle_redis_muc_config: "{{ true if moodle_keydb_meta_name else false }}"
+moodle_redis_muc_config_prefix: muc_
+moodle_redis_muc_config_serializer: 2
+moodle_redis_muc_config_compressor: 1
+
 ## muc store
-moodle_redis_muc_store_script: >-
-  {{ moodle_scripts_path }}/muc-store.php
-  {% if moodle_redis_muc_store_reset %}
+moodle_muc_config: "{{ moodle_redis_muc_config }}"
+moodle_muc_config_script: >-
+  php -d apc.enable_cli=1
+  {{ moodle_scripts_path }}/muc-config.php
+  {% if moodle_muc_config_reset %}
   -r
   {% endif %}
-  {% if moodle_redis_muc_store_overwrite %}
-  -o
-  {% endif %}
-  -p='{{ moodle_redis_muc_store_plugin }}'
-  -n='{{ moodle_redis_muc_store_name }}'
-  -s='{{ moodle_redis_host }}'
-  -a="${REDIS_PASSWORD}"
-  -m='application,session'
-  -e='{{ moodle_redis_muc_store_script_extra_config }}'
-moodle_redis_muc_store_overwrite: "{{ true if moodle_keydb_meta_name else false }}"
-moodle_redis_muc_store_reset: false
-moodle_redis_muc_store_plugin: redis
-moodle_redis_muc_store_name: redis
-moodle_redis_muc_store_prefix: ''
-moodle_redis_muc_store_serializer: 1
-moodle_redis_muc_store_compressor: 0
-moodle_redis_muc_store_script_extra_config:
-  "{{ 'prefix=' + moodle_redis_muc_store_prefix +
-  ',serializer=' + moodle_redis_muc_store_serializer | string +
-  ',compressor=' + moodle_redis_muc_store_compressor | string }}"
+  -f='{{moodle_muc_config_json_file }}'
+moodle_muc_config_reset: false
+moodle_muc_config_json_file: "{{ moodle_config_path }}/muc-config.json"
 
 # moodle config.php
 moodle_config_dbhost: "{{ moodle_database_service }}"
@@ -354,10 +349,7 @@ moodle_config_session_redis: "{{ moodle_redis_session_store }}"
 moodle_config_session_redis_host: '{{ moodle_redis_host }}'
 # moodle_config_session_redis_port: 6379
 # moodle_config_session_redis_database: 0
-moodle_config_session_redis_auth: "{{ '' if not moodle_redis_secret else
-  lookup('k8s', api_version='v1', kind='Secret', namespace=meta_namespace,
-  resource_name=moodle_redis_secret).data
-  [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode }}"
+moodle_config_session_redis_auth: "{{ moodle_redis_password }}"
 # moodle_config_session_redis_prefix: ''
 moodle_config_session_redis_acquire_lock_timeout: 120
 moodle_config_session_redis_lock_expire: 7200
@@ -374,7 +366,7 @@ moodle_config_sslproxy: "{{ true if moodle_protocol == 'https' else false }}"
 #   profilingallowall: 'true'
 #   profilinglifetime: 1440
 #   pathtodot: '/usr/bin/dot'
-moodle_config_localcachedir: /var/localcache
+moodle_config_localcachedir: "{{ moodle_local_dir }}/cache"
 # moodle_config_extramemorylimit: 256M
 moodle_config_disableupdateautodeploy: true
 # moodle_config_tool_lockstats: true

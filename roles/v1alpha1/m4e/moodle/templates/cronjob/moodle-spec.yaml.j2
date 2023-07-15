@@ -75,8 +75,8 @@ jobTemplate:
             subPath: php-fpm-extra.conf
           - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
             name: "{{ moodle_volume_moodledata.name }}"
-{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
-          - mountPath: '{{ moodle_config_localcachedir }}'
+{% if moodle_local_dir is defined and moodle_local_dir %}
+          - mountPath: '{{ moodle_local_dir }}'
             name: localcache
 {% endif %}
           - mountPath: '{{ moodle_app }}/config.php'
@@ -97,7 +97,7 @@ jobTemplate:
               path: php-fpm-extra.conf
         - name: "{{ moodle_volume_moodledata.name }}"
           {{ moodle_volume_moodledata.source | indent(10) }}
-{% if moodle_config_localcachedir is defined and moodle_config_localcachedir %}
+{% if moodle_local_dir is defined and moodle_local_dir %}
         - name: localcache
           emptyDir: {}
 {% endif %}
