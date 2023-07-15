@@ -1,9 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### New Features
 
-* php-fpm: reduce php check timeout below probe timeout (Job Céspedes Ortiz)
-
-### Chores
-
-* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* add new muc store config script (Job Céspedes Ortiz)
