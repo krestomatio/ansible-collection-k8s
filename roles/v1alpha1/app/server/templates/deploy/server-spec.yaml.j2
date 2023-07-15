@@ -120,8 +120,8 @@ template:
 {% if server_volumes is defined and server_volumes %}
     volumes:
 {%   for volume in server_volumes %}
-    - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
+    - name: '{{ volume.name }}'
       {{ volume.source | to_nice_yaml(indent=2) | indent(6) }}
 {%     endif %}
 {%   endfor %}

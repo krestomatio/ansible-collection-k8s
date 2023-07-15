@@ -103,8 +103,8 @@ template:
 {% if graphql_engine_volumes is defined and graphql_engine_volumes %}
     volumes:
 {%   for volume in graphql_engine_volumes %}
-    - name: '{{ volume.name }}'
 {%     if volume.source is defined and volume.source %}
+    - name: '{{ volume.name }}'
       {{ volume.source | to_nice_yaml(indent=2) | indent(6) }}
 {%     endif %}
 {%   endfor %}
