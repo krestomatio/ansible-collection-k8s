@@ -101,9 +101,9 @@ moodle_new_instance_job_command_snippet: |-
     echo "Setting admin password..."
     php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
   {% endif %}
-  {% if moodle_redis_muc_store %}
+  {% if moodle_redis_muc_config %}
     echo "Setting redis MUC store"
-    {{ moodle_redis_muc_store_script }}
+    {{ moodle_redis_muc_config_script }}
   {% endif %}
   elif [ $exit_code -eq 0 ]; then
     echo "WARNING: database already instantiated"
@@ -262,8 +262,8 @@ moodle_secret_admin_data: |
 # moodle config map
 moodle_cm_scripts: "{{ moodle_appname }}-cm-scripts"
 moodle_cm_scripts_data: |
-  muc-store.php: |
-    {{ lookup('template', moodle_script_muc_store_template) | indent(2) }}
+  muc-config.php: |
+    {{ lookup('template', moodle_script_muc_config_template) | indent(2) }}
   status.php: |
     {{ lookup('template', moodle_script_status_template) | indent(2) }}
 
@@ -286,33 +286,17 @@ moodle_redis_host: "{{ moodle_redis_service }}"
 ## whether redis will be used as session store
 moodle_redis_session_store: "{{ true if moodle_keydb_meta_name else false }}"
 ## whether redis will be used as muc store
-moodle_redis_muc_store: "{{ true if moodle_keydb_meta_name else false }}"
+moodle_redis_muc_config: "{{ true if moodle_keydb_meta_name else false }}"
 ## muc store
-moodle_redis_muc_store_script: >-
-  {{ moodle_scripts_path }}/muc-store.php
-  {% if moodle_redis_muc_store_reset %}
+moodle_redis_muc_config_script: >-
+  {{ moodle_scripts_path }}/muc-config.php
+  {% if moodle_redis_muc_config_reset %}
   -r
   {% endif %}
-  {% if moodle_redis_muc_store_overwrite %}
-  -o
-  {% endif %}
-  -p='{{ moodle_redis_muc_store_plugin }}'
-  -n='{{ moodle_redis_muc_store_name }}'
   -s='{{ moodle_redis_host }}'
   -a="${REDIS_PASSWORD}"
   -m='application,session'
-  -e='{{ moodle_redis_muc_store_script_extra_config }}'
-moodle_redis_muc_store_overwrite: "{{ true if moodle_keydb_meta_name else false }}"
-moodle_redis_muc_store_reset: false
-moodle_redis_muc_store_plugin: redis
-moodle_redis_muc_store_name: redis
-moodle_redis_muc_store_prefix: ''
-moodle_redis_muc_store_serializer: 1
-moodle_redis_muc_store_compressor: 0
-moodle_redis_muc_store_script_extra_config:
-  "{{ 'prefix=' + moodle_redis_muc_store_prefix +
-  ',serializer=' + moodle_redis_muc_store_serializer | string +
-  ',compressor=' + moodle_redis_muc_store_compressor | string }}"
+moodle_redis_muc_config_reset: false
 
 # moodle config.php
 moodle_config_dbhost: "{{ moodle_database_service }}"
