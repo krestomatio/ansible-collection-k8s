@@ -146,6 +146,10 @@ moodle_update_job_command_snippet: |-
   [ "${maintenance}" != "previous" ] && php admin/cli/maintenance.php --enable
   php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/uninstall_plugins.php  --purge-missing --run
   php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
+  {% if moodle_muc_config %}
+  echo "Reapplying MUC config"
+  {{ moodle_muc_config_script }}
+  {% endif %}
   [ "${previous_maintenance}" != "previous" ] && php admin/cli/maintenance.php --disable
 moodle_update_job_php_max_memory: ''
 moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
