@@ -7,7 +7,7 @@ postgres_mode: 'standalone'
 postgres_readreplicas_appname: "{{ meta_name }}-readreplicas"
 
 # postgres sts
-postgres_image: quay.io/krestomatio/postgres:13@sha256:3a00809f52a802a0cb5a52649258f62e8e1378a334afaafb5276d4fce95a2719
+postgres_image: quay.io/krestomatio/postgres:13@sha256:617a3ab359cc7ee1367ac994bb3e3dd9510d0c173fffa992f965a1dec34e7f13
 postgres_image_pull_secret: "{{ image_pull_secret }}"
 postgres_sts: "{{ postgres_appname }}-sts"
 postgres_container: "postgres"
