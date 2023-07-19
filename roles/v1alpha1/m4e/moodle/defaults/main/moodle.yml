@@ -144,6 +144,7 @@ moodle_update_job_command:
 moodle_update_job_command_snippet: |-
   maintenance=$(test -f "{{ moodle_pvc_data_path }}" && echo previous || echo none)
   [ "${maintenance}" != "previous" ] && php admin/cli/maintenance.php --enable
+  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/uninstall_plugins.php  --purge-missing --run
   php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
   [ "${previous_maintenance}" != "previous" ] && php admin/cli/maintenance.php --disable
 moodle_update_job_php_max_memory: ''
