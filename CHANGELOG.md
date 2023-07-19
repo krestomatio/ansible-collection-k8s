@@ -2,8 +2,9 @@
 
 ### New Features
 
-* add new muc store config script (Job Céspedes Ortiz)
+* moodle: apply muc config during upgrades (Job Céspedes Ortiz)
+* moodle: remove missing plugins when updating (Job Céspedes Ortiz)
 
-### Bug Fixes
+### Chores
 
-* set volumes only if volume.source (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (root)
