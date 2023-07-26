@@ -1,10 +1,5 @@
 ## Changes
 
-### New Features
+### Code Refactoring
 
-* moodle: apply muc config during upgrades (Job Céspedes Ortiz)
-* moodle: remove missing plugins when updating (Job Céspedes Ortiz)
-
-### Chores
-
-* bump image versions in ansible collection with updatebot (root)
+* create moodle install and update script (Job Céspedes Ortiz)
