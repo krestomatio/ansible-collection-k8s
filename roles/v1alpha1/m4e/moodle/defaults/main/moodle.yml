@@ -69,51 +69,14 @@ moodle_new_instance_command:
   - '-c'
   - |
     container-entrypoint
+    {{ moodle_scripts_path }}/moodle-instance -i
+    {% if moodle_new_instance_job_command_snippet | default(false) %}
     {{ moodle_new_instance_job_command_snippet }}
-moodle_new_instance_job_command_snippet: |-
-  echo "Checking if database is available..."
-  database_check_times=24
-  moodle_php_fpm_check_container_script={{ moodle_php_fpm_check_container_script }}
-  test -f $moodle_php_fpm_check_container_script || { echo "$moodle_php_fpm_check_container_script file does not exists"; exit 1; }
-  database_check_exit_code=$($moodle_php_fpm_check_container_script -d &>/dev/null && echo 0 || echo $?)
-  until [ ${database_check_times} -lt 0 ] || [ "${database_check_exit_code}" == "0" ] || [ "${database_check_exit_code}" == "2" ]; do
-    echo "Waiting for database to be available: ${database_check_times}..."
-    sleep 5
-    (( database_check_times-- ))
-    database_check_exit_code=$($moodle_php_fpm_check_container_script -d &>/dev/null || echo $?)
-  done
-  [ ${database_check_times} -lt 0 ] && echo "Error: timeout wating for database to be available, exit code: ${database_check_exit_code}" && exit ${database_check_exit_code}
-  echo "Instantiating moodle..."
-  $moodle_php_fpm_check_container_script -d
-  exit_code=$?
-  if [ $exit_code -eq 2 ]; then
-    echo "Installing..."
-    php {{ '-d memory_limit=' + moodle_new_instance_job_php_max_memory if
-    moodle_new_instance_job_php_max_memory else '' }} admin/cli/install_database.php \
-      --lang='{{ moodle_new_instance_lang }}' \
-      --fullname='{{ moodle_new_instance_fullname }}' \
-      --shortname='{{ moodle_new_instance_shortname }}' \
-      --summary='{{ moodle_new_instance_summary }}' \
-      --adminuser='{{ moodle_new_instance_adminuser }}' \
-      --adminpass='{{ moodle_new_adminpass | default('changeme') }}' \
-      --adminemail='{{ moodle_new_instance_adminmail }}' \
-      --agree-license
-  {% if moodle_new_adminpass_hash is defined %}
-    echo "Setting admin password..."
-    php ${MOODLE_CLI_TOOLS}/reset-user-pass.php --userid=2 --hash='{{ moodle_new_adminpass_hash }}'
-  {% endif %}
-  {% if moodle_muc_config %}
-    echo "Applying MUC config"
-    {{ moodle_muc_config_script }}
-  {% endif %}
-  elif [ $exit_code -eq 0 ]; then
-    echo "WARNING: database already instantiated"
-    exit 0
-  else
-    echo "Moodle could not be instantiated, exit code when checking database: '${exit_code}'"
-    exit ${exit_code}
-  fi
-moodle_new_instance_job_php_max_memory: ''
+    {% endif %}
+moodle_new_instance_job_php_max_memory:
+  "{{ moodle_new_instance_job_resource_limits_memory | regex_search('^\\d+[MmGgKk]')
+  if moodle_new_instance_job_resource_limits_memory is defined
+  and moodle_new_instance_job_resource_limits else '' }}"
 moodle_new_instance_job_tolerations: false
 moodle_new_instance_job_node_selector: false
 moodle_new_instance_job_affinity: false
@@ -140,18 +103,14 @@ moodle_update_job_command:
   - '-c'
   - |
     container-entrypoint
+    {{ moodle_scripts_path }}/moodle-instance -u
+    {% if moodle_update_job_command_snippet | default(false) %}
     {{ moodle_update_job_command_snippet }}
-moodle_update_job_command_snippet: |-
-  maintenance=$(test -f "{{ moodle_pvc_data_path }}" && echo previous || echo none)
-  [ "${maintenance}" != "previous" ] && php admin/cli/maintenance.php --enable
-  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/uninstall_plugins.php  --purge-missing --run
-  php {{ '-d memory_limit=' + moodle_update_job_php_max_memory if moodle_update_job_php_max_memory else '' }} admin/cli/upgrade.php --non-interactive
-  {% if moodle_muc_config %}
-  echo "Reapplying MUC config"
-  {{ moodle_muc_config_script }}
-  {% endif %}
-  [ "${previous_maintenance}" != "previous" ] && php admin/cli/maintenance.php --disable
-moodle_update_job_php_max_memory: ''
+    {% endif %}
+moodle_update_job_php_max_memory:
+  "{{ moodle_update_job_resource_limits_memory | regex_search('^\\d+[MmGgKk]')
+  if moodle_update_job_resource_limits_memory is defined
+  and moodle_update_job_resource_limits else '' }}"
 moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_process_control_timeout }}"
 moodle_update_job_tolerations: false
 moodle_update_job_node_selector: false
@@ -172,11 +131,15 @@ moodle_cronjob_command:
   - '-c'
   - |
     container-entrypoint
+    php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
+    moodle_cronjob_php_max_memory else '' }} ${MOODLE_APP}/admin/cli/cron.php
+    {% if moodle_cronjob_command_snippet | default(false) %}
     {{ moodle_cronjob_command_snippet }}
-moodle_cronjob_command_snippet: |-
-  php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
-  moodle_cronjob_php_max_memory else '' }} admin/cli/cron.php
-moodle_cronjob_php_max_memory: ''
+    {% endif %}
+moodle_cronjob_php_max_memory:
+  "{{ moodle_cronjob_resource_limits_memory | regex_search('^\\d+[MmGgKk]')
+  if moodle_cronjob_resource_limits_memory is defined
+  and moodle_cronjob_resource_limits else '' }}"
 moodle_cronjob_resource_requests: true
 moodle_cronjob_resource_requests_cpu: 15m
 moodle_cronjob_resource_requests_memory: 32Mi
@@ -273,6 +236,8 @@ moodle_cm_scripts_data: |
     {{ lookup('template', moodle_script_muc_config_template) | indent(2) }}
   status.php: |
     {{ lookup('template', moodle_script_status_template) | indent(2) }}
+  moodle-instance: |
+    {{ lookup('template', moodle_instance_template) | indent(2) }}
 
 # database
 moodle_postgres_meta_name: false
