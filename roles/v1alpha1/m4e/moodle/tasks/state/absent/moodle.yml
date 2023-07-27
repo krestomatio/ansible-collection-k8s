@@ -11,18 +11,3 @@
     - import_tasks: "{{ role_path }}/tasks/resource/nginx.yml"
 
     - import_tasks: "{{ role_path }}/tasks/resource/php-fpm.yml"
-
-    # remove cronjob
-    - import_tasks: "{{ role_path }}/tasks/resource/cronjob.yml"
-
-    # remove pvc
-    - import_tasks: "{{ role_path }}/tasks/resource/pvc-moodledata.yml"
-      when: moodle_pvc_data_needed | bool
-
-    # remove any remaining job or their pods
-    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
-      vars:
-        cleanup_label_selector: "app={{ metadata_app }}"
-        cleanup_kind_list:
-          - Job
-          - Pod
