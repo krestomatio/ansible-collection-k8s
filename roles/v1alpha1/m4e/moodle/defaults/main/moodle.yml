@@ -8,8 +8,8 @@ moodle_image: quay.io/krestomatio/moodle:4.1@sha256:1c16dea2c54e20234409de0556e0
 moodle_image_pull_secret: "{{ image_pull_secret }}"
 moodle_container: "moodle-php-fpm"
 moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
-moodle_readiness_command: "['{{ moodle_php_fpm_check_container_script }}', '-t', '-r']"
-moodle_liveness_command: "['{{ moodle_php_fpm_check_container_script }}', '-t', '-l']"
+moodle_readiness_command: "['{{ moodle_php_fpm_check_container_script }}', '-s', '-r']"
+moodle_liveness_command: "['{{ moodle_php_fpm_check_container_script }}', '-s', '-l']"
 moodle_php_fpm_check_container_script: /usr/libexec/check-container-php-moodle
 moodle_nginx_check_container_script: /usr/libexec/check-container-nginx-moodle
 

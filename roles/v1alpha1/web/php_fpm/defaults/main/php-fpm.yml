@@ -14,21 +14,21 @@ php_fpm_args: "['php-fpm']"
 php_fpm_container: "php-fpm"
 php_fpm_container_group: "{{ php_fpm_container.replace('-', '_') }}"
 php_fpm_startup_probe: false
-php_fpm_startup_command: "['{{ php_fpm_check_container_script }}', '-t', '-r']"
+php_fpm_startup_command: "['{{ php_fpm_check_container_script }}', '-s', '-r']"
 php_fpm_startup_initial: 5
 php_fpm_startup_period: 10
 php_fpm_startup_timeout: 3
 php_fpm_startup_success: 1
 php_fpm_startup_failure: 6
 php_fpm_readiness_probe: false
-php_fpm_readiness_command: "['{{ php_fpm_check_container_script }}', '-t', '-r']"
+php_fpm_readiness_command: "['{{ php_fpm_check_container_script }}', '-s', '-r']"
 php_fpm_readiness_initial: 5
 php_fpm_readiness_period: 10
 php_fpm_readiness_timeout: 3
 php_fpm_readiness_success: 1
 php_fpm_readiness_failure: 6
 php_fpm_liveness_probe: false
-php_fpm_liveness_command: "['{{ php_fpm_check_container_script }}', '-t', '-l']"
+php_fpm_liveness_command: "['{{ php_fpm_check_container_script }}', '-s', '-l']"
 php_fpm_liveness_initial: 5
 php_fpm_liveness_period: 10
 php_fpm_liveness_timeout: 3
@@ -47,8 +47,8 @@ php_fpm_node_selector: false
 php_fpm_affinity: false
 php_fpm_connects_to: false
 # php_fpm_envvars:
-#   - name: PHP_FPM_HOST
-#     value: php-service
+#   - name: NGINX_FASTCGI_PASS
+#     value: php-service:9000
 # php_fpm_volumes:
 #   - name: html
 #     mount_path: /var/www/html
