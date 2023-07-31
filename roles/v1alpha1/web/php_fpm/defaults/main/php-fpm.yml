@@ -9,7 +9,6 @@ php_fpm_image: quay.io/krestomatio/php-fpm@sha256:f8c03f70b0c15a27be37e0a71c4dc7
 php_fpm_image_pull_secret: "{{ image_pull_secret }}"
 php_fpm_deploy: "{{ php_fpm_appname }}-deploy"
 php_fpm_port: 9000
-php_fpm_host: "{{ php_fpm_ingress_host }}"
 php_fpm_args: "['php-fpm']"
 php_fpm_container: "php-fpm"
 php_fpm_container_group: "{{ php_fpm_container.replace('-', '_') }}"
