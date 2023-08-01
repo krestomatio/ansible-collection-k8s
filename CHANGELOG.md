@@ -1,9 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Code Refactoring
 
-* moodle: remove undefined variables (Job Céspedes Ortiz)
-
-### Chores
-
-* bump image versions in ansible collection with updatebot (root)
+* moodle: set specific apache gid for moodledata (Job Céspedes Ortiz)
