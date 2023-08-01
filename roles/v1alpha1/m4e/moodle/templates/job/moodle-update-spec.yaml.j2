@@ -11,22 +11,6 @@ template:
   spec:
     restartPolicy: Never
     automountServiceAccountToken: false
-{% if k8s_distribution == 'k8s' %}
-    initContainers:
-    - name: 'data-dir-permissions'
-      image: '{{ moodle_image }}'
-      securityContext:
-        runAsUser: 0
-      command:
-        - '/bin/bash'
-        - '-c'
-        - |
-          chown ${CTR_USER_ID}:${CTR_GROUP_ID:-0} '{{ moodle_volume_moodledata.mount_path }}'
-          chmod 0740 {{ moodle_volume_moodledata.mount_path }}
-      volumeMounts:
-      - mountPath: '{{ moodle_volume_moodledata.mount_path }}'
-        name: "{{ moodle_volume_moodledata.name }}"
-{% endif %}
     containers:
     - name: 'moodle-update-job'
       image: '{{ moodle_image }}'
