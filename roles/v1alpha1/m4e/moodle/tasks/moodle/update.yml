@@ -5,6 +5,13 @@
   vars:
     moodle_component: "job-update"
   block:
+    - include_tasks: condition/uptodate/started.yml
+
+    # update status script to not update version while updating
+    - vars:
+        moodle_status_script_version: false
+      include_tasks: resource/routine.yml
+
     - include_tasks: resource/job-update.yml
 
     - include_tasks: "{{ common_path }}/wait/job.yml"
@@ -12,4 +19,8 @@
         wait_job_name: "{{ moodle_update_job }}"
         wait_job_conditions: "{{ k8s_moodle_update_job.result.status.conditions | default([]) }}"
 
-    - include_tasks: routine/status.yml
+    - name: rollout php-fpm deploy
+      changed_when: false
+      command: "kubectl -n {{ meta_namespace }} rollout restart deploy --selector=app.kubernetes.io/component=php-fpm"
+
+    - include_tasks: condition/uptodate/complete.yml

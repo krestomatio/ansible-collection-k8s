@@ -6,7 +6,7 @@
     metadata_name: "{{ moodle_routine }}"
     annotations: "{{ inventory_annotation_extra_cr_cwd + (moodle_routine_annotations | default('')) }}"
     routine_spec: "{{ moodle_routine_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save moodle routine resource definition task
   set_fact:
