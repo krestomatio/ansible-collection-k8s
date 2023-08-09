@@ -32,11 +32,18 @@ DATABASE_CHECK_TIMES=${DATABASE_CHECK_TIMES:-24}
 MOODLE_INSTALL_MEMORY_LIMIT=${MOODLE_INSTALL_MEMORY_LIMIT:-{{ moodle_new_instance_job_php_max_memory }}}
 MOODLE_UPDATE_MEMORY_LIMIT=${MOODLE_UPDATE_MEMORY_LIMIT:-{{ moodle_update_job_php_max_memory }}}
 database_check_exit_code=""
+install_check_exit_code=""
 
 database_check() {
     echo "Checking moodle database..."
     test -f ${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} || { echo "${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} file does not exists"; exit 1; }
     database_check_exit_code=$(${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} -d &>/dev/null; echo $?)
+}
+
+install_check() {
+    echo "Checking if moodle install..."
+    test -f ${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} || { echo "${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} file does not exists"; exit 1; }
+    install_check_exit_code=$(${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} -i &>/dev/null; echo $?)
 }
 
 moodle_install() {
@@ -68,7 +75,7 @@ moodle_instance_install() {
     set -e
 
     echo "Checking if database engine is available..."
-    until [ ${DATABASE_CHECK_TIMES} -lt 0 ] || [ "${database_check_exit_code}" == "0" ] || [ "${database_check_exit_code}" == "2" ]; do
+    until [ ${DATABASE_CHECK_TIMES} -lt 0 ] || [ "${database_check_exit_code}" != "0" ]; do
         echo "Waiting for database to be available: ${DATABASE_CHECK_TIMES}..."
         sleep 5
         database_check
@@ -76,7 +83,8 @@ moodle_instance_install() {
     done
     [ ${DATABASE_CHECK_TIMES} -lt 0 ] && echo "Error: timeout wating for database to be available, exit code: ${database_check_exit_code}" && exit ${database_check_exit_code}
 
-    if [ $database_check_exit_code -eq 2 ]; then
+    install_check
+    if [ $install_check_exit_code -eq 2 ]; then
         moodle_install
 {% if moodle_new_adminpass_hash is defined %}
         moodle_admin_password '{{ moodle_new_adminpass_hash }}'
@@ -84,12 +92,12 @@ moodle_instance_install() {
 {% if moodle_muc_config %}
         moodle_muc_config
 {% endif %}
-    elif [ $database_check_exit_code -eq 0 ]; then
+    elif [ $install_check_exit_code -eq 0 ]; then
         echo "WARNING: database already instantiated"
         exit 0
     else
-        echo "Moodle could not be instantiated, exit code when checking database: '${database_check_exit_code}'"
-        exit ${database_check_exit_code}
+        echo "Moodle could not be instantiated, exit code when checking database: '${install_check_exit_code}'"
+        exit ${install_check_exit_code}
     fi
 }
 
