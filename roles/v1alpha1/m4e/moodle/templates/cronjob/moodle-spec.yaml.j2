@@ -18,6 +18,7 @@ jobTemplate:
         - name: 'moodle-cronjob'
           image: '{{ moodle_image }}'
           env:
+          - {{ moodle_cronjob_php_fpm_database_check_socket | to_nice_yaml(indent=2) | indent(12) }}
           - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
             value: any
           - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT

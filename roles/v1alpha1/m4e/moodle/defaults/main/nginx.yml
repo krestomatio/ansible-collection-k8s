@@ -29,11 +29,11 @@ nginx_image: "{{ moodle_image }}"
 nginx_container: "moodle-nginx"
 nginx_startup_probe: true
 nginx_startup_initial: 0
-nginx_startup_command: "['{{ moodle_nginx_check_container_script }}', '-s', '-r']"
+nginx_startup_command: "['{{ moodle_nginx_check_container_script }}', '-r']"
 nginx_readiness_probe: true
-nginx_readiness_command: "['{{ moodle_nginx_check_container_script }}', '-s', '-r']"
+nginx_readiness_command: "['{{ moodle_nginx_check_container_script }}', '-r']"
 nginx_liveness_probe: true
-nginx_liveness_command: "['{{ moodle_nginx_check_container_script }}', '-s', '-l']"
+nginx_liveness_command: "['{{ moodle_nginx_check_container_script }}', '-l']"
 nginx_connects_to: "{{ php_fpm_appname | default(moodle_appname + '-php-fpm') }}"
 ## nginx extra conf
 # nginx_extra_config: ''

@@ -15,6 +15,7 @@ template:
     - name: 'moodle-update-job'
       image: '{{ moodle_image }}'
       env:
+      - {{ moodle_update_job_php_fpm_database_check_socket | to_nice_yaml(indent=2) | indent(8) }}
       - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT

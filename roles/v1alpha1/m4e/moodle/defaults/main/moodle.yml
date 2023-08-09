@@ -4,12 +4,12 @@ moodle_state: "{{ state }}"
 moodle_appname: "{{ meta_name }}-moodle"
 
 # moodle deploy
-moodle_image: quay.io/krestomatio/moodle:4.1@sha256:86149bbae771c86eb77255497041075d5125267b62476d29cade157290072991
+moodle_image: quay.io/krestomatio/moodle:4.1@sha256:822d3e2c97e47394cc8385d61f965f8ff12d760d3c496643bb8ea033a44d88d6
 moodle_image_pull_secret: "{{ image_pull_secret }}"
 moodle_container: "moodle-php-fpm"
 moodle_container_group: "{{ moodle_container.replace('-', '_') }}"
-moodle_readiness_command: "['{{ moodle_php_fpm_check_container_script }}', '-s', '-r']"
-moodle_liveness_command: "['{{ moodle_php_fpm_check_container_script }}', '-s', '-l']"
+moodle_readiness_command: "['{{ moodle_php_fpm_check_container_script }}', '-r']"
+moodle_liveness_command: "['{{ moodle_php_fpm_check_container_script }}', '-l']"
 moodle_php_fpm_check_container_script: /usr/libexec/check-container-php-moodle
 moodle_nginx_check_container_script: /usr/libexec/check-container-nginx-moodle
 
@@ -80,6 +80,7 @@ moodle_new_instance_job_php_max_memory:
 moodle_new_instance_job_tolerations: false
 moodle_new_instance_job_node_selector: false
 moodle_new_instance_job_affinity: false
+moodle_new_instance_job_php_fpm_database_check_socket: "{{ moodle_php_fpm_database_check_socket }}"
 
 # moodle auto update
 moodle_update_allow_pending_types:
@@ -115,6 +116,7 @@ moodle_update_job_php_fpm_config_process_control_timeout: "{{ php_fpm_config_pro
 moodle_update_job_tolerations: false
 moodle_update_job_node_selector: false
 moodle_update_job_affinity: false
+moodle_update_job_php_fpm_database_check_socket: "{{ moodle_php_fpm_database_check_socket }}"
 
 # moodle cronjob
 moodle_cronjob: "{{ moodle_appname }}-cronjob"
@@ -153,7 +155,7 @@ moodle_cronjob_affinity: false
 # moodle cronjob vpa
 moodle_cronjob_vpa: "{{ moodle_cronjob }}-vpa"
 moodle_cronjob_vpa_spec: false
-
+moodle_cronjob_php_fpm_database_check_socket: "{{ moodle_php_fpm_database_check_socket }}"
 
 # moodle data pvc
 moodle_pvc_data: "{{ moodle_appname }}-moodledata-pvc"

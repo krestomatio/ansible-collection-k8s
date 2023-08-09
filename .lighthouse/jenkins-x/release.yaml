@@ -30,6 +30,14 @@ spec:
         value: "true"
       - name: PROJECT_TIMESTAMP
         value: midnight
+      - name: GIT_AUTHOR_NAME
+        value: krestomatio-cibot
+      - name: GIT_AUTHOR_EMAIL
+        value: jobcespedes@krestomatio.com
+      - name: GIT_COMMITTER_NAME
+        value: krestomatio-cibot
+      - name: GIT_COMMITTER_EMAIL
+        value: jobcespedes@krestomatio.com
     - name: release
       resources: {}
       runAfter:

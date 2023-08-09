@@ -1,6 +1,9 @@
 # THIS FILES IS SHARED BETWEEN MOODLE.M4E AND PHPFPM.M4E CRD
 
 # moodle php-fpm envvars
+moodle_php_fpm_database_check_socket:
+  name: DATABASE_CHECK_SOCKET
+  value: "{{ moodle_config_dbhost }}:{{ moodle_config_dbport | default('5432') }}"
 moodle_php_fpm_envvar_data:
   name: MOODLE_DATA
   value: "{{ moodle_pvc_data_path }}"
@@ -16,7 +19,7 @@ moodle_php_fpm_envvar_redis:
     secretKeyRef:
       name: "{{ moodle_redis_secret }}"
       key: "{{ moodle_redis_secret_auth_key }}"
-moodle_php_fpm_envvars_base: "{{ [moodle_php_fpm_envvar_data] +
+moodle_php_fpm_envvars_base: "{{ [moodle_php_fpm_database_check_socket] + [moodle_php_fpm_envvar_data] +
   [moodle_php_fpm_envvar_data_readable] + [moodle_php_fpm_envvar_config] +
   ([moodle_php_fpm_envvar_redis] if moodle_redis_secret else []) }}"
 moodle_php_fpm_envvars_extra: []
