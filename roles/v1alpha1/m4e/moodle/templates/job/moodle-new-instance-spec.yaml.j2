@@ -59,6 +59,21 @@ template:
       {{ moodle_new_instance_args | to_nice_yaml(indent=2) | indent(6) }}
 {%   endif %}
 {% endif %}
+{% if moodle_new_instance_startup_probe | bool %}
+      startupProbe:
+        exec:
+{%   if moodle_new_instance_startup_command is string %}
+          command: {{ moodle_new_instance_startup_command }}
+{%   elif moodle_new_instance_startup_command | type_debug == 'list' %}
+          command:
+          {{ moodle_new_instance_startup_command | to_nice_yaml(indent=2) | indent(10) }}
+{%   endif %}
+        initialDelaySeconds: {{ moodle_new_instance_startup_initial }}
+        periodSeconds: {{ moodle_new_instance_startup_period }}
+        timeoutSeconds: {{ moodle_new_instance_startup_timeout }}
+        successThreshold: {{ moodle_new_instance_startup_success }}
+        failureThreshold: {{ moodle_new_instance_startup_failure }}
+{% endif %}
       ports:
       - containerPort: 9000
       imagePullPolicy: {{ moodle_new_instance_job_image_pull_policy | default('Always') }}

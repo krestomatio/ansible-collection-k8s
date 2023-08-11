@@ -82,6 +82,13 @@ moodle_new_instance_job_tolerations: false
 moodle_new_instance_job_node_selector: false
 moodle_new_instance_job_affinity: false
 moodle_new_instance_job_php_fpm_database_check_socket: "{{ moodle_php_fpm_database_check_socket }}"
+moodle_new_instance_startup_probe: true
+moodle_new_instance_startup_command: "['{{ moodle_php_fpm_check_container_script }}', '-d']"
+moodle_new_instance_startup_initial: 0
+moodle_new_instance_startup_period: 10
+moodle_new_instance_startup_timeout: 3
+moodle_new_instance_startup_success: 1
+moodle_new_instance_startup_failure: 12
 
 # moodle auto update
 moodle_update_allow_pending_types:
