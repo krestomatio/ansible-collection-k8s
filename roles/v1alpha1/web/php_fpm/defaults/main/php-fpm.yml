@@ -13,7 +13,7 @@ php_fpm_args: "['php-fpm']"
 php_fpm_container: "php-fpm"
 php_fpm_container_group: "{{ php_fpm_container.replace('-', '_') }}"
 php_fpm_startup_probe: false
-php_fpm_startup_command: "['{{ php_fpm_check_container_script }}', '-r']"
+php_fpm_startup_command: "['{{ php_fpm_check_container_script }}', '-s']"
 php_fpm_startup_initial: 5
 php_fpm_startup_period: 10
 php_fpm_startup_timeout: 3

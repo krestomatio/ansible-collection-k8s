@@ -75,7 +75,7 @@ php_fpm_startup_probe: true
 php_fpm_startup_initial: 0
 php_fpm_startup_period: 10
 php_fpm_startup_failure: 30
-php_fpm_startup_command: "{{ moodle_readiness_command }}"
+php_fpm_startup_command: "{{ moodle_startup_command }}"
 php_fpm_readiness_probe: true
 php_fpm_readiness_command: "{{ moodle_readiness_command }}"
 php_fpm_liveness_probe: true

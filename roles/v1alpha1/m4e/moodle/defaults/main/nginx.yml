@@ -29,7 +29,7 @@ nginx_image: "{{ moodle_image }}"
 nginx_container: "moodle-nginx"
 nginx_startup_probe: true
 nginx_startup_initial: 0
-nginx_startup_command: "['{{ moodle_nginx_check_container_script }}', '-r']"
+nginx_startup_command: "['{{ moodle_nginx_check_container_script }}', '-s']"
 nginx_readiness_probe: true
 nginx_readiness_command: "['{{ moodle_nginx_check_container_script }}', '-r']"
 nginx_liveness_probe: true
