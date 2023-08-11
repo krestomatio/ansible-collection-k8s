@@ -55,7 +55,7 @@ moodle_new_instance_adminmail: admin@example.com
 moodle_new_instance_lang: en
 moodle_new_instance_agree_license: false
 moodle_new_instance_job: "{{ moodle_appname }}-new-instance-job"
-moodle_new_instance_job_ttl_seconds_after_finished: false
+moodle_new_instance_job_ttl_seconds_after_finished: 604800 # 7 days
 moodle_new_instance_job_active_deadline_seconds: 3600
 moodle_new_instance_job_resource_requests: true
 moodle_new_instance_job_resource_requests_cpu: 15m
@@ -90,7 +90,7 @@ moodle_update_allow_pending_types:
 moodle_update_job:
   "{{ moodle_appname }}-update-{{ moodle_status_version.allVersionsHash[:10]
   | default(now(utc=True).timestamp() | int) }}-job"
-moodle_update_job_ttl_seconds_after_finished: 604800
+moodle_update_job_ttl_seconds_after_finished: 604800 # 7 days
 moodle_update_job_active_deadline_seconds:
   "{{ 21600 if moodle_status_version.pendingType | default('Other') == 'Major' else 10800 }}"
 moodle_update_job_resource_requests: true
@@ -124,8 +124,10 @@ moodle_cronjob_schedule: "*/1 * * * *"
 moodle_cronjob_success_limit: 3
 moodle_cronjob_starting_deadline_seconds: 45
 moodle_cronjob_failed_limit: 1
+moodle_cronjob_completions: 1
 moodle_cronjob_parallelism: 1
 moodle_cronjob_backoff_limit: 1
+moodle_cronjob_active_deadline_seconds: 86400 # 1 day
 moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_command:
@@ -156,6 +158,7 @@ moodle_cronjob_affinity: false
 moodle_cronjob_vpa: "{{ moodle_cronjob }}-vpa"
 moodle_cronjob_vpa_spec: false
 moodle_cronjob_php_fpm_database_check_socket: "{{ moodle_php_fpm_database_check_socket }}"
+moodle_cronjob_ttl_seconds_after_finished: 604800 # 7 days
 
 # moodle data pvc
 moodle_pvc_data: "{{ moodle_appname }}-moodledata-pvc"

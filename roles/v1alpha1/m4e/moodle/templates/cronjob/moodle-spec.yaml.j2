@@ -7,8 +7,13 @@ startingDeadlineSeconds: {{ moodle_cronjob_starting_deadline_seconds }}
 failedJobsHistoryLimit: {{ moodle_cronjob_failed_limit }}
 jobTemplate:
   spec:
+    completions: {{ moodle_cronjob_completions }}
     parallelism: {{ moodle_cronjob_parallelism }}
     backoffLimit: {{ moodle_cronjob_backoff_limit }}
+    activeDeadlineSeconds: {{ moodle_cronjob_active_deadline_seconds }}
+    {% if moodle_cronjob_ttl_seconds_after_finished is defined and moodle_cronjob_ttl_seconds_after_finished %}
+    ttlSecondsAfterFinished: {{ moodle_cronjob_ttl_seconds_after_finished }}
+    {% endif %}
     template:
       {{ metadata() | indent(width=6) }}
       spec:
