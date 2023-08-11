@@ -1,5 +1,4 @@
 # volumeClaimTemplate
-{% set common_labels_include = false %}
 {% include common_path + '/metadata.j2' ignore missing %}
 {% if pvc_spec != false %}
 spec:

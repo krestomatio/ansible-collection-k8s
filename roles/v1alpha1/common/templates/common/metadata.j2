@@ -30,7 +30,7 @@ metadata:
 {% if cr_version | default(false) != false %}
     app.kubernetes.io/version: '{{ cr_version }}'
 {% endif %}
-{% if common_labels | default(false) != false and common_labels_include | default(true) | bool %}
+{% if common_labels | default(false) != false %}
     {{ common_labels | indent(width=4) }}
 {% endif %}
 {% if extra_labels | default(false) != false %}
