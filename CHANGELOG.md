@@ -2,4 +2,4 @@
 
 ### Bug Fixes
 
-* moodle: move update tasks before php-fpm deploy (Job Céspedes Ortiz)
+* do not remove failed new instance job (Job Céspedes Ortiz)
