@@ -2,4 +2,4 @@
 
 ### Bug Fixes
 
-* moodle: add sane defaults to cornjob (Job Céspedes Ortiz)
+* do not include common lables in volume claim template (Job Céspedes Ortiz)
