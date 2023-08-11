@@ -1,9 +1,12 @@
 # moodle status version
-moodle_status_version: "{{ cr_status_properties.version | default({},true) }}"
+moodle_status_version:
+  "{{ routine_k8s_status_properties.version | default(cr_status_properties.version) | default({},true) }}"
 # whether moodle is uptodate
-moodle_status_uptodate: "{{ cr_status_properties.upToDate | default('True') | bool }}"
+moodle_status_uptodate:
+  "{{ routine_k8s_status_properties.upToDate | default(cr_status_properties.upToDate) | default('True') | bool }}"
 # whether moodle is created
-moodle_status_created: "{{ cr_status_properties.created | default('False') | bool }}"
+moodle_status_created:
+  "{{ routine_k8s_status_properties.created | default(cr_status_properties.created) | default('False') | bool }}"
 # whether moodle is setting up
 moodle_status_setting_up:
   "{{ true if lookup('template', moodle_config_template) | sha1 != cr_status.configHash | default('') else false }}"

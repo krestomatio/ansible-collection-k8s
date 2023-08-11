@@ -7,14 +7,21 @@
   block:
     - include_tasks: condition/uptodate/started.yml
 
-    # update status script to not update version while updating
-    - vars:
+    - name: omit version during routine status update
+      vars:
         moodle_status_script_version: false
       include_tasks: resource/routine.yml
 
-    - include_tasks: resource/job-update.yml
+    - name: suspend cronjob
+      vars:
+        moodle_cronjob_suspend: true
+      include_tasks: resource/cronjob.yml
 
-    - include_tasks: "{{ common_path }}/wait/job.yml"
+    - name: create update job
+      include_tasks: resource/job-update.yml
+
+    - name: wait for update job to complete
+      include_tasks: "{{ common_path }}/wait/job.yml"
       vars:
         wait_job_name: "{{ moodle_update_job }}"
         wait_job_conditions: "{{ k8s_moodle_update_job.result.status.conditions | default([]) }}"

@@ -128,7 +128,7 @@ moodle_cronjob_completions: 1
 moodle_cronjob_parallelism: 1
 moodle_cronjob_backoff_limit: 1
 moodle_cronjob_active_deadline_seconds: 86400 # 1 day
-moodle_cronjob_suspend: "{{ moodle_update_job_needed }}"
+moodle_cronjob_suspend: false
 moodle_cronjob_concurrency_policy: Allow
 moodle_cronjob_command:
   - '/bin/bash'
@@ -187,8 +187,10 @@ moodle_pvc_data_size:
   else
     moodle_pvc_data_current_size | default('1Gi', true)
   }}"
-moodle_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
-    | default(moodle_pvc_data_autoexpansion_increment_gib) }}"
+moodle_pvc_data_size_gib:
+  "{{ routine_k8s_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
+  | default(cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib)
+  | default(moodle_pvc_data_autoexpansion_increment_gib) }}"
 ## enable autoexpansion
 moodle_pvc_data_autoexpansion: false
 ### Increments in those GiB
