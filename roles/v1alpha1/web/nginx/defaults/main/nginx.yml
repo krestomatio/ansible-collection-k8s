@@ -5,7 +5,7 @@ nginx_appname: "{{ meta_name }}-nginx"
 
 # nginx deploy
 nginx_size: 1
-nginx_image: quay.io/krestomatio/nginx:1.20@sha256:9c4b90911ac4ac99537816115330131a27e297f77b205c3f1404780479d47a5e
+nginx_image: quay.io/krestomatio/nginx:1.20@sha256:7f4a3b5ac9cbdc6540309b28f9f5aa1eac73ced96ec7f51addd668e47d6d4b1f
 nginx_image_pull_secret: "{{ image_pull_secret }}"
 nginx_deploy: "{{ nginx_appname }}-deploy"
 nginx_port: 8080
