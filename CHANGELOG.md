@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Reverts
 
-* moodle: indent cronjob (Job Céspedes Ortiz)
+* undo b7711c8 (Job Céspedes Ortiz)
