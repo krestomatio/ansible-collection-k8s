@@ -1,5 +1,5 @@
 ## Changes
 
-### Reverts
+### Bug Fixes
 
-* undo b7711c8 (Job Céspedes Ortiz)
+* moodle: avoid two update job same time (Job Céspedes Ortiz)
