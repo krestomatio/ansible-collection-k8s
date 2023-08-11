@@ -75,7 +75,7 @@ moodle_instance_install() {
     set -e
 
     echo "Checking if database engine is available..."
-    until [ ${DATABASE_CHECK_TIMES} -lt 0 ] || [ "${database_check_exit_code}" != "0" ]; do
+    until [ ${DATABASE_CHECK_TIMES} -lt 0 ] || [ "${database_check_exit_code}" == "0" ]; do
         echo "Waiting for database to be available: ${DATABASE_CHECK_TIMES}..."
         sleep 5
         database_check
