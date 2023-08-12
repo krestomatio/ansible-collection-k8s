@@ -15,7 +15,7 @@ postgres_container_group: "{{ postgres_container.replace('-', '_') }}"
 postgres_args:
   - "{{ 'run-postgresql-master' if postgres_mode in ['readreplicas'] else 'run-postgresql'}}"
 postgres_startup_probe: true
-postgres_startup_command: "['/usr/libexec/check-container-postgres', '-r']"
+postgres_startup_command: "['/usr/libexec/check-container-postgres']"
 postgres_startup_initial: "{{ 5 if not postgres_upgrade else 30 }}"
 postgres_startup_period: "{{ 10 if not postgres_upgrade else 60 }}"
 postgres_startup_timeout: 1
