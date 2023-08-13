@@ -38,7 +38,7 @@ template:
 {% endif %}
       ports:
       - containerPort: 9000
-      imagePullPolicy: {{ moodle_update_job_image_pull_policy | default('Always') }}
+      imagePullPolicy: {{ moodle_update_job_image_pull_policy | default('IfNotPresent') }}
 {% if moodle_update_job_resource_requests or moodle_update_job_resource_limits %}
       resources:
 {% if moodle_update_job_resource_requests %}
