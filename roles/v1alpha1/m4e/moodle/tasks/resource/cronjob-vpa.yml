@@ -9,7 +9,7 @@
     vpa_ref_kind: CronJob
     vpa_ref_name: "{{ moodle_cronjob }}"
     vpa_spec: "{{ moodle_cronjob_vpa_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+  include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save moodle cronjob vpa resource definition task
   set_fact:

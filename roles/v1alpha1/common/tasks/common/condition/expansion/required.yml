@@ -1,5 +1,5 @@
 - name: set expansion required status
-  import_tasks: "{{ common_path }}/routine/status.yml"
+  include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     routine_k8s_status_conditions:
       - type: "{{ condition_expand_keyname }}Expansion"

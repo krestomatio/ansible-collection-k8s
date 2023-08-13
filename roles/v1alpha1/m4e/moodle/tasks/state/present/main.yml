@@ -1,15 +1,15 @@
-- name: import tasks
+- name: import and include tasks
   block:
     - name: make assertions
       import_tasks: "{{ role_path }}/tasks/assertions.yml"
 
     - name: handle setting-up
       when: moodle_status_setting_up
-      import_tasks: "{{ role_path }}/tasks/condition/ready/setting-up.yml"
+      include_tasks: "{{ role_path }}/tasks/condition/ready/setting-up.yml"
 
     - name: handle creating
       when: not moodle_status_created
-      import_tasks: "{{ role_path }}/tasks/condition/created/not-created.yml"
+      include_tasks: "{{ role_path }}/tasks/condition/created/not-created.yml"
 
     - name: handle moodle
       import_tasks: "{{ role_path }}/tasks/moodle/main.yml"
@@ -20,7 +20,7 @@
 
     - name: include successful status
       when: moodle_status_successful
-      import_tasks: "{{ role_path }}/tasks/condition/ready/successful.yml"
+      include_tasks: "{{ role_path }}/tasks/condition/ready/successful.yml"
   rescue:
     - name: include rescue tasks
       import_tasks: "{{ common_path }}/rescue.yml"

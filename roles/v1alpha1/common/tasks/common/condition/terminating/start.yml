@@ -1,5 +1,5 @@
 - name: set error status
-  import_tasks: "{{ common_path }}/routine/status.yml"
+  include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     routine_k8s_status_properties:
       ready: "False"
