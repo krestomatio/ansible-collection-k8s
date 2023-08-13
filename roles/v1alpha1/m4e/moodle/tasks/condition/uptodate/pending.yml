@@ -1,6 +1,9 @@
 - name: set update pending status
   include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
+    routine_k8s_status_properties:
+      ready: "False"
+      state: "UpdatePending"
     routine_k8s_status_conditions:
       - type: "UpToDate"
         status: "False"

@@ -4,7 +4,7 @@
     last_transition_time: "{{ now(utc=True).isoformat(timespec='seconds') + 'Z' }}"
     routine_k8s_status_properties:
       ready: "False"
-      state: SettingUp
+      state: "SettingUp"
     routine_k8s_status_conditions:
       - type: "Ready"
         status: "False"

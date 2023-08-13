@@ -5,7 +5,7 @@
     routine_k8s_status_properties:
       created: "False"
       ready: "False"
-      state: Creating
+      state: "NotCreated"
     routine_k8s_status_conditions:
       - type: "Created"
         status: "False"

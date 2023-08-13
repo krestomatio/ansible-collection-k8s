@@ -196,8 +196,7 @@ moodle_pvc_data_size:
     moodle_pvc_data_current_size | default('1Gi', true)
   }}"
 moodle_pvc_data_size_gib:
-  "{{ routine_k8s_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
-  | default(cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib)
+  "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
   | default(moodle_pvc_data_autoexpansion_increment_gib) }}"
 ## enable autoexpansion
 moodle_pvc_data_autoexpansion: false

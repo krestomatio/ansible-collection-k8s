@@ -5,7 +5,7 @@
     _routine_k8s_status_properties:
       ready: "True"
       created: "True"
-      state: Ready
+      state: "Ready"
     routine_k8s_status_properties:
       "{{ _routine_k8s_status_properties | combine({'observedGeneration': cr_status_generation | int}) }}"
     routine_k8s_status_conditions:

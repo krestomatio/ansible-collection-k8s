@@ -5,7 +5,7 @@
     routine_k8s_status_properties:
       instantiated: "True"
       ready: "False"
-      state: Creating
+      state: "Instantiated"
     routine_k8s_status_conditions:
       - type: "Instantiated"
         status: "True"

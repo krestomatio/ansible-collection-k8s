@@ -3,7 +3,7 @@
   vars:
     routine_k8s_status_properties:
       ready: "False"
-      state: Terminating
+      state: "Terminating"
     routine_k8s_status_conditions:
       - type: "Ready"
         status: "False"

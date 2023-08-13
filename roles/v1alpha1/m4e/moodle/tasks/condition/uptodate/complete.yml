@@ -3,7 +3,7 @@
   vars:
     routine_k8s_status_properties:
       ready: "False"
-      state: UpdateComplete
+      state: "UpdateComplete"
     routine_k8s_status_conditions:
       - type: "UpToDate"
         status: "False"
