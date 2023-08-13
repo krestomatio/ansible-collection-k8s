@@ -6,7 +6,7 @@
     metadata_app: "{{ moodle_metadata_app | default(moodle_appname) }}"
   block:
     - include_tasks: predeploy.yml
-      when: not moodle_status_created | bool and moodle_new_instance_job_needed | bool
+      when: moodle_predeploy_needed | bool
 
     - import_tasks: resource/secret-admin.yml
 
@@ -32,6 +32,6 @@
     - import_tasks: resource/cronjob.yml
 
     - include_tasks: resource/cronjob-vpa.yml
-      when: moodle_cronjob_vpa_spec is defined and moodle_cronjob_vpa_spec
+      when: moodle_cronjob_vpa_needed | bool
 
     - import_tasks: resource/routine.yml

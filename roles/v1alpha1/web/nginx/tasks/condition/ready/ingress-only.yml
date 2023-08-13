@@ -2,11 +2,11 @@
   import_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     routine_status_cr_notify_force: true
-    _routine_k8s_status_properties:
+    this_routine_k8s_status_properties:
       ready: "False"
       state: IngressOnly
     routine_k8s_status_properties:
-      "{{ _routine_k8s_status_properties | combine({'observedGeneration': cr_status_generation | int}) }}"
+      "{{ this_routine_k8s_status_properties | combine({'observedGeneration': cr_status_generation | int}) }}"
     routine_k8s_status_conditions:
       - type: "Ready"
         status: "False"

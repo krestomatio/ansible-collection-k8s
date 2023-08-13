@@ -1,15 +1,20 @@
 - name: set update started status
   include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
-    routine_k8s_status_properties:
+    last_transition_time: "{{ now(utc=True).isoformat(timespec='seconds') + 'Z' }}"
+    this_routine_k8s_status_properties:
       ready: "False"
       state: "UpdateStarted"
+    _routine_k8s_status_properties:
+      "{{ routine_k8s_status_properties |  default({}) | combine(this_routine_k8s_status_properties) }}"
     routine_k8s_status_conditions:
       - type: "UpToDate"
         status: "False"
         reason: "{{ moodle_status_version.pendingType | default('Other') }}UpdateStarted"
         message: "{{ moodle_status_version.pendingType | default('Other') }} update of Moodle has started"
+        lastTransitionTime: "{{ last_transition_time }}"
       - type: "Ready"
         status: "False"
         reason: "UpdateStarted"
         message: "A Moodle update has started"
+        lastTransitionTime: "{{ last_transition_time }}"

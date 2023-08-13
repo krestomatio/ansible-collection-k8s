@@ -4,22 +4,22 @@
       import_tasks: "{{ role_path }}/tasks/assertions.yml"
 
     - name: handle setting-up
-      when: moodle_status_setting_up
+      when: moodle_setting_up_needed | bool
       include_tasks: "{{ role_path }}/tasks/condition/ready/setting-up.yml"
 
-    - name: handle creating
-      when: not moodle_status_created
+    - name: handle not created
+      when: moodle_not_created_needed | bool
       include_tasks: "{{ role_path }}/tasks/condition/created/not-created.yml"
 
     - name: handle moodle
       import_tasks: "{{ role_path }}/tasks/moodle/main.yml"
 
     - name: end play without successful status when not up to date
-      when: not moodle_status_uptodate
+      when: moodle_not_uptodate_end_needed | bool
       meta: end_play
 
     - name: include successful status
-      when: moodle_status_successful
+      when: moodle_successfull_status_needed | bool
       include_tasks: "{{ role_path }}/tasks/condition/ready/successful.yml"
   rescue:
     - name: include rescue tasks

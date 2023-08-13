@@ -1,8 +1,10 @@
 - name: set up-to-date status
   include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
-    routine_k8s_status_properties:
-      state: "UpToDate"
+    this_routine_k8s_status_properties:
+      upToDate: "True"
+    _routine_k8s_status_properties:
+      "{{ routine_k8s_status_properties |  default({}) | combine(this_routine_k8s_status_properties) }}"
     routine_k8s_status_conditions:
       - type: "UpToDate"
         status: "True"

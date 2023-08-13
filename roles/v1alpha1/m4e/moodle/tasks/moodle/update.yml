@@ -1,33 +1,22 @@
 - name: suspend cronjob
+  vars:
+    moodle_cronjob_suspend: true
   include_tasks: resource/cronjob.yml
+
+- name: omit version during routine status update
+  vars:
+    moodle_status_script_version: false
+  include_tasks: resource/routine.yml
 
 - name: moodle update
   vars:
     moodle_component: "job-update"
   block:
-    - include_tasks: condition/uptodate/started.yml
-
-    - name: omit version during routine status update
-      vars:
-        moodle_status_script_version: false
-      include_tasks: resource/routine.yml
-
-    - name: suspend cronjob
-      vars:
-        moodle_cronjob_suspend: true
-      include_tasks: resource/cronjob.yml
-
     - name: create update job
+      when: cr_status_properties.state | default('') != 'UpdateStarted'
       include_tasks: resource/job-update.yml
 
-    - name: wait for update job to complete
-      include_tasks: "{{ common_path }}/wait/job.yml"
-      vars:
-        wait_job_name: "{{ moodle_update_job }}"
-        wait_job_conditions: "{{ k8s_moodle_update_job.result.status.conditions | default([]) }}"
+    - include_tasks: condition/uptodate/started.yml
 
-    - name: rollout php-fpm deploy
-      changed_when: false
-      command: "kubectl -n {{ meta_namespace }} rollout restart deploy --selector=app.kubernetes.io/component=php-fpm"
-
-    - include_tasks: condition/uptodate/complete.yml
+    - name: end play, complete update job will trigger new reconcile
+      meta: end_play

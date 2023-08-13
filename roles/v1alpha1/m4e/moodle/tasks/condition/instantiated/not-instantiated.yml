@@ -1,24 +1,24 @@
-- name: set not instantiated status
+- name: set database not instantiated status
   include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     last_transition_time: "{{ now(utc=True).isoformat(timespec='seconds') + 'Z' }}"
     routine_k8s_status_properties:
-      instantiated: "False"
       ready: "False"
-      state: "NotInstantiated"
+      state: "DatabaseNotInstantiated"
+      instantiated: "False"
     routine_k8s_status_conditions:
       - type: "Instantiated"
         status: "False"
-        reason: "NotInstantiated"
-        message: "Database has not been instantiated"
+        reason: "DatabaseNotInstantiated"
+        message: "Database is about to be instantiated"
         lastTransitionTime: "{{ last_transition_time }}"
       - type: "Created"
         status: "False"
-        reason: "NotInstantiated"
-        message: "Database is being instantiated"
+        reason: "DatabaseNotInstantiated"
+        message: "Database is about to be instantiated"
         lastTransitionTime: "{{ last_transition_time }}"
       - type: "Ready"
         status: "False"
-        reason: "NotInstantiated"
-        message: "Database has not been instantiated"
+        reason: "DatabaseNotInstantiated"
+        message: "Database is about to be instantiated"
         lastTransitionTime: "{{ last_transition_time }}"

@@ -6,7 +6,7 @@ moodle_status_uptodate:
   "{{ cr_status_properties.upToDate | default('True') | bool }}"
 # whether moodle is created
 moodle_status_created:
-  "{{ true if cr_status_properties | default(false, true) else false }}"
+  "{{ (cr_status_properties.created | default('False') | bool) }}"
 # whether moodle is setting up
 moodle_status_setting_up:
   "{{ true if lookup('template', moodle_config_template) | sha1 != cr_status.configHash | default('') else false }}"

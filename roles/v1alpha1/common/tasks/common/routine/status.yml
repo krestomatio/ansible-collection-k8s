@@ -9,8 +9,10 @@
     kind: "{{ routine_k8s_status_kind | default(cr_kind) }}"
     name: "{{ routine_k8s_status_name | default(meta_name) }}"
     namespace: "{{ routine_k8s_status_namespace | default(meta_namespace) }}"
-    status: "{{ routine_k8s_status_properties | default(omit,true) }}"
-    conditions: "{{ routine_k8s_status_conditions | default(omit,true) }}"
+    status:
+      "{{ _routine_k8s_status_properties | default(routine_k8s_status_properties) | default(omit,true) }}"
+    conditions:
+      "{{ _routine_k8s_status_conditions | default(routine_k8s_status_conditions) | default(omit,true) }}"
     replace_lists: "{{ routine_k8s_status_replace_lists | default(omit,true) }}"
 
 
