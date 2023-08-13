@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### Code Refactoring
 
-* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* use include_tasks when using conditional (Job Céspedes Ortiz)
