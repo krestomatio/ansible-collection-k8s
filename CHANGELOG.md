@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Code Refactoring
 
-* nfs: use uid in sc (Job Céspedes Ortiz)
+* do not generate sc by default (Job Céspedes Ortiz)
