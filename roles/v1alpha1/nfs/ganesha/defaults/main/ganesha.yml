@@ -121,7 +121,7 @@ ganesha_service_spec: |
 
 # ganesha server generated storage class
 ganesha_generated_nfs_sc: "{{ (ganesha_appname | truncate(41,true,'')) + '-' + (cr_uid | truncate(18,true,'')) }}-sc"
-ganesha_generated_nfs_sc_needed: true
+ganesha_generated_nfs_sc_needed: false
 ganesha_generated_nfs_sc_parameters: |-
   server: "{{ ganesha_service + '.' + meta_namespace }}"
   share: "{{ ganesha_generated_nfs_sc_share | default('/') }}"
