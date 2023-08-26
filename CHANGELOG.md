@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### Chores
 
-* do not generate sc by default (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)

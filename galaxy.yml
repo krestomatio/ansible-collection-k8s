@@ -9,7 +9,7 @@ namespace: krestomatio
 name: k8s
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 0.3.52
+version: 0.3.53
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
