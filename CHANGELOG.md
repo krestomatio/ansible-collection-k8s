@@ -1,5 +1,6 @@
 ## Changes
 
-### Chores
+### Documentation
 
-* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* add about section (Job Céspedes Ortiz)
+* update ref to license (Job Céspedes Ortiz)
