@@ -1,6 +1,9 @@
 ## Changes
 
-### Documentation
+### Reverts
 
-* add about section (Job Céspedes Ortiz)
-* update ref to license (Job Céspedes Ortiz)
+* remove ref to license (Job Céspedes Ortiz)
+
+### Chores
+
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
