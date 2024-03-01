@@ -5,7 +5,7 @@ keydb_mode: 'standalone'
 
 # keydb sts
 keydb_size: 1
-keydb_image: quay.io/krestomatio/keydb:6.3.4@sha256:bc3e797a07554cab506c62f642a0bc0e753e2a87551c24126b5d1e3bbe69dae6
+keydb_image: quay.io/krestomatio/keydb:6.3.4@sha256:dd9861e6a3d8351bbb27bf24dc202416f66ab46fd91e78517012462ad17a89c9
 keydb_image_pull_secret: "{{ image_pull_secret }}"
 keydb_sts: "{{ keydb_appname }}-sts"
 keydb_args:
