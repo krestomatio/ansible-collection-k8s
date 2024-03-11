@@ -17,6 +17,22 @@
   set_fact:
     postgres_sts_spec: "{{ lookup('template', postgres_sts_spec_template) }}"
 
+- name: resize postgres statefulset pvc
+  vars:
+    sts_name: "{{ postgres_sts }}"
+    sts_state: "{{ postgres_sts_state | default(postgres_state) }}"
+    sts_pvc_size: "{{ postgres_pvc_data_size }}"
+    sts_pvc_current_size: "{{ postgres_pvc_data_current_size }}"
+  include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
+
+- name: update postgres statefulset labels and annotations
+  vars:
+    sts_name: "{{ postgres_sts }}"
+    sts_state: "{{ postgres_sts_state | default(postgres_state) }}"
+    sts_pvc_labels: "{{ postgres_volume_claim_template[0].metadata.labels | default({}) }}"
+    sts_pvc_current_labels: "{{ postgres_pvc_data_current_labels }}"
+  include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+
 - name: postgres statefulset resource definition
   vars:
     k8s_kind: StatefulSet
