@@ -1,5 +1,8 @@
 ## Changes
 
-### Chores
+### New Features
 
-* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* keydb: add sts pvc resize and labels patch (Job Céspedes Ortiz)
+* postgres: add sts pvc resize and labels patch (Job Céspedes Ortiz)
+* nfs: add sts pvc resize and labels patch (Job Céspedes Ortiz)
+* add sts pvc resize and labels patch (Job Céspedes Ortiz)
