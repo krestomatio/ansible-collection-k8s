@@ -17,6 +17,22 @@
   set_fact:
     keydb_sts_spec: "{{ lookup('template', keydb_sts_spec_template) }}"
 
+- name: resize keydb statefulset pvc
+  vars:
+    sts_name: "{{ keydb_sts }}"
+    sts_state: "{{ keydb_sts_state | default(keydb_state) }}"
+    sts_pvc_size: "{{ keydb_pvc_data_size }}"
+    sts_pvc_current_size: "{{ keydb_pvc_data_current_size }}"
+  include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
+
+- name: update keydb statefulset labels and annotations
+  vars:
+    sts_name: "{{ keydb_sts }}"
+    sts_state: "{{ keydb_sts_state | default(keydb_state) }}"
+    sts_pvc_labels: "{{ keydb_volume_claim_template[0].metadata.labels | default({}) }}"
+    sts_pvc_current_labels: "{{ keydb_pvc_data_current_labels }}"
+  include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+
 - name: keydb statefulset resource definition
   vars:
     k8s_kind: StatefulSet
