@@ -1,0 +1,48 @@
+# Define:
+# sts_name: "my-sts"
+# sts_state: "{{ my_sts_state }}"
+# sts_pvc_labels: "{{ my_sts_volume_claim_template.metadata.labels | default({})"
+# sts_pvc_current_labels: "{{ my_sts_pvc_current_labels }}"
+
+- name: save (nfs) ganesha server statefulset pvc current and new labels
+  set_fact:
+    _sts_pvc_labels: "{{ sts_pvc_labels }}"
+    _sts_pvc_current_labels: "{{ sts_pvc_current_labels }}"
+
+- name: patch sts to allow statefulset update labels and annotations
+  when:
+    - _sts_pvc_current_labels is defined and _sts_pvc_current_labels
+    - _sts_pvc_current_labels != _sts_pvc_labels
+    - sts_pvc_list | length == 1
+    - "sts_state | default(state) != 'absent'"
+  vars:
+    sts_pvc_label_selector: "app={{ metadata_app }}"
+    sts_pvc_list:
+      "{{ query('k8s', api_version='v1', kind='PersistentVolumeClaim',
+      namespace=meta_namespace,label_selector=sts_pvc_label_selector) | default([]) }}"
+  block:
+    - name: delete statefulset without removing pods and data
+      k8s:
+        state: absent
+        delete_options:
+          propagationPolicy: Orphan
+        definition:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: "{{ sts_name }}"
+            namespace: "{{ meta_namespace }}"
+      register: k8s_sts_delete_orphan_task
+
+    - name: patch statefulset pvc(s)
+      vars:
+        sts_pvc: "{{ sts_pvc_list[0] }}"
+      k8s:
+        state: patched
+        definition:
+          apiVersion: "{{ sts_pvc.apiVersion }}"
+          kind: "{{ sts_pvc.kind }}"
+          metadata:
+            name: "{{ sts_pvc.metadata.name }}"
+            namespace: "{{ sts_pvc.metadata.namespace }}"
+            labels: "{{ _sts_pvc_labels }}"

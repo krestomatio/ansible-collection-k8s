@@ -1,0 +1,50 @@
+# Define:
+# sts_name: "my-sts"
+# sts_state: "{{ my_sts_state }}"
+# sts_pvc_size: "{{ pvc_size }}"
+# sts_pvc_current_size: "{{ pvc_current_size }}"
+
+- name: save (nfs) ganesha server statefulset pvc current and new size
+  set_fact:
+    _sts_pvc_size: "{{ sts_pvc_size }}"
+    _sts_pvc_current_size: "{{ sts_pvc_current_size }}"
+
+- name: patch sts to allow statefulset pvc expansion
+  when:
+    - _sts_pvc_current_size is defined and _sts_pvc_current_size
+    - _sts_pvc_current_size < _sts_pvc_size
+    - sts_pvc_list | length > 0
+    - "sts_state | default(state) != 'absent'"
+  vars:
+    sts_pvc_label_selector: "app={{ metadata_app }}"
+    sts_pvc_list:
+      "{{ query('k8s', api_version='v1', kind='PersistentVolumeClaim',
+      namespace=meta_namespace,label_selector=sts_pvc_label_selector) | default([]) }}"
+  block:
+    - name: delete statefulset without removing pods and data
+      k8s:
+        state: absent
+        delete_options:
+          propagationPolicy: Orphan
+        definition:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: "{{ sts_name }}"
+            namespace: "{{ meta_namespace }}"
+      register: k8s_sts_delete_orphan_task
+
+    - name: patch statefulset pvc(s)
+      loop: "{{ sts_pvc_list }}"
+      k8s:
+        state: patched
+        definition:
+          apiVersion: "{{ item.apiVersion }}"
+          kind: "{{ item.kind }}"
+          metadata:
+            name: "{{ item.metadata.name }}"
+            namespace: "{{ item.metadata.namespace }}"
+          spec:
+            resources:
+              requests:
+                storage: "{{ _sts_pvc_size }}"
