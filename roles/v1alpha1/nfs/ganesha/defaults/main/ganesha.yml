@@ -175,6 +175,9 @@ ganesha_pvc_data_autoexpansion: false
 ganesha_pvc_data_autoexpansion_increment_gib: 1
 ### No more than those GiB
 ganesha_pvc_data_autoexpansion_cap_gib: 5
+### Current labels
+ganesha_pvc_data_current_labels: "{{ lookup('k8s', api_version='v1', kind='StatefulSet', namespace=meta_namespace,
+  resource_name=ganesha_sts).spec.volumeClaimTemplates[0].metadata.labels | default('') }}"
 
 # ganesha server config map
 ganesha_cm: "{{ ganesha_appname }}-cm"
