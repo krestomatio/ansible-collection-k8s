@@ -82,7 +82,6 @@ keydb_service_headless_spec: |
 
 # keydb pvc
 keydb_pvc_data: "{{ keydb_appname }}-data-pvc"
-keydb_pvc_data_size: 1Gi
 keydb_pvc_data_storage_access_mode: ReadWriteOnce
 keydb_pvc_data_storage_class_name: false
 keydb_pvc_data_spec: |
@@ -94,6 +93,29 @@ keydb_pvc_data_spec: |
   resources:
     requests:
       storage: '{{ keydb_pvc_data_size }}'
+keydb_pvc_data_current_size: "{{ lookup('k8s', api_version='v1', kind='StatefulSet', namespace=meta_namespace,
+  resource_name=keydb_sts).spec.volumeClaimTemplates[0].spec.resources.requests.storage | default('') }}"
+keydb_pvc_data_size:
+  "{{
+    keydb_pvc_data_size_gib | string + 'Gi'
+  if
+    keydb_pvc_data_autoexpansion
+  else
+    keydb_pvc_data_current_size | default('1Gi', true)
+  }}"
+keydb_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
+  | default(keydb_pvc_data_autoexpansion_increment_gib) }}"
+
+## enable autoexpansion
+keydb_pvc_data_autoexpansion: false
+### Increments in those GiB
+keydb_pvc_data_autoexpansion_increment_gib: 1
+### No more than those GiB
+keydb_pvc_data_autoexpansion_cap_gib: 5
+### Current labels
+keydb_pvc_data_current_labels: "{{ lookup('k8s', api_version='v1', kind='StatefulSet', namespace=meta_namespace,
+  resource_name=keydb_sts).spec.volumeClaimTemplates[0].metadata.labels | default('') }}"
+
 
 # keydb secret
 keydb_secret: "{{ keydb_appname }}-secret"
