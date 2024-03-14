@@ -3,7 +3,7 @@
 cr_group: nginx.krestomat.io
 cr_kind: Nginx
 
-# custom resource state: present, absent
+# custom resource state: present, absent, suspended
 cr_state: present
 
 # common labels

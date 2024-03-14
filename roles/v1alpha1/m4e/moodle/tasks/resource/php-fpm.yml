@@ -20,4 +20,5 @@
     - k8s_moodle_php_fpm.result | default(false, true)
     - moodle_php_fpm_state | default(moodle_state) != 'absent'
     - moodle_php_fpm_wait | default(_moodle_k8s_wait) | default(true)
+    - cr_state != 'suspended'
   include_tasks: "{{ common_path }}/wait/resource.yml"

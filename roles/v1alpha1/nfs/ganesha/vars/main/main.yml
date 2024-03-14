@@ -3,7 +3,7 @@
 cr_group: nfs.krestomat.io
 cr_kind: Ganesha
 
-# custom resource state: present, absent
+# custom resource state: present, absent, suspended
 cr_state: present
 
 meta_name_max_length: 55

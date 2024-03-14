@@ -1,0 +1,15 @@
+- name: fail when not up to date
+  when: moodle_not_uptodate_end_needed | bool
+  fail:
+    msg: "Not suspending because moodle is not up to date"
+
+- name: import tasks
+  block:
+    - name: handle moodle
+      import_tasks: "{{ role_path }}/tasks/moodle/main.yml"
+
+    - name: set suspended condition
+      import_tasks: "{{ common_path }}/condition/suspended/suspended.yml"
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"

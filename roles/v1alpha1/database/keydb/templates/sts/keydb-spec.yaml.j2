@@ -1,5 +1,5 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
-replicas: {{ keydb_size }}
+replicas: {{ 0 if cr_state == 'suspended' else keydb_size }}
 serviceName: '{{ keydb_service_headless }}'
 selector:
   matchLabels:

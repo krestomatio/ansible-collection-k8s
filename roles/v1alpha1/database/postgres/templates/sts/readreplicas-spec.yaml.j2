@@ -1,5 +1,5 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
-replicas: {{ postgres_readreplicas_size }}
+replicas: {{ 0 if cr_state == 'suspended' else postgres_readreplicas_size }}
 serviceName: '{{ postgres_readreplicas_service }}'
 selector:
   matchLabels:

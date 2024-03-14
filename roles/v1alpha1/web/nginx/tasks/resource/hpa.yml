@@ -1,7 +1,7 @@
 - name: nginx hpa resource definition
   vars:
     k8s_kind: HorizontalPodAutoscaler
-    k8s_state: "{{ nginx_hpa_state | default(nginx_state) }}"
+    k8s_state: "{{ 'absent' if cr_state == 'suspended' else nginx_hpa_state | default(nginx_state) }}"
     template: "{{ hpa_template }}"
     metadata_name: "{{ nginx_hpa }}"
     annotations: "{{ nginx_hpa_annotations | default(false) }}"

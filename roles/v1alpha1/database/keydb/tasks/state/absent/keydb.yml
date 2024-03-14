@@ -7,3 +7,9 @@
   block:
     # remove sts
     - import_tasks: resource/sts.yml
+
+    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
+      vars:
+        cleanup_label_selector: "app={{ metadata_app }}"
+        cleanup_kind_list:
+          - PersistentVolumeClaim

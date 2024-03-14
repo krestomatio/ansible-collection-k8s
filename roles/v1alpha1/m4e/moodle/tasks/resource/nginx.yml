@@ -20,4 +20,5 @@
     - k8s_moodle_nginx.result | default(false, true)
     - moodle_nginx_state | default(moodle_state) != 'absent'
     - moodle_nginx_wait | default(_moodle_k8s_wait) | default(true)
+    - cr_state != 'suspended'
   include_tasks: "{{ common_path }}/wait/resource.yml"

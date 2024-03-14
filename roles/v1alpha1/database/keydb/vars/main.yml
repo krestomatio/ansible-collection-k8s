@@ -3,7 +3,7 @@
 cr_group: keydb.krestomat.io
 cr_kind: Keydb
 
-# custom resource state: present, absent
+# custom resource state: present, absent, suspended
 cr_state: present
 
 meta_name_max_length: 55

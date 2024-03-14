@@ -1,7 +1,7 @@
 - name: php-fpm hpa resource definition
   vars:
     k8s_kind: HorizontalPodAutoscaler
-    k8s_state: "{{ php_fpm_hpa_state | default(php_fpm_state) }}"
+    k8s_state: "{{ 'absent' if cr_state == 'suspended' else php_fpm_hpa_state | default(php_fpm_state) }}"
     template: "{{ hpa_template }}"
     metadata_name: "{{ php_fpm_hpa }}"
     annotations: "{{ php_fpm_hpa_annotations | default(false) }}"

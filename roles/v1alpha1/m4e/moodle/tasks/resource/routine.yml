@@ -1,7 +1,7 @@
 - name: moodle routine resource definition
   vars:
     k8s_kind: Routine
-    k8s_state: "{{ moodle_routine_state | default(moodle_state) }}"
+    k8s_state: "{{ 'absent' if cr_state == 'suspended' else moodle_routine_state | default(moodle_state) }}"
     template: "{{ routine_template }}"
     metadata_name: "{{ moodle_routine }}"
     annotations: "{{ inventory_annotation_extra_cr_cwd + (moodle_routine_annotations | default('')) }}"

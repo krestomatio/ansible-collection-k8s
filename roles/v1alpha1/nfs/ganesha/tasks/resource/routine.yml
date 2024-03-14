@@ -1,7 +1,7 @@
 - name: (nfs) ganesha server routine resource definition
   vars:
     k8s_kind: Routine
-    k8s_state: "{{ ganesha_routine_state | default(ganesha_state) }}"
+    k8s_state: "{{ 'absent' if cr_state == 'suspended' else ganesha_routine_state | default(ganesha_state) }}"
     template: "{{ routine_template }}"
     metadata_name: "{{ ganesha_routine }}"
     annotations: "{{ inventory_annotation_extra_cr_cwd + (ganesha_routine_annotations | default('')) }}"

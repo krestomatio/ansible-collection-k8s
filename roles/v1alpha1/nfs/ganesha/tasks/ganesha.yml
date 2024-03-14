@@ -18,9 +18,3 @@
       when: ganesha_generated_nfs_sc_needed
 
     - import_tasks: resource/routine.yml
-
-    - import_tasks: "{{ common_path }}/cleanup-resources.yml"
-      vars:
-        cleanup_label_selector: "app={{ metadata_app }}"
-        cleanup_kind_list:
-          - PersistentVolumeClaim
