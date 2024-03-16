@@ -2,7 +2,7 @@
 cr_group: app.krestomat.io
 cr_kind: Server
 
-# custom resource state: present, absent
+# custom resource state: present, absent, suspended
 cr_state: present
 
 meta_name_max_length: 55

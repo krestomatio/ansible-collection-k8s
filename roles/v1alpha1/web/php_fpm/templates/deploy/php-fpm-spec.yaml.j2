@@ -1,6 +1,6 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
-{% if not (php_fpm_hpa_spec is defined and php_fpm_hpa_spec) %}
-replicas: {{ php_fpm_size }}
+{% if not (php_fpm_hpa_spec is defined and php_fpm_hpa_spec) or cr_state == 'suspended' %}
+replicas: {{ 0 if cr_state == 'suspended' else php_fpm_size }}
 {% endif %}
 selector:
   matchLabels:

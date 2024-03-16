@@ -1,4 +1,4 @@
-- name: set error status
+- name: set terminating status
   include_tasks: "{{ common_path }}/routine/status.yml"
   vars:
     routine_status_cr_notify_force: true

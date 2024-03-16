@@ -1,4 +1,5 @@
 # general k8s state for resources: present or absent
+# not necessarily the same as cr_state
 state: present
 
 # images

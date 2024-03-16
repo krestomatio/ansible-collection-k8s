@@ -2,7 +2,7 @@
 cr_group: m4e.krestomat.io
 cr_kind: Nginx
 
-# custom resource state: present, absent
+# custom resource state: present, absent, suspended
 cr_state: present
 
 meta_name_max_length: 38

@@ -3,7 +3,7 @@
 cr_group: postgres.krestomat.io
 cr_kind: Postgres
 
-# custom resource state: present, absent
+# custom resource state: present, absent, suspended
 cr_state: present
 
 meta_name_max_length: 20

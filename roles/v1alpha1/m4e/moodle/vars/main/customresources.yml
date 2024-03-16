@@ -1,6 +1,7 @@
 # moodle php-fpm
 moodle_php_fpm: "{{ moodle_appname }}-php-fpm"
 moodle_php_fpm_spec: |-
+  cr_state: {{ php_fpm_cr_state | default(cr_state) }}
   {%  if common_labels | default(false) %}
   common_labels: |-
     {{ common_labels | indent(2) }}
@@ -26,6 +27,7 @@ moodle_php_fpm_spec: |-
 # moodle nginx
 moodle_nginx: "{{ moodle_appname }}-nginx"
 moodle_nginx_spec: |-
+  cr_state: {{ nginx_cr_state | default(cr_state) }}
   {%  if common_labels | default(false) %}
   common_labels: |-
     {{ common_labels | indent(2) }}

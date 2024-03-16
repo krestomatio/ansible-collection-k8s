@@ -1,0 +1,15 @@
+- name: set suspended status
+  include_tasks: "{{ common_path }}/routine/status.yml"
+  vars:
+    routine_k8s_status_properties:
+      ready: "False"
+      state: "Suspended"
+    routine_k8s_status_conditions:
+      - type: "Suspended"
+        status: "True"
+        reason: "Suspended"
+        message: "Resource has been suspended"
+      - type: "Ready"
+        status: "False"
+        reason: "Suspended"
+        message: "Resource has been suspended"

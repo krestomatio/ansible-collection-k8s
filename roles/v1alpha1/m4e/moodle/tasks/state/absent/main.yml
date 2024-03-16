@@ -1,4 +1,4 @@
-- name: set state absent
+- name: set k8s resources state to absent
   set_fact:
     state: absent
 

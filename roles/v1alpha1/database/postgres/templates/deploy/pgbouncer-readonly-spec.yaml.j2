@@ -1,5 +1,5 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
-replicas: 1
+replicas: {{ 0 if cr_state == 'suspended' else 1 }}
 selector:
   matchLabels:
     app: '{{ pgbouncer_readonly_appname }}'

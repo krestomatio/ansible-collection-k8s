@@ -1,0 +1,10 @@
+- name: import tasks
+  block:
+    - name: handle nginx
+      import_tasks: "{{ role_path }}/tasks/nginx.yml"
+
+    - name: set suspended condition
+      import_tasks: "{{ common_path }}/condition/suspended/suspended.yml"
+  rescue:
+    - name: include rescue tasks
+      import_tasks: "{{ common_path }}/rescue.yml"

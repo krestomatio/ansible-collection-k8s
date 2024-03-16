@@ -50,7 +50,7 @@ tags:
 # range specifiers can be set and are separated by ','
 dependencies:
   community.kubernetes: "==1.2.1"
-  kubernetes.core: "==2.2.0"
+  kubernetes.core: "==2.4.0"
   cloud.common: "==2.1.1"
   operator_sdk.util: "==0.4.0"
 

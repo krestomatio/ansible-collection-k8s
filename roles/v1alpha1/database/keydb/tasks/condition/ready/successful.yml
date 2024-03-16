@@ -9,6 +9,10 @@
     routine_k8s_status_properties:
       "{{ this_routine_k8s_status_properties | combine({'observedGeneration': cr_status_generation | int}) }}"
     routine_k8s_status_conditions:
+      - type: "Suspended"
+        status: "False"
+        reason: "NotSuspended"
+        message: "Resource is not suspended"
       - type: "Ready"
         status: "True"
         reason: "Successful"
