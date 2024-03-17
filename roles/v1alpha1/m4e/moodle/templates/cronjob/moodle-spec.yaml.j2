@@ -1,6 +1,6 @@
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
 schedule: "{{ moodle_cronjob_schedule }}"
-suspend: {{ false if cr_state == 'suspended' else moodle_cronjob_suspend }}
+suspend: {{ true if cr_state == 'suspended' else moodle_cronjob_suspend }}
 concurrencyPolicy: {{ moodle_cronjob_concurrency_policy }}
 successfulJobsHistoryLimit: {{ moodle_cronjob_success_limit }}
 startingDeadlineSeconds: {{ moodle_cronjob_starting_deadline_seconds }}
