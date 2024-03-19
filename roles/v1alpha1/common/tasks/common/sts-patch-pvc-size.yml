@@ -12,7 +12,8 @@
 - name: patch sts to allow statefulset pvc expansion
   when:
     - _sts_pvc_current_size is defined and _sts_pvc_current_size
-    - _sts_pvc_current_size < _sts_pvc_size
+    - _sts_pvc_current_size_unit == _sts_pvc_size_unit
+    - _sts_pvc_current_size_quantity | int < _sts_pvc_size_quantity | int
     - sts_pvc_list | length > 0
     - "sts_state | default(state) != 'absent'"
   vars:
@@ -20,6 +21,10 @@
     sts_pvc_list:
       "{{ query('k8s', api_version='v1', kind='PersistentVolumeClaim',
       namespace=meta_namespace,label_selector=sts_pvc_label_selector) | default([]) }}"
+    _sts_pvc_size_unit: "{{ _sts_pvc_size | regex_replace('[\\d]', '') }}"
+    _sts_pvc_size_quantity: "{{ _sts_pvc_size | regex_replace('[^\\d]', '') }}"
+    _sts_pvc_current_size_unit: "{{ _sts_pvc_current_size | regex_replace('[\\d]', '') }}"
+    _sts_pvc_current_size_quantity: "{{ _sts_pvc_current_size | regex_replace('[^\\d]', '') }}"
   block:
     - name: delete statefulset without removing pods and data
       k8s:
