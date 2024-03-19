@@ -2,4 +2,4 @@
 
 ### Bug Fixes
 
-* moodle: suspend cronjob in suspended state (Job Céspedes Ortiz)
+* common: compare integers with same unit when patching sts pvc (Job Céspedes Ortiz)
