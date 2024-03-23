@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Chores
 
-* common: compare integers with same unit when patching sts pvc (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
