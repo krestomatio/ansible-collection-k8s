@@ -75,7 +75,7 @@ spec:
           script: |
             #!/bin/bash -eu
 
-            pip install --user -r .ansible-ci/requirements.txt
+            $CTR_PIP -r .ansible-ci/requirements.txt
             ansible-playbook .ansible-ci/docs.yml -i .ansible-ci/inventory/hosts
             git add docs
         - image: quay.io/krestomatio/ansible-docker-ci
