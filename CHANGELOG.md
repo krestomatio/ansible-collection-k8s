@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### Documentation
 
-* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)
+* separate doc folder (Job Céspedes Ortiz)
