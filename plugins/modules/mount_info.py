@@ -35,24 +35,75 @@ EXAMPLES = r'''
 
 RETURN = r'''
 mount_info:
-    description: The dictionary containing information about your mount.
-    type: dict
-    returned: always
-    sample: {
-        "block_available": 32796014,
-        "block_size": 4096,
-        "block_total": 57072443,
-        "block_used": 24276429,
-        "device": "/dev/vda1",
-        "fstype": "ext4",
-        "inode_available": 128131677,
-        "inode_total": 131072000,
-        "inode_used": 2940323,
-        "mount": "/nfs-sample-nfs-pvc",
-        "options": "rw,relatime,bind",
-        "size_available": 134332473344,
-        "size_total": 233768726528
-    }
+  type: complex
+  description: A dictionary containing information about your mount.
+  returned: only when release exists
+  contains:
+    block_available:
+      description: Block available
+      type: int
+      returned: success
+      sample: 32796014
+    block_size:
+      description: Block size
+      type: int
+      returned: success
+      sample: 4096
+    block_total:
+      description: Block total
+      type: int
+      returned: success
+      sample: 57072443
+    block_used:
+      description: Block used
+      type: int
+      returned: success
+      sample: 24276429
+    device:
+      description: Device path
+      type: string
+      returned: success
+      sample: "/dev/vda1"
+    fstype:
+      description: FSType
+      type: string
+      returned: success
+      sample: "ext4"
+    inode_available:
+      description: INode available
+      type: int
+      returned: success
+      sample: 128131677
+    inode_total:
+      description: INode total
+      type: int
+      returned: success
+      sample: 131072000
+    inode_used:
+      description: INode used
+      type: int
+      returned: success
+      sample: 2940323
+    mount:
+      description: Mount path
+      type: string
+      returned: success
+      sample: "/nfs-sample-nfs-pvc"
+    options:
+      description: Mount options
+      type: string
+      returned: success
+      sample: "rw,relatime,bind"
+    size_available:
+      description: Available size
+      type: int
+      returned: success
+      sample: 134332473344
+    size_total:
+      description: Total size
+      type: int
+      returned: success
+      sample: 233768726528
 '''
 
 from ansible.module_utils.basic import AnsibleModule

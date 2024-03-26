@@ -19,7 +19,6 @@ readme: README.md
 authors:
   - Job Céspedes Ortiz <jobcespedes@krestomatio.com>
 
-
 ### OPTIONAL but strongly recommended
 
 # A short summary description of the collection
@@ -49,10 +48,10 @@ tags:
 # L(specifiers,https://python-semanticversion.readthedocs.io/en/latest/#requirement-specification). Multiple version
 # range specifiers can be set and are separated by ','
 dependencies:
-  community.kubernetes: "==1.2.1"
   kubernetes.core: "==2.4.0"
   cloud.common: "==2.1.1"
-  operator_sdk.util: "==0.4.0"
+  operator_sdk.util: "==0.5.0"
+  community.docker: "==3.4.0"
 
 # The URL of the originating SCM repository
 repository: https://github.com/krestomatio/ansible-collection-k8s

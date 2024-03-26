@@ -1,0 +1,59 @@
+#!/bin/bash -eu
+# description: generate collection docs
+
+# vars
+collection_src={{ collection_src }}
+docs_dest={{ docs_dest }}
+template_module_src={{ template_module_src }}
+
+mkdir -p ${docs_dest}/modules
+mkdir -p ${docs_dest}/filters
+mkdir -p ${docs_dest}/inventories
+mkdir -p ${docs_dest}/tests
+echo ${collection_src}
+echo ${docs_dest}
+ansible-doc-extractor --markdown --template ${template_module_src} ${docs_dest}/modules ${collection_src}/plugins/modules/*[!__init__].py
+ansible-doc-extractor --markdown --template ${template_module_src} ${docs_dest}/filters ${collection_src}/plugins/filter/*[!__init__].py
+ansible-doc-extractor --markdown --template ${template_module_src} ${docs_dest}/inventories ${collection_src}/plugins/inventory/*[!__init__].py
+ansible-doc-extractor --markdown --template ${template_module_src} ${docs_dest}/tests ${collection_src}/plugins/test/*[!__init__].py
+
+# roles
+function generate_role_doc {
+  role_source_path=${collection_src}/roles/${role_name//.//}
+  role_dest_path="${docs_dest}/roles/${role_name}"
+  mkdir -p ${role_dest_path}
+  ansible-mdgen -o ${role_dest_path} ${role_source_path} -y -w
+  sed -i "s@^# Home@# ${role_name}@" ${role_dest_path}/index.md
+}
+## moodle
+role_name=v1alpha1.m4e.moodle
+generate_role_doc
+role_name=v1alpha1.m4e.nginx
+generate_role_doc
+role_name=v1alpha1.m4e.php_fpm
+generate_role_doc
+role_name=v1alpha1.m4e.routine
+generate_role_doc
+## database
+role_name=v1alpha1.database.postgres
+generate_role_doc
+role_name=v1alpha1.database.keydb
+generate_role_doc
+## nfs
+role_name=v1alpha1.nfs.ganesha
+generate_role_doc
+role_name=v1alpha1.nfs.routine
+generate_role_doc
+## web
+role_name=v1alpha1.web.nginx
+generate_role_doc
+role_name=v1alpha1.web.php_fpm
+generate_role_doc
+## common
+role_name=v1alpha1.common
+generate_role_doc
+## app
+role_name=v1alpha1.app.g12e
+generate_role_doc
+role_name=v1alpha1.app.server
+generate_role_doc

@@ -20,7 +20,9 @@ short_description: Update the status for a Kubernetes API resource
 
 version_added: "0.0.1"
 
-author: "Fabian von Feilitzsch (@fabianvf)"
+author:
+  - "Fabian von Feilitzsch (@fabianvf)"
+  - "Job Céspedes Ortiz (@jobcespedes)"
 
 description:
   - Sets the status field on a Kubernetes API resource. Only should be used if you are using Ansible to

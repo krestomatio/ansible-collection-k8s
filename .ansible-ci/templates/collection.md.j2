@@ -1,0 +1,60 @@
+# Ansible Collection: {{ collection.namespace }}.{{ collection.name }}
+
+Collection version {{ collection.version }}
+
+> * [Description](#description)
+> * [Plugin Index](#plugin-index)
+
+## Description
+
+{{ collection.description }}
+
+**Author:**
+
+{% for author_name in collection.authors %}
+* {{ author_name | regex_replace('<', '\<') | regex_replace('>', '\>') }}
+{% endfor %}
+
+**Supported ansible-core versions:**
+
+* 2.15.0 or newer
+
+### Collection links
+
+* [Issue Tracker]({{ collection.issues }})
+* [Homepage]({{ collection.homepage }})
+* [Repository (Sources)]({{ collection.repository }})
+
+## Plugin Index
+
+These are the plugins in the krestomatio.k8s collection:
+
+### Roles
+
+{% for role_folder in role_folders %}
+* [{{ role_folder | basename }}](roles/{{ role_folder | basename }}/index.md)
+{% endfor %}
+
+### Modules
+
+{% for module_file in module_files %}
+* [{{ (module_file | basename | splitext)[0] }}](modules/{{ module_file | basename }})
+{% endfor %}
+
+### Filter Plugins
+
+{% for filter_file in filter_files %}
+* [{{ (filter_file | basename | splitext)[0] }}](filters/{{ filter_file | basename }})
+{% endfor %}
+
+### Inventory Plugins
+
+{% for inventory_file in inventory_files %}
+* [{{ (inventory_file | basename | splitext)[0] }}](inventories/{{ inventory_file | basename }})
+{% endfor %}
+
+### Test Plugins
+
+{% for test_file in test_files %}
+* [{{ (test_file | basename | splitext)[0] }}](tests/{{ test_file | basename }})
+{% endfor %}

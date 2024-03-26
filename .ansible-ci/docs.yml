@@ -1,0 +1,62 @@
+- name: generate docs
+  hosts: localhost
+  connection: local
+  vars:
+    galaxy_yml_path: "{{ playbook_dir }}/../galaxy.yml"
+    doc_path: "{{ playbook_dir }}/../docs"
+    readme_path: "{{ doc_path }}/README.md"
+  tasks:
+    - include_vars:
+        file: "{{ galaxy_yml_path }}"
+        name: collection
+
+    - name: run script to generate docs
+      register: script_generate_docs
+      failed_when: script_generate_docs.stderr is defined and script_generate_docs.stderr
+      vars:
+        collection_src: "{{ playbook_dir }}/../"
+        docs_dest: "{{ doc_path }}"
+        template_module_src: "{{ playbook_dir }}/templates/module.md.j2"
+      shell: "{{ lookup('template', 'generate_doc.sh.j2') }}"
+
+    - name: find roles
+      register: find_roles
+      find:
+        path: "{{ doc_path }}/roles"
+        file_type: directory
+
+    - name: find modules
+      register: find_modules
+      find:
+        path: "{{ doc_path }}/modules"
+        patterns: "*.md"
+
+    - name: find filters
+      register: find_filters
+      find:
+        path: "{{ doc_path }}/filters"
+        patterns: "*.md"
+
+    - name: find inventories
+      register: find_inventories
+      find:
+        path: "{{ doc_path }}/inventories"
+        patterns: "*.md"
+
+    - name: find tests
+      register: find_tests
+      find:
+        path: "{{ doc_path }}/tests"
+        patterns: "*.md"
+
+    - name: generate docs ctr repo folder file
+      vars:
+        role_folders: "{{ find_roles.files | map(attribute='path') | list }}"
+        module_files: "{{ find_modules.files | map(attribute='path') | list }}"
+        filter_files: "{{ find_filters.files | map(attribute='path') | list }}"
+        inventory_files: "{{ find_inventories.files | map(attribute='path') | list }}"
+        test_files: "{{ find_tests.files | map(attribute='path') | list }}"
+      template:
+        src: collection.md.j2
+        dest: "{{ readme_path }}"
+        mode: '0644'

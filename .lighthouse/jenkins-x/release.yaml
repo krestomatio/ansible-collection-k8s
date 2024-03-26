@@ -70,6 +70,13 @@ spec:
           - changelog
           command:
           - make
+        - image: quay.io/krestomatio/ansible
+          name: docs
+          script: |
+            #!/bin/bash
+            pip install --user .ansible-ci/requirements.txt
+            ansible-playbook .ansible-ci/docs.yml -i .ansible-ci/inventory/hosts
+            git add docs
         - image: quay.io/krestomatio/ansible-docker-ci
           name: release
           env:
