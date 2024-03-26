@@ -8,7 +8,7 @@ DOCUMENTATION = '''
     name: krestomatio.k8s.inventory
     plugin_type: inventory
     author:
-      - Job Cespedes <@jobcespedes>
+      - Job Cespedes (@jobcespedes)
       - Chris Houseknecht <@chouseknecht>
       - Fabian von Feilitzsch <@fabianvf>
 

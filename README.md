@@ -2,5 +2,10 @@
 
 Meant to be used in conjunction with Kubernetes and Ansible Operator SDK
 
-## [About Krestomatio](https://krestomatio.com/about)
-[Krestomatio is a managed service for Moodle™ e-learning platforms](https://krestomatio.com/). It allows you to have open-source instances managed by a service optimized for Moodle™, complete with an additional plugin pack and customization options.
+**Further Details:**
+
+For a comprehensive overview of the collection, please refer to the full documentation: [Krestomatio K8s Collection](https://krestomatio.com/docs/krestomatio.k8s)
+
+**Krestomatio Managed Service:**
+
+This project supports Krestomatio, a managed service for Moodle™ e-learning platforms. Learn more about Krestomatio at [Krestomatio website](https://krestomatio.com).
