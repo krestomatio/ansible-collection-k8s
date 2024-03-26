@@ -1,0 +1,8 @@
+
+
+
+
+# assertions.yml
+
+
+* common assertions
