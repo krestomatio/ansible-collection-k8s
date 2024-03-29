@@ -88,9 +88,6 @@ The below requirements are needed on the host that executes this module.
 
 ## Status
 
-- This inventory is not guaranteed to have a backwards compatible interface. *[preview]*
-
-- This inventory is maintained by community.
 
 ## Authors
 

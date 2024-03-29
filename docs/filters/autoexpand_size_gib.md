@@ -33,9 +33,6 @@ Get autoexpand size in GiB
 
 ## Status
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
-
-- This  is maintained by community.
 
 ## Authors
 

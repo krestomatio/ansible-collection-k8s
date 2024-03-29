@@ -38,7 +38,7 @@ standalone
   
 ```
 
-quay.io/krestomatio/postgres:13@sha256:ec95225988012be2f23de122072c628b5dbeb46392e78e2d9d71e9f819850160
+quay.io/krestomatio/postgres:13@sha256:4b4c5670ec9961b36340cf0f84e566128fcb4dea581afddc444b2ea491ddcb95
 ...
   
 ```
