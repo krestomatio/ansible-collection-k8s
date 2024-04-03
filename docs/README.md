@@ -1,6 +1,6 @@
 # Ansible Collection: krestomatio.k8s
 
-Collection version 0.4.5
+Collection version 0.4.6
 
 > * [Description](#description)
 > * [Plugin Index](#plugin-index)
