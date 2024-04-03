@@ -26,6 +26,7 @@ nginx_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + me
 # nginx deploy
 # nginx_size: 1
 nginx_image: "{{ moodle_image }}"
+nginx_image_pull_policy: "{{ moodle_image_pull_policy }}"
 nginx_container: "moodle-nginx"
 nginx_startup_probe: true
 nginx_startup_initial: 0

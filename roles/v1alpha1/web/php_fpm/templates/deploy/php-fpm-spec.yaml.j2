@@ -38,7 +38,7 @@ template:
 {% endif %}
       ports:
       - containerPort: {{ php_fpm_port }}
-      imagePullPolicy: IfNotPresent
+      imagePullPolicy: {{ php_fpm_image_pull_policy | default('IfNotPresent') }}
 {% if php_fpm_command is defined and php_fpm_command %}
 {%   if php_fpm_command is string %}
       command: {{ php_fpm_command }}

@@ -32,7 +32,7 @@ template:
 {% endif %}
       ports:
       - containerPort: {{ nginx_port }}
-      imagePullPolicy: IfNotPresent
+      imagePullPolicy: {{ nginx_image_pull_policy | default('IfNotPresent') }}
 {% if nginx_command is defined and nginx_command %}
 {%   if nginx_command is string %}
       command: {{ nginx_command }}

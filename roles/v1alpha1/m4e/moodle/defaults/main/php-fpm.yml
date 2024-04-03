@@ -69,6 +69,7 @@ php_fpm_inventory_uuid: "{{ (cr_group + cr_version + cr_kind + meta_namespace + 
 # php-fpm deploy
 # php_fpm_size: 1
 php_fpm_image: "{{ moodle_image }}"
+php_fpm_image_pull_policy: "{{ moodle_image_pull_policy }}"
 php_fpm_container: "moodle-php-fpm"
 php_fpm_port: 9000
 php_fpm_startup_probe: true
