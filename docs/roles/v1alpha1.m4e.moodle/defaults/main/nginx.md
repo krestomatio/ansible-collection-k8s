@@ -87,6 +87,13 @@ value: '{{ moodle_healthcheck_path }}'
 '{{ moodle_image }}'
   
 ```
+## nginx_image_pull_policy
+  
+```
+
+'{{ moodle_image_pull_policy }}'
+  
+```
 ## nginx_container
   
 ```

@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### New Features
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* moodle: add image pull policy (Job Céspedes Ortiz)

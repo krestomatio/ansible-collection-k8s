@@ -27,6 +27,14 @@ quay.io/krestomatio/moodle:4.1@sha256:9b9fdb3eec35dd04ec99df1c49fa06a0090591ca13
 ...
   
 ```
+## moodle_image_pull_policy
+  
+```
+
+IfNotPresent
+...
+  
+```
 ## moodle_image_pull_secret
   
 ```

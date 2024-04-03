@@ -153,6 +153,13 @@ source: "configMap:\n  name: \"{{ moodle_cm_scripts }}\"\n  defaultMode: 0555"
 '{{ moodle_image }}'
   
 ```
+## php_fpm_image_pull_policy
+  
+```
+
+'{{ moodle_image_pull_policy }}'
+  
+```
 ## php_fpm_container
   
 ```
