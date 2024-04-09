@@ -30,7 +30,7 @@
   
 ```
 
-quay.io/krestomatio/pgbouncer@sha256:dbca2abe59a81f6935c06e6c5c01574ac848ee71172f29efc4b326d9c8cd7428
+quay.io/krestomatio/pgbouncer@sha256:7b6851d6e9ab82252809dee11b4bda9c5364c34452f0c1b5dc4dd434e7d1ceaa
 ...
   
 ```

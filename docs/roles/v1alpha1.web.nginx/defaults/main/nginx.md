@@ -31,7 +31,7 @@
   
 ```
 
-quay.io/krestomatio/nginx:1.20@sha256:e47243b07d09eba1af5a274653197e5c0e03a8d41c98b346aa321ab576962229
+quay.io/krestomatio/nginx:1.20@sha256:faa3e865e99506ccca8cf8da0825aa59173591cdcc13965a6e2f3be17e0554a9
 ...
   
 ```
