@@ -23,7 +23,7 @@
   
 ```
 
-quay.io/krestomatio/moodle:4.1@sha256:9e9e473ff8f12854f6209681fb0f3cfbb4835d351d9ed5b9b41c616e09a4c482
+quay.io/krestomatio/moodle:4.1@sha256:513dab89cec298c79e898256864d110c91129333d8cc009fcfaf6c961b8261f4
 ...
   
 ```
