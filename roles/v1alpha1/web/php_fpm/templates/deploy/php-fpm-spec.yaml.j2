@@ -18,6 +18,8 @@ template:
     - name: '{{ php_fpm_container }}'
       image: '{{ php_fpm_image }}'
       env:
+      - name: PHP_FPM_LISTEN
+        value: '9000'
       - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
         value: any
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
