@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### Bug Fixes
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* moodle: allow ipv6 setups (Job Céspedes Ortiz)
