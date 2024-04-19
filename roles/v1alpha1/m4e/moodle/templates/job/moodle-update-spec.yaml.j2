@@ -16,8 +16,10 @@ template:
       image: '{{ moodle_image }}'
       env:
       - {{ moodle_update_job_php_fpm_database_check_socket | to_nice_yaml(indent=2) | indent(8) }}
+      - name: PHP_FPM_LISTEN
+        value: '127.0.0.1:9000'
       - name: PHP_FPM_LISTEN_ALLOWED_CLIENTS
-        value: any
+        value: '127.0.0.1'
       - name: PHP_FPM_PROCESS_CONTROL_TIMEOUT
         value: '{{ moodle_update_job_php_fpm_config_process_control_timeout }}'
 {% if moodle_update_job_command is defined and moodle_update_job_command %}
