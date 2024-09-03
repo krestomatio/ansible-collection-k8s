@@ -144,8 +144,7 @@ moodle_cronjob_command:
   - '-c'
   - |
     container-entrypoint
-    php {{ '-d memory_limit=' + moodle_cronjob_php_max_memory if
-    moodle_cronjob_php_max_memory else '' }} ${MOODLE_APP}/admin/cli/cron.php
+    {{ moodle_scripts_path }}/moodle-instance -c
     {% if moodle_cronjob_command_snippet | default(false) %}
     {{ moodle_cronjob_command_snippet }}
     {% endif %}
