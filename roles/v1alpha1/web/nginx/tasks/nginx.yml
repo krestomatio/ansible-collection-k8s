@@ -5,6 +5,9 @@
     component: nginx
     metadata_app: "{{ nginx_appname }}"
   block:
+    - import_tasks: resource/netpol.yml
+      when: not nginx_netpol_omit
+
     - name: handle all resources
       when: not nginx_ingress_only | bool and not nginx_route_only | bool
       block:
