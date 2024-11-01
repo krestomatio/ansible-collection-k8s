@@ -5,6 +5,9 @@
     component: nfs
     metadata_app: "{{ ganesha_appname }}"
   block:
+    - import_tasks: resource/netpol.yml
+      when: not ganesha_netpol_omit
+
     - import_tasks: resource/cm.yml
 
     - import_tasks: resource/svc.yml

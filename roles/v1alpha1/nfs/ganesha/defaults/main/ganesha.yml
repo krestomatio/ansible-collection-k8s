@@ -119,6 +119,64 @@ ganesha_service_spec: |
   #   targetPort: {{ ganesha_rquota_port }}
   {% endif %}
 
+# ganesha server netpol
+ganesha_netpol_omit: true
+ganesha_netpol: "{{ ganesha_appname }}-netpol"
+ganesha_netpol_ingress_ipblock: false
+ganesha_netpol_egress_ipblock: false
+ganesha_netpol_connects_to: "{{ ganesha_connects_to if ganesha_connects_to | type_debug == 'list' else [ganesha_connects_to | default('')] }}"
+ganesha_netpol_spec: |-
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: '{{ ganesha_appname }}'
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ ganesha_appname }}'
+    - podSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}: 'nfs'
+    - namespaceSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}: 'nfs'
+      podSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}: 'nfs'
+  {% if ganesha_netpol_ingress_ipblock is defined and ganesha_netpol_ingress_ipblock %}
+    - ipBlock:
+        cidr: '{{ ganesha_netpol_ingress_ipblock }}'
+  {% endif %}
+  egress:
+  - ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ ganesha_appname }}'
+  {% for ganesha_netpol_connects_to_app_name in ganesha_netpol_connects_to if ganesha_netpol_connects_to_app_name %}
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ ganesha_netpol_connects_to_app_name }}'
+    - namespaceSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ ganesha_netpol_connects_to_app_name }}'
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ ganesha_netpol_connects_to_app_name }}'
+  {% endfor %}
+  {% if ganesha_netpol_egress_ipblock is defined and ganesha_netpol_egress_ipblock %}
+    - ipBlock:
+        cidr: '{{ ganesha_netpol_egress_ipblock }}'
+  {% endif %}
+
 # ganesha server generated storage class
 ganesha_generated_nfs_sc: "{{ (ganesha_appname | truncate(41,true,'')) + '-' + (cr_uid | truncate(18,true,'')) }}-sc"
 ganesha_generated_nfs_sc_needed: false
