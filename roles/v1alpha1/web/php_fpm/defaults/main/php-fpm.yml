@@ -93,3 +93,58 @@ php_fpm_hpa_spec: false
 # php-fpm vpa
 php_fpm_vpa: "{{ php_fpm_appname }}-vpa"
 php_fpm_vpa_spec: false
+
+# php-fpm netpol
+php_fpm_netpol_omit: true
+php_fpm_netpol: "{{ php_fpm_appname }}-netpol"
+php_fpm_netpol_ingress_ipblock: false
+php_fpm_netpol_egress_ipblock: false
+php_fpm_netpol_connects_to: "{{ php_fpm_connects_to if php_fpm_connects_to | type_debug == 'list' else [php_fpm_connects_to | default('')] }}"
+php_fpm_netpol_spec: |-
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/runtime: 'php-fpm'
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}/php_fpm: 'true'
+    - namespaceSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}/php_fpm: 'true'
+      podSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}/php_fpm: 'true'
+  {% if php_fpm_netpol_ingress_ipblock is defined and php_fpm_netpol_ingress_ipblock %}
+    - ipBlock:
+        cidr: '{{ php_fpm_netpol_ingress_ipblock }}'
+  {% endif %}
+  egress:
+  - ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  {% for php_fpm_netpol_connects_to_app_name in php_fpm_netpol_connects_to if php_fpm_netpol_connects_to_app_name %}
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ php_fpm_netpol_connects_to_app_name }}'
+    - namespaceSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ php_fpm_netpol_connects_to_app_name }}'
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ php_fpm_netpol_connects_to_app_name }}'
+  {% endfor %}
+  {% if php_fpm_netpol_egress_ipblock is defined and php_fpm_netpol_egress_ipblock %}
+    - ipBlock:
+        cidr: '{{ php_fpm_netpol_egress_ipblock }}'
+  {% endif %}
