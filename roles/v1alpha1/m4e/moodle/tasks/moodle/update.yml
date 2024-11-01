@@ -11,6 +11,8 @@
 - name: moodle update
   vars:
     moodle_component: "job-update"
+    metadata_app: "{{ moodle_update_job }}"
+    runtime: php-fpm
   block:
     - name: create update job
       when: cr_status_properties.state | default('') != 'UpdateStarted'

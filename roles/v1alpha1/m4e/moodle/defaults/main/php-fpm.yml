@@ -81,7 +81,10 @@ php_fpm_readiness_probe: true
 php_fpm_readiness_command: "{{ moodle_readiness_command }}"
 php_fpm_liveness_probe: true
 php_fpm_liveness_command: "{{ moodle_liveness_command }}"
-php_fpm_connects_to: "{{ moodle_postgres_meta_name }}"
+php_fpm_connects_to:
+  - "{{ moodle_postgres_meta_name }}"
+  - "{{ moodle_pgbouncer_meta_name}}"
+  - "{{ moodle_keydb_meta_name }}"
 ## php.ini extra ini config
 # php_fpm_php_extra_ini: ''
 ## php-fpm extra conf
@@ -93,3 +96,6 @@ php_fpm_volumes: "{{ moodle_php_fpm_volumes_base + moodle_php_fpm_volumes_extra 
 
 # php-fpm config
 php_fpm_config_process_control_timeout: 20
+
+# php-fpm netpol
+php_fpm_netpol_omit: "{{ moodle_netpol_omit }}"

@@ -1,6 +1,8 @@
 - name: moodle cronjob
   vars:
     moodle_component: "cronjob"
+    metadata_app: "{{ moodle_cronjob }}"
+    runtime: php-fpm
   block:
     - name: set moodle cronjob spec
       when: moodle_cronjob_spec is not defined

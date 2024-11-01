@@ -205,6 +205,9 @@ moodle_pvc_data_autoexpansion_increment_gib: 1
 ### No more than those GiB
 moodle_pvc_data_autoexpansion_cap_gib: 5
 
+# moodle netpol
+moodle_netpol_omit: true
+
 # optional moodle data nfs volume instead of pvc
 moodle_nfs_meta_name: false
 moodle_nfs_service: "{{ moodle_nfs_meta_name + '-nfs-service' if moodle_nfs_meta_name else '' }}"
@@ -255,7 +258,8 @@ moodle_cm_scripts_data: |
 
 # database
 moodle_postgres_meta_name: false
-moodle_database_service: "{{ moodle_postgres_meta_name + '-pgbouncer-service' if moodle_postgres_meta_name else '' }}"
+moodle_pgbouncer_meta_name: "{{ moodle_postgres_meta_name + '-pgbouncer' if moodle_postgres_meta_name else false }}"
+moodle_database_service: "{{ moodle_pgbouncer_meta_name + '-service' if moodle_pgbouncer_meta_name else '' }}"
 moodle_database_secret: "{{ moodle_postgres_meta_name + '-postgres-secret' if moodle_postgres_meta_name else '' }}"
 moodle_database_secret_dbname_key: database_name
 moodle_database_secret_dbuser_key: database_user

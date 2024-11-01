@@ -1,6 +1,8 @@
 - name: moodle new instance
   vars:
     moodle_component: "job-new-instance"
+    metadata_app: "{{ moodle_new_instance_job }}"
+    runtime: php-fpm
   block:
     - include_tasks: condition/instantiated/not-instantiated.yml
 

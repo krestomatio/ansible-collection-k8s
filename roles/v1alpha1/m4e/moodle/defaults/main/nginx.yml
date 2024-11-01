@@ -35,7 +35,8 @@ nginx_readiness_probe: true
 nginx_readiness_command: "['{{ moodle_nginx_check_container_script }}', '-r']"
 nginx_liveness_probe: true
 nginx_liveness_command: "['{{ moodle_nginx_check_container_script }}', '-l']"
-nginx_connects_to: "{{ php_fpm_appname | default(moodle_appname + '-php-fpm') }}"
+nginx_connects_to:
+  - "{{ php_fpm_appname | default(moodle_appname + '-php-fpm') }}"
 ## nginx extra conf
 # nginx_extra_config: ''
 
@@ -46,3 +47,6 @@ nginx_ingress_protocol: "{{ moodle_protocol }}"
 # deploy
 nginx_envvars: "{{ moodle_nginx_envvars_base + moodle_nginx_envvars_extra }}"
 nginx_volumes: "{{ moodle_nginx_volumes_base + moodle_nginx_volumes_extra }}"
+
+# nginx netpol
+nginx_netpol_omit: "{{ moodle_netpol_omit }}"
