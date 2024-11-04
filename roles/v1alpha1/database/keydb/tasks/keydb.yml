@@ -5,6 +5,9 @@
     component: keydb
     metadata_app: "{{ keydb_appname }}"
   block:
+    - import_tasks: resource/netpol.yml
+      when: not keydb_netpol_omit
+
     - import_tasks: resource/secret.yml
 
     - import_tasks: resource/cm.yml
