@@ -425,3 +425,65 @@ false
 ...
   
 ```
+## php_fpm_netpol_omit
+  
+```
+
+true
+...
+  
+```
+## php_fpm_netpol
+  
+```
+
+'{{ php_fpm_appname }}-netpol'
+  
+```
+## php_fpm_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## php_fpm_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
+## php_fpm_netpol_connects_to
+  
+```
+
+'{{ php_fpm_connects_to if php_fpm_connects_to | type_debug == ''list'' else [php_fpm_connects_to
+  | default('''')] }}'
+  
+```
+## php_fpm_netpol_spec
+  
+```
+
+"policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
+  \ 'php-fpm'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n        {{\
+  \ meta_app_connects_to }}/php_fpm: 'true'\n  - namespaceSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/php_fpm: 'true'\n    podSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/php_fpm: 'true'\n{% if php_fpm_netpol_ingress_ipblock\
+  \ is defined and php_fpm_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
+  \ php_fpm_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
+  \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n  - protocol: TCP\n    port:\
+  \ 80\n  - protocol: TCP\n    port: 443\n{% for php_fpm_netpol_connects_to_app_name\
+  \ in php_fpm_netpol_connects_to if php_fpm_netpol_connects_to_app_name %}\n- to:\n\
+  \  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ php_fpm_netpol_connects_to_app_name\
+  \ }}'\n  - namespaceSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ php_fpm_netpol_connects_to_app_name }}'\n    podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ php_fpm_netpol_connects_to_app_name }}'\n{%\
+  \ endfor %}\n{% if php_fpm_netpol_egress_ipblock is defined and php_fpm_netpol_egress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ php_fpm_netpol_egress_ipblock }}'\n{% endif\
+  \ %}"
+  
+```

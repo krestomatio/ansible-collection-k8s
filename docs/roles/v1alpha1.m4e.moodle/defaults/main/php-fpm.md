@@ -249,7 +249,9 @@ true
   
 ```
 
-'{{ moodle_postgres_meta_name }}'
+- '{{ moodle_postgres_meta_name }}'
+- '{{ moodle_pgbouncer_meta_name}}'
+- '{{ moodle_keydb_meta_name }}'
   
 ```
 ## php_fpm_envvars
@@ -272,5 +274,12 @@ true
 
 20
 ...
+  
+```
+## php_fpm_netpol_omit
+  
+```
+
+'{{ moodle_netpol_omit }}'
   
 ```

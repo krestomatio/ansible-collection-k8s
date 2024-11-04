@@ -995,3 +995,69 @@ false
 ...
   
 ```
+## postgres_netpol_omit
+  
+```
+
+true
+...
+  
+```
+## postgres_netpol
+  
+```
+
+'{{ postgres_appname }}-netpol'
+  
+```
+## postgres_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## postgres_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
+## postgres_netpol_connects_to
+  
+```
+
+'{{ postgres_connects_to if postgres_connects_to | type_debug == ''list'' else [postgres_connects_to
+  | default('''')] }}'
+  
+```
+## postgres_netpol_spec
+  
+```
+
+"policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
+  \ 'postgres'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ postgres_appname }}'\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ postgres_readreplicas_appname }}'\n  - podSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/postgres: 'true'\n  - namespaceSelector:\n \
+  \     matchLabels:\n        {{ meta_app_connects_to }}/postgres: 'true'\n    podSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}/postgres: 'true'\n{% if\
+  \ postgres_netpol_ingress_ipblock is defined and postgres_netpol_ingress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ postgres_netpol_ingress_ipblock }}'\n{% endif\
+  \ %}\negress:\n- ports:\n  - protocol: TCP\n    port: 53\n  - protocol: UDP\n  \
+  \  port: 53\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ postgres_appname }}'\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ postgres_readreplicas_appname }}'\n{% for postgres_netpol_connects_to_app_name\
+  \ in postgres_netpol_connects_to if postgres_netpol_connects_to_app_name %}\n- to:\n\
+  \  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ postgres_netpol_connects_to_app_name\
+  \ }}'\n  - namespaceSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ postgres_netpol_connects_to_app_name }}'\n    podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ postgres_netpol_connects_to_app_name }}'\n\
+  {% endfor %}\n{% if postgres_netpol_egress_ipblock is defined and postgres_netpol_egress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ postgres_netpol_egress_ipblock }}'\n{% endif\
+  \ %}"
+  
+```

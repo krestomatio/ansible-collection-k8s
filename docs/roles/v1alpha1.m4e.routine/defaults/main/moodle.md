@@ -701,9 +701,7 @@ Allow
 - -c
 - 'container-entrypoint
 
-  php {{ ''-d memory_limit='' + moodle_cronjob_php_max_memory if
-
-  moodle_cronjob_php_max_memory else '''' }} ${MOODLE_APP}/admin/cli/cron.php
+  {{ moodle_scripts_path }}/moodle-instance -c
 
   {% if moodle_cronjob_command_snippet | default(false) %}
 
@@ -927,6 +925,14 @@ false
 ...
   
 ```
+## moodle_netpol_omit
+  
+```
+
+true
+...
+  
+```
 ## moodle_nfs_meta_name
   
 ```
@@ -1064,12 +1070,20 @@ false
 ...
   
 ```
+## moodle_pgbouncer_meta_name
+  
+```
+
+'{{ moodle_postgres_meta_name + ''-pgbouncer'' if moodle_postgres_meta_name else false
+  }}'
+  
+```
 ## moodle_database_service
   
 ```
 
-'{{ moodle_postgres_meta_name + ''-pgbouncer-service'' if moodle_postgres_meta_name
-  else '''' }}'
+'{{ moodle_pgbouncer_meta_name + ''-service'' if moodle_pgbouncer_meta_name else ''''
+  }}'
   
 ```
 ## moodle_database_secret

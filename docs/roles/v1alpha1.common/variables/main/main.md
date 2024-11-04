@@ -155,6 +155,14 @@ common
 '{{ meta_name }}'
   
 ```
+## meta_app_connects_to
+  
+```
+
+connects-to.krestomat.io
+...
+  
+```
 ## deploy_template
   
 ```
@@ -195,6 +203,13 @@ common
 ```
 
 '{{ common_path }}/pvc.yaml.j2'
+  
+```
+## netpol_template
+  
+```
+
+'{{ common_path }}/netpol.yaml.j2'
   
 ```
 ## vct_template

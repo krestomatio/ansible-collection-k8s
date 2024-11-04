@@ -316,6 +316,14 @@ false
 ...
   
 ```
+## pgbouncer_connects_to
+  
+```
+
+- '{{ postgres_appname }}'
+- '{{ postgres_readreplicas_appname }}'
+  
+```
 ## pgbouncer_readonly_deploy
   
 ```
@@ -761,5 +769,66 @@ false
 
 false
 ...
+  
+```
+## pgbouncer_netpol_omit
+  
+```
+
+true
+...
+  
+```
+## pgbouncer_netpol
+  
+```
+
+'{{ pgbouncer_appname }}-netpol'
+  
+```
+## pgbouncer_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## pgbouncer_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
+## pgbouncer_netpol_connects_to
+  
+```
+
+'{{ pgbouncer_connects_to if pgbouncer_connects_to | type_debug == ''list'' else [pgbouncer_connects_to
+  | default('''')] }}'
+  
+```
+## pgbouncer_netpol_spec
+  
+```
+
+"policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
+  \ 'pgbouncer'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n       \
+  \ {{ meta_app_connects_to }}/pgbouncer: 'true'\n  - namespaceSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/pgbouncer: 'true'\n    podSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/pgbouncer: 'true'\n{% if pgbouncer_netpol_ingress_ipblock\
+  \ is defined and pgbouncer_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr:\
+  \ '{{ pgbouncer_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  -\
+  \ protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n{% for pgbouncer_netpol_connects_to_app_name\
+  \ in pgbouncer_netpol_connects_to if pgbouncer_netpol_connects_to_app_name %}\n\
+  - to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{\
+  \ pgbouncer_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name }}'\n\
+  \    podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name\
+  \ }}'\n{% endfor %}\n{% if pgbouncer_netpol_egress_ipblock is defined and pgbouncer_netpol_egress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ pgbouncer_netpol_egress_ipblock }}'\n{% endif\
+  \ %}"
   
 ```

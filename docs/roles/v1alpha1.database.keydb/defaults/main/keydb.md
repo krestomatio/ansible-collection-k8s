@@ -555,3 +555,65 @@ false
 ...
   
 ```
+## keydb_netpol_omit
+  
+```
+
+true
+...
+  
+```
+## keydb_netpol
+  
+```
+
+'{{ keydb_appname }}-netpol'
+  
+```
+## keydb_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## keydb_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
+## keydb_netpol_connects_to
+  
+```
+
+'{{ keydb_connects_to if keydb_connects_to | type_debug == ''list'' else [keydb_connects_to
+  | default('''')] }}'
+  
+```
+## keydb_netpol_spec
+  
+```
+
+"policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
+  \ '{{ keydb_appname }}'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ keydb_appname }}'\n  - podSelector:\n     \
+  \ matchLabels:\n        {{ meta_app_connects_to }}/keydb: 'true'\n  - namespaceSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}/keydb: 'true'\n    podSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}/keydb: 'true'\n{% if keydb_netpol_ingress_ipblock\
+  \ is defined and keydb_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
+  \ keydb_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
+  \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n  - podSelector:\n\
+  \      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_appname }}'\n{% for\
+  \ keydb_netpol_connects_to_app_name in keydb_netpol_connects_to if keydb_netpol_connects_to_app_name\
+  \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ keydb_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name }}'\n   \
+  \ podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name\
+  \ }}'\n{% endfor %}\n{% if keydb_netpol_egress_ipblock is defined and keydb_netpol_egress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ keydb_netpol_egress_ipblock }}'\n{% endif %}"
+  
+```

@@ -159,7 +159,7 @@ true
   
 ```
 
-'{{ php_fpm_appname | default(moodle_appname + ''-php-fpm'') }}'
+- '{{ php_fpm_appname | default(moodle_appname + ''-php-fpm'') }}'
   
 ```
 ## nginx_ingress_host
@@ -188,5 +188,12 @@ true
 ```
 
 '{{ moodle_nginx_volumes_base + moodle_nginx_volumes_extra }}'
+  
+```
+## nginx_netpol_omit
+  
+```
+
+'{{ moodle_netpol_omit }}'
   
 ```

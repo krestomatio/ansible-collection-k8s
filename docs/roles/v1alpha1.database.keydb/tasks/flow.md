@@ -7,6 +7,7 @@
 ```mermaid  
 graph LR  
 main.yml(main.yml) --> state/{{ cr_state }}/main.yml(state/{{ cr_state }}/main.yml)  
+keydb.yml(keydb.yml) --> resource/netpol.yml(resource/netpol.yml)  
 keydb.yml(keydb.yml) --> resource/secret.yml(resource/secret.yml)  
 keydb.yml(keydb.yml) --> resource/cm.yml(resource/cm.yml)  
 keydb.yml(keydb.yml) --> resource/svc-headless.yml(resource/svc-headless.yml)  

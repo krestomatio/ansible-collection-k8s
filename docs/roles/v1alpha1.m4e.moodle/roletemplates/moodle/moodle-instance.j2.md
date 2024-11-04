@@ -19,8 +19,8 @@ MOODLE_APP                              moodle source path
 MOODLE_CLI_TOOLS                        moodle cli path
 MOODLE_INSTALL_MEMORY_LIMIT             php memory limit when installing moodle
 MOODLE_UPDATE_MEMORY_LIMIT              php memory limit when updating moodle
+MOODLE_CRON_MEMORY_LIMIT                php memory limit when running moodle cron
 MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT   php-fpm container check script
-DATABASE_CHECK_TIMES                    how many times check db to be ready
 
 USAGE:
     moodle-instance [OPTIONS]
@@ -28,6 +28,7 @@ USAGE:
 OPTIONS (check moodle httpd container):
   -i            install moodle
   -u            update moodle
+  -c            run moodle cron
 
 EXAMPLES:
     moodle-instance -i
@@ -37,9 +38,9 @@ EOF
 MOODLE_APP=${MOODLE_APP:-{{ moodle_app }}}
 MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT=${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT:-/usr/libexec/check-container-php-moodle}
 MOODLE_CLI_TOOLS=${MOODLE_CLI_TOOLS:-{{ moodle_scripts_path }}}
-DATABASE_CHECK_TIMES=${DATABASE_CHECK_TIMES:-24}
 MOODLE_INSTALL_MEMORY_LIMIT=${MOODLE_INSTALL_MEMORY_LIMIT:-{{ moodle_new_instance_job_php_max_memory }}}
 MOODLE_UPDATE_MEMORY_LIMIT=${MOODLE_UPDATE_MEMORY_LIMIT:-{{ moodle_update_job_php_max_memory }}}
+MOODLE_CRON_MEMORY_LIMIT=${MOODLE_CRON_MEMORY_LIMIT:-{{ moodle_cronjob_php_max_memory }}}
 database_check_exit_code=""
 install_check_exit_code=""
 
@@ -47,6 +48,23 @@ database_check() {
     echo "Checking moodle database..."
     test -f ${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} || { echo "${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} file does not exists"; exit 1; }
     database_check_exit_code=$(${MOODLE_PHP_FPM_CHECK_CONTAINER_SCRIPT} -d &>/dev/null; echo $?)
+}
+
+database_check_with_retry() {
+    DATABASE_CHECK_TIMES=${1:-5}
+    DATABASE_CHECK_SLEEP=${2:-5}
+    echo "Checking if database engine is available..."
+
+    until [ "${DATABASE_CHECK_TIMES}" -lt 0 ]; do
+        database_check
+        [ "${database_check_exit_code}" -eq 0 ] && return 0
+        echo "Waiting for database to be available: ${DATABASE_CHECK_TIMES}..."
+        sleep "${DATABASE_CHECK_SLEEP}"
+        (( DATABASE_CHECK_TIMES-- ))
+    done
+
+    echo "Error: timeout waiting for database to be available, exit code: ${database_check_exit_code}"
+    exit "${database_check_exit_code}"
 }
 
 install_check() {
@@ -81,16 +99,7 @@ moodle_muc_config() {
 {% endif %}
 
 moodle_instance_install() {
-    set -e
-
-    echo "Checking if database engine is available..."
-    until [ ${DATABASE_CHECK_TIMES} -lt 0 ] || [ "${database_check_exit_code}" == "0" ]; do
-        echo "Waiting for database to be available: ${DATABASE_CHECK_TIMES}..."
-        sleep 5
-        database_check
-        (( DATABASE_CHECK_TIMES-- ))
-    done
-    [ ${DATABASE_CHECK_TIMES} -lt 0 ] && echo "Error: timeout wating for database to be available, exit code: ${database_check_exit_code}" && exit ${database_check_exit_code}
+    database_check_with_retry 24 5
 
     install_check
     if [ $install_check_exit_code -eq 2 ]; then
@@ -111,6 +120,8 @@ moodle_instance_install() {
 }
 
 moodle_instance_update() {
+    database_check_with_retry 5 1
+
     # get climaintenance to keep it in that state if preexisting
     climaintenance=$(test -f "{{ moodle_pvc_data_path }}/climaintenance.html" && echo true || echo false)
     echo "Upgrading moodle${MOODLE_UPDATE_MEMORY_LIMIT:+ with a memory limit of '${MOODLE_UPDATE_MEMORY_LIMIT}'}..."
@@ -123,13 +134,24 @@ moodle_instance_update() {
     [ "${climaintenance}" != "true" ] && php ${MOODLE_APP}/admin/cli/maintenance.php --disable
 }
 
-while getopts ":iu" opt; do
+moodle_cron() {
+    database_check_with_retry 5 1
+
+    echo "Running moodle cron..."
+    MOODLE_CRON_MEMORY_LIMIT={{ moodle_cronjob_php_max_memory | default('') }}
+    php ${MOODLE_CRON_MEMORY_LIMIT:+-d memory_limit=${MOODLE_CRON_MEMORY_LIMIT}} ${MOODLE_APP}/admin/cli/cron.php
+}
+
+while getopts ":iuc" opt; do
   case ${opt} in
     i )
         moodle_instance_install
         ;;
     u )
         moodle_instance_update
+        ;;
+    c )
+        moodle_cron
         ;;
     \? )
         usage

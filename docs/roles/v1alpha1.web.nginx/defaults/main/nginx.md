@@ -575,3 +575,64 @@ false
 ...
   
 ```
+## nginx_netpol_omit
+  
+```
+
+true
+...
+  
+```
+## nginx_netpol
+  
+```
+
+'{{ nginx_appname }}-netpol'
+  
+```
+## nginx_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## nginx_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
+## nginx_netpol_connects_to
+  
+```
+
+'{{ nginx_connects_to if nginx_connects_to | type_debug == ''list'' else [nginx_connects_to
+  | default('''')] }}'
+  
+```
+## nginx_netpol_spec
+  
+```
+
+"policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
+  \ '{{ nginx_appname }}'\ningress:\n- ports:\n  - protocol: TCP\n    port: {{ nginx_port\
+  \ }}\n- from:\n  - podSelector:\n      matchLabels:\n        {{ meta_app_connects_to\
+  \ }}/nginx: 'true'\n  - namespaceSelector:\n      matchLabels:\n        {{ meta_app_connects_to\
+  \ }}/nginx: 'true'\n    podSelector:\n      matchLabels:\n        {{ meta_app_connects_to\
+  \ }}/nginx: 'true'\n{% if nginx_netpol_ingress_ipblock is defined and nginx_netpol_ingress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ nginx_netpol_ingress_ipblock }}'\n{% endif %}\n\
+  egress:\n- ports:\n  - protocol: TCP\n    port: 53\n  - protocol: UDP\n    port:\
+  \ 53\n  - protocol: TCP\n    port: 80\n  - protocol: TCP\n    port: 443\n{% for\
+  \ nginx_netpol_connects_to_app_name in nginx_netpol_connects_to if nginx_netpol_connects_to_app_name\
+  \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ nginx_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ nginx_netpol_connects_to_app_name }}'\n   \
+  \ podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ nginx_netpol_connects_to_app_name\
+  \ }}'\n{% endfor %}\n{% if nginx_netpol_egress_ipblock is defined and nginx_netpol_egress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ nginx_netpol_egress_ipblock }}'\n{% endif %}"
+  
+```

@@ -400,6 +400,69 @@ dbus
   \   targetPort: {{ ganesha_rquota_port }}\n{% endif %}\n"
   
 ```
+## ganesha_netpol_omit
+  
+```
+
+true
+...
+  
+```
+## ganesha_netpol
+  
+```
+
+'{{ ganesha_appname }}-netpol'
+  
+```
+## ganesha_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## ganesha_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
+## ganesha_netpol_connects_to
+  
+```
+
+'{{ ganesha_connects_to if ganesha_connects_to | type_debug == ''list'' else [ganesha_connects_to
+  | default('''')] }}'
+  
+```
+## ganesha_netpol_spec
+  
+```
+
+"policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
+  \ '{{ ganesha_appname }}'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ ganesha_appname }}'\n  - podSelector:\n   \
+  \   matchLabels:\n        {{ meta_app_connects_to }}: 'nfs'\n  - namespaceSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}: 'nfs'\n    podSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}: 'nfs'\n{% if ganesha_netpol_ingress_ipblock\
+  \ is defined and ganesha_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
+  \ ganesha_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
+  \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n  - podSelector:\n\
+  \      matchLabels:\n        app.kubernetes.io/name: '{{ ganesha_appname }}'\n{%\
+  \ for ganesha_netpol_connects_to_app_name in ganesha_netpol_connects_to if ganesha_netpol_connects_to_app_name\
+  \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ ganesha_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ ganesha_netpol_connects_to_app_name }}'\n \
+  \   podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ ganesha_netpol_connects_to_app_name\
+  \ }}'\n{% endfor %}\n{% if ganesha_netpol_egress_ipblock is defined and ganesha_netpol_egress_ipblock\
+  \ %}\n  - ipBlock:\n      cidr: '{{ ganesha_netpol_egress_ipblock }}'\n{% endif\
+  \ %}"
+  
+```
 ## ganesha_generated_nfs_sc
   
 ```
