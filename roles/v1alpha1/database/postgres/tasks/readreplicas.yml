@@ -3,6 +3,7 @@
     name: readreplicas
     component: readreplicas
     metadata_app: "{{ postgres_readreplicas_appname }}"
+    runtime: postgres
   block:
     - import_tasks: resource/readreplicas/svc.yml
 

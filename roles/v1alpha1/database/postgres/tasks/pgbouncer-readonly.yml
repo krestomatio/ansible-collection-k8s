@@ -3,6 +3,7 @@
     name: pgbouncer
     component: pgbouncer
     metadata_app: "{{ pgbouncer_readonly_appname }}"
+    runtime: pgbouncer
   block:
     - import_tasks: resource/pgbouncer-readonly/secret.yml
 

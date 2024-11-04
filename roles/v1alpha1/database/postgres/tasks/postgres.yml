@@ -3,7 +3,11 @@
     name: postgres
     component: postgres
     metadata_app: "{{ postgres_appname }}"
+    runtime: postgres
   block:
+    - import_tasks: resource/postgres/netpol.yml
+      when: not postgres_netpol_omit
+
     - import_tasks: resource/postgres/secret.yml
 
     - import_tasks: resource/postgres/cm.yml

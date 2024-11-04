@@ -42,6 +42,9 @@ pgbouncer_tolerations: false
 pgbouncer_node_selector: false
 pgbouncer_affinity: false
 pgbouncer_port: 5432
+pgbouncer_connects_to:
+  - "{{ postgres_appname }}"
+  - "{{ postgres_readreplicas_appname }}"
 
 # pgbouncer readonly deploy
 pgbouncer_readonly_deploy: "{{ pgbouncer_readonly_appname }}-deploy"
@@ -202,3 +205,54 @@ pgbouncer_vpa_spec: false
 # pgbouncer readonly vpa
 pgbouncer_readonly_vpa: "{{ pgbouncer_readonly_appname }}-vpa"
 pgbouncer_readonly_vpa_spec: false
+
+# pgbouncer netpol
+pgbouncer_netpol_omit: true
+pgbouncer_netpol: "{{ pgbouncer_appname }}-netpol"
+pgbouncer_netpol_ingress_ipblock: false
+pgbouncer_netpol_egress_ipblock: false
+pgbouncer_netpol_connects_to: "{{ pgbouncer_connects_to if pgbouncer_connects_to | type_debug == 'list' else [pgbouncer_connects_to | default('')] }}"
+pgbouncer_netpol_spec: |-
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/runtime: 'pgbouncer'
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}/pgbouncer: 'true'
+    - namespaceSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}/pgbouncer: 'true'
+      podSelector:
+        matchLabels:
+          {{ meta_app_connects_to }}/pgbouncer: 'true'
+  {% if pgbouncer_netpol_ingress_ipblock is defined and pgbouncer_netpol_ingress_ipblock %}
+    - ipBlock:
+        cidr: '{{ pgbouncer_netpol_ingress_ipblock }}'
+  {% endif %}
+  egress:
+  - ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+  {% for pgbouncer_netpol_connects_to_app_name in pgbouncer_netpol_connects_to if pgbouncer_netpol_connects_to_app_name %}
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name }}'
+    - namespaceSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name }}'
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name }}'
+  {% endfor %}
+  {% if pgbouncer_netpol_egress_ipblock is defined and pgbouncer_netpol_egress_ipblock %}
+    - ipBlock:
+        cidr: '{{ pgbouncer_netpol_egress_ipblock }}'
+  {% endif %}
