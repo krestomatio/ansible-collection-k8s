@@ -23,7 +23,7 @@
   
 ```
 
-quay.io/krestomatio/nfs-ganesha:5.5.3@sha256:5562ee62d2d4d6a09f36e5417fe2898d5d24a7dffee31c75bccd2ff98275acf9
+quay.io/krestomatio/nfs-ganesha:5.9.4@sha256:a171b3b5aba29094d774c7fe5780ad32f102561c7b766c01a26688b233952ff6
 ...
   
 ```
