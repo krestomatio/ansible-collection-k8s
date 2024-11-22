@@ -31,4 +31,5 @@ moodle/update.yml(moodle/update.yml) --> resource/job-update.yml(resource/job-up
 moodle/update.yml(moodle/update.yml) --> condition/uptodate/started.yml(condition/uptodate/started.yml)  
 resource/secret-admin.yml(resource/secret-admin.yml) --> routine/reset-admin-pass.yml(routine/reset-admin-pass.yml)  
 routine/status.yml(routine/status.yml) --> condition/uptodate//{{ routine_status_moodle_version_condition }}.yml(condition/uptodate//{{ routine_status_moodle_version_condition }}.yml)  
+state/present/main.yml(state/present/main.yml) --> not-uptodate.yml(not-uptodate.yml)  
 ```
