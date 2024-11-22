@@ -1,0 +1,9 @@
+- name: moodle update job allowed
+  ignore_errors: true
+  assert:
+    that: moodle_status_version.pendingType | default('Other') in moodle_update_allow_pending_types
+    fail_msg: "Moodle update job is not allowed for pendingType: {{ moodle_status_version.pendingType | default('Other') }}. Types allowed are: {{ moodle_update_allow_pending_types | join(', ') }}"
+    quiet: true
+
+- name: end play without successful status when not up to date
+  meta: end_play
