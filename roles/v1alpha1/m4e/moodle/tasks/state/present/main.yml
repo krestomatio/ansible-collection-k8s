@@ -16,7 +16,7 @@
 
     - name: end play without successful status when not up to date
       when: moodle_not_uptodate_end_needed | bool
-      meta: end_play
+      include_tasks: not-uptodate.yml
 
     - name: include successful status
       when: moodle_successfull_status_needed | bool
