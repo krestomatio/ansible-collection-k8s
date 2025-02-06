@@ -1,5 +1,5 @@
 ## Changes
 
-### New Features
+### Chores
 
-* moodle: add assertion for pending update types allowed (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
