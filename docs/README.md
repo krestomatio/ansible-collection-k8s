@@ -15,7 +15,7 @@ To use in conjunction with kubernetes and operator sdk
 
 **Supported ansible-core versions:**
 
-* 2.15.0 or newer
+* 2.18.0 or newer
 
 ### Collection links
 
