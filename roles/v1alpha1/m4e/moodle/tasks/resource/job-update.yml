@@ -14,6 +14,7 @@
     k8s_state: "{{ moodle_update_job_state | default(moodle_state) }}"
     template: "{{ job_template }}"
     metadata_name: "{{ moodle_update_job }}"
+    connects_to: "{{ moodle_update_job_connects_to }}"
     job_spec: "{{ moodle_update_job_spec }}"
   include_tasks: "{{ common_path }}/k8s/object.yml"
 

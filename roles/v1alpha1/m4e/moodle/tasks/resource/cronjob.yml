@@ -18,6 +18,7 @@
         k8s_state: "{{ moodle_cronjob_state | default(moodle_state) }}"
         template: "{{ cronjob_template }}"
         metadata_name: "{{ moodle_cronjob }}"
+        connects_to: "{{ moodle_cronjob_connects_to }}"
         cronjob_spec: "{{ moodle_cronjob_spec }}"
       include_tasks: "{{ common_path }}/k8s/object.yml"
 
