@@ -320,8 +320,8 @@ false
   
 ```
 
-postgres
-...
+- '{{ postgres_appname }}'
+- '{{ postgres_readreplicas_appname }}'
   
 ```
 ## pgbouncer_readonly_deploy

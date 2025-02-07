@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### Bug Fixes
 
-* add connect_to to sts and deploy (Job Céspedes Ortiz)
+* pgbouncer: set connects_to correctly (Job Céspedes Ortiz)
