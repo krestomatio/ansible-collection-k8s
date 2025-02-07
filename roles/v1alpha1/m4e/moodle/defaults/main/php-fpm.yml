@@ -82,9 +82,10 @@ php_fpm_readiness_command: "{{ moodle_readiness_command }}"
 php_fpm_liveness_probe: true
 php_fpm_liveness_command: "{{ moodle_liveness_command }}"
 php_fpm_connects_to:
-  - pgbouncer
-  - keydb
-  - nfs
+  - "{{ moodle_postgres_appname }}"
+  - "{{ moodle_pgbouncer_appname }}"
+  - "{{ moodle_keydb_appname }}"
+  - "{{ moodle_nfs_appname }}"
 ## php.ini extra ini config
 # php_fpm_php_extra_ini: ''
 ## php-fpm extra conf

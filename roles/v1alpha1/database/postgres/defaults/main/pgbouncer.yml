@@ -222,13 +222,7 @@ pgbouncer_netpol_spec: |-
   - from:
     - podSelector:
         matchLabels:
-          {{ meta_app_connects_to }}/pgbouncer: 'true'
-    - namespaceSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/pgbouncer: 'true'
-      podSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/pgbouncer: 'true'
+          {{ meta_app_connects_to }}/{{ pgbouncer_appname }}: 'true'
   {% if pgbouncer_netpol_ingress_ipblock is defined and pgbouncer_netpol_ingress_ipblock %}
     - ipBlock:
         cidr: '{{ pgbouncer_netpol_ingress_ipblock }}'

@@ -140,13 +140,7 @@ ganesha_netpol_spec: |-
           app.kubernetes.io/name: '{{ ganesha_appname }}'
     - podSelector:
         matchLabels:
-          {{ meta_app_connects_to }}/nfs: 'true'
-    - namespaceSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/nfs: 'true'
-      podSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/nfs: 'true'
+          {{ meta_app_connects_to }}/{{ ganesha_appname }}: 'true'
   {% if ganesha_netpol_ingress_ipblock is defined and ganesha_netpol_ingress_ipblock %}
     - ipBlock:
         cidr: '{{ ganesha_netpol_ingress_ipblock }}'

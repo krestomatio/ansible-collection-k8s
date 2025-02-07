@@ -296,13 +296,7 @@ postgres_netpol_spec: |-
           app.kubernetes.io/name: '{{ postgres_readreplicas_appname }}'
     - podSelector:
         matchLabels:
-          {{ meta_app_connects_to }}/postgres: 'true'
-    - namespaceSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/postgres: 'true'
-      podSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/postgres: 'true'
+          {{ meta_app_connects_to }}/{{ postgres_appname }}: 'true'
   {% if postgres_netpol_ingress_ipblock is defined and postgres_netpol_ingress_ipblock %}
     - ipBlock:
         cidr: '{{ postgres_netpol_ingress_ipblock }}'

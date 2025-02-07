@@ -174,13 +174,7 @@ nginx_netpol_spec: |-
   - from:
     - podSelector:
         matchLabels:
-          {{ meta_app_connects_to }}/nginx: 'true'
-    - namespaceSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/nginx: 'true'
-      podSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/nginx: 'true'
+          {{ meta_app_connects_to }}/{{ nginx_appname }}: 'true'
   {% if nginx_netpol_ingress_ipblock is defined and nginx_netpol_ingress_ipblock %}
     - ipBlock:
         cidr: '{{ nginx_netpol_ingress_ipblock }}'

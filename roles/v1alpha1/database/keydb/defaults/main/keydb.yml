@@ -178,13 +178,7 @@ keydb_netpol_spec: |-
           app.kubernetes.io/name: '{{ keydb_appname }}'
     - podSelector:
         matchLabels:
-          {{ meta_app_connects_to }}/keydb: 'true'
-    - namespaceSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/keydb: 'true'
-      podSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/keydb: 'true'
+          {{ meta_app_connects_to }}/{{ keydb_appname }}: 'true'
   {% if keydb_netpol_ingress_ipblock is defined and keydb_netpol_ingress_ipblock %}
     - ipBlock:
         cidr: '{{ keydb_netpol_ingress_ipblock }}'
