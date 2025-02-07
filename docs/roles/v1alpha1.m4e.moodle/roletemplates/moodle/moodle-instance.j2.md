@@ -3,8 +3,8 @@
 
 
 # moodle-instance.j2
-  
----  
+
+---
 ```
 
 #!/bin/bash -eu
@@ -166,5 +166,5 @@ if (( $OPTIND == 1 )); then
     usage
     exit
 fi
-  
+
 ```

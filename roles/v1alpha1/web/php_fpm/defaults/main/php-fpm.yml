@@ -111,13 +111,7 @@ php_fpm_netpol_spec: |-
   - from:
     - podSelector:
         matchLabels:
-          {{ meta_app_connects_to }}/php-fpm: 'true'
-    - namespaceSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/php-fpm: 'true'
-      podSelector:
-        matchLabels:
-          {{ meta_app_connects_to }}/php-fpm: 'true'
+          {{ meta_app_connects_to }}/{{ php_fpm_appname }}: 'true'
   {% if php_fpm_netpol_ingress_ipblock is defined and php_fpm_netpol_ingress_ipblock %}
     - ipBlock:
         cidr: '{{ php_fpm_netpol_ingress_ipblock }}'

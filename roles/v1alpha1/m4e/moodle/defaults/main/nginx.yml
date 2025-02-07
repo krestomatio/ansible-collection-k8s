@@ -36,8 +36,8 @@ nginx_readiness_command: "['{{ moodle_nginx_check_container_script }}', '-r']"
 nginx_liveness_probe: true
 nginx_liveness_command: "['{{ moodle_nginx_check_container_script }}', '-l']"
 nginx_connects_to:
-  - php-fpm
-  - nfs
+  - "{{ php_fpm_appname }}"
+  - "{{ moodle_nfs_appname }}"
 ## nginx extra conf
 # nginx_extra_config: ''
 
