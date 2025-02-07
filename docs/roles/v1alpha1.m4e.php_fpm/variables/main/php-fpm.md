@@ -249,9 +249,9 @@ true
   
 ```
 
-- '{{ moodle_postgres_meta_name }}'
-- '{{ moodle_pgbouncer_meta_name}}'
-- '{{ moodle_keydb_meta_name }}'
+- pgbouncer
+- keydb
+- nfs
   
 ```
 ## php_fpm_envvars

@@ -7,12 +7,16 @@
 
 * set postgres volume claim template
 
-* set postgres statefulset spec
+* Block: postgres pvc labels and size
 
-* resize postgres statefulset pvc
+    * resize postgres statefulset pvc
 
-* update postgres statefulset labels and annotations
+    * update postgres statefulset labels and annotations
 
-* postgres statefulset resource definition
+* Block: postgres statefulset
+
+    * set postgres statefulset spec
+
+    * postgres statefulset resource definition
 
 * save postgres statefulset resource definition task output

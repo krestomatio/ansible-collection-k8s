@@ -9,8 +9,13 @@
 
 * omit version during routine status update
 
-* Block: moodle update
+* create update job
 
-    * create update job
+* No description available for this task - here is the definition:  
+```
 
-    * end play, complete update job will trigger new reconcile
+include_tasks: condition/uptodate/started.yml
+  
+```
+
+* end play, complete update job will trigger new reconcile

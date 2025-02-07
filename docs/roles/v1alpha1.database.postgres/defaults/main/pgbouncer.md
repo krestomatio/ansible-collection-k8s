@@ -320,8 +320,8 @@ false
   
 ```
 
-- '{{ postgres_appname }}'
-- '{{ postgres_readreplicas_appname }}'
+postgres
+...
   
 ```
 ## pgbouncer_readonly_deploy
@@ -561,6 +561,13 @@ postgres-readreplica
 ```
 
 '{{ pgbouncer_affinity }}'
+  
+```
+## pgbouncer_readonly_connects_to
+  
+```
+
+'{{ pgbouncer_connects_to }}'
   
 ```
 ## pgbouncer_secret

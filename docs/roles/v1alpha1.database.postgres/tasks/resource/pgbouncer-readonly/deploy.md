@@ -5,8 +5,10 @@
 # deploy.yml
 
 
-* set pgbouncer readonly deploy spec
+* Block: pgbouncer readonly deploy
 
-* pgbouncer readonly deploy resource definition
+    * set pgbouncer readonly deploy spec
+
+    * pgbouncer readonly deploy resource definition
 
 * save pgbouncer readonly deploy resource definition task

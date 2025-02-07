@@ -159,7 +159,8 @@ true
   
 ```
 
-- '{{ php_fpm_appname | default(moodle_appname + ''-php-fpm'') }}'
+- php-fpm
+- nfs
   
 ```
 ## nginx_ingress_host

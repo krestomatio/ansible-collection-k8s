@@ -2,8 +2,9 @@
 
 ### Bug Fixes
 
-* set connect to in metadata (Job Céspedes Ortiz)
+* moodle: add connects_to for jobs (Job Céspedes Ortiz)
 
-### Chores
+### Code Refactoring
 
-* update min ansible version ref (Job Céspedes Ortiz)
+* add connect_to to sts and deploy (Job Céspedes Ortiz)
+* moodle: update new instance job vars (Job Céspedes Ortiz)

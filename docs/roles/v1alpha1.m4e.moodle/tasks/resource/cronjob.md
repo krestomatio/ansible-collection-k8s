@@ -11,4 +11,4 @@
 
     * moodle cronjob resource definition
 
-    * save moodle cronjob resource definition task
+* save moodle cronjob resource definition task

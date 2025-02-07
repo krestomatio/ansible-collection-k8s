@@ -5,8 +5,10 @@
 # deploy.yml
 
 
-* set graphql-engine deploy spec
+* Block: graphql-engine deploy
 
-* graphql-engine deploy resource definition
+    * set graphql-engine deploy spec
+
+    * graphql-engine deploy resource definition
 
 * save graphql-engine deploy resource definition task output

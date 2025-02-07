@@ -5,8 +5,10 @@
 # deploy.yml
 
 
-* set nginx deploy spec
+* Block: nginx deploy
 
-* nginx deploy resource definition
+    * set nginx deploy spec
+
+    * nginx deploy resource definition
 
 * save nginx deploy resource definition task output

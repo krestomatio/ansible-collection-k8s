@@ -334,6 +334,13 @@ false
   \  - NET_RAW\n  - SYS_CHROOT\n  - MKNOD\n  - AUDIT_WRITE\n"
   
 ```
+## ganesha_connects_to
+  
+```
+
+''
+  
+```
 ## dbus_container
   
 ```
@@ -446,9 +453,9 @@ false
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
   \ '{{ ganesha_appname }}'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n\
   \        app.kubernetes.io/name: '{{ ganesha_appname }}'\n  - podSelector:\n   \
-  \   matchLabels:\n        {{ meta_app_connects_to }}: 'nfs'\n  - namespaceSelector:\n\
-  \      matchLabels:\n        {{ meta_app_connects_to }}: 'nfs'\n    podSelector:\n\
-  \      matchLabels:\n        {{ meta_app_connects_to }}: 'nfs'\n{% if ganesha_netpol_ingress_ipblock\
+  \   matchLabels:\n        {{ meta_app_connects_to }}/nfs: 'true'\n  - namespaceSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}/nfs: 'true'\n    podSelector:\n\
+  \      matchLabels:\n        {{ meta_app_connects_to }}/nfs: 'true'\n{% if ganesha_netpol_ingress_ipblock\
   \ is defined and ganesha_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
   \ ganesha_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
   \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n  - podSelector:\n\

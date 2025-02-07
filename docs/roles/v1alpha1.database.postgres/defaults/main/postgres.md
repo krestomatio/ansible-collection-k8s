@@ -336,6 +336,13 @@ false
 ...
   
 ```
+## postgres_connects_to
+  
+```
+
+''
+  
+```
 ## postgres_readreplicas_size
   
 ```
@@ -588,6 +595,13 @@ postgres-readreplica
 ```
 
 '{{ postgres_affinity }}'
+  
+```
+## postgres_readreplicas_connects_to
+  
+```
+
+''
   
 ```
 ## postgres_secret

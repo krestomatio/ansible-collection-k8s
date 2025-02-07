@@ -7,12 +7,16 @@
 
 * set postgres readreplicas volume claim template
 
-* set postgres readreplicas statefulset spec
+* Block: postgres pvc labels and size
 
-* resize postgres readreplicas statefulset pvc
+    * resize postgres readreplicas statefulset pvc
 
-* update postgres_readreplicas statefulset labels and annotations
+    * update postgres_readreplicas statefulset labels and annotations
 
-* postgres readreplicas statefulset resource definition
+* Block: postgres readreplicas statefulset
+
+    * set postgres readreplicas statefulset spec
+
+    * postgres readreplicas statefulset resource definition
 
 * save postgres readreplicas statefulset resource definition task output
