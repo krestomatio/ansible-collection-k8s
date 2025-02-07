@@ -1,25 +1,26 @@
-- name: set graphql-engine deploy spec
-  when: graphql_engine_deploy_spec is not defined
+- name: graphql-engine deploy
   vars:
-    annotations: "{{ graphql_engine_deploy_spec_annotations | default(false) }}"
-    extra_labels: "{{ graphql_engine_deploy_spec_extra_labels | default(false) }}"
-    inventory_include: true
-  set_fact:
-    graphql_engine_deploy_spec: "{{ lookup('template', graphql_engine_deploy_spec_template) }}"
-
-- name: graphql-engine deploy resource definition
-  vars:
-    k8s_kind: Deployment
-    k8s_state: "{{ graphql_engine_deploy_state | default(graphql_engine_state) }}"
-    k8s_wait: "{{ graphql_engine_deploy_wait | default(true) }}"
-    k8s_wait_timeout: "{{ graphql_engine_deploy_wait_timeout | default(120) }}"
-    template: "{{ deploy_template }}"
     metadata_name: "{{ graphql_engine_deploy }}"
-    annotations: "{{ graphql_engine_deploy_annotations | default(false) }}"
-    connects_to: "{{ graphql_engine_connects_to }}"
     runtime: graphql-engine
-    deploy_spec: "{{ graphql_engine_deploy_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+    annotations: "{{ graphql_engine_deploy_annotations | default(false) }}"
+    extra_labels: "{{ graphql_engine_deploy_extra_labels | default(false) }}"
+    connects_to: "{{ graphql_engine_connects_to }}"
+    inventory_include: true
+  block:
+    - name: set graphql-engine deploy spec
+      when: graphql_engine_deploy_spec is not defined
+      set_fact:
+        graphql_engine_deploy_spec: "{{ lookup('template', graphql_engine_deploy_spec_template) }}"
+
+    - name: graphql-engine deploy resource definition
+      vars:
+        k8s_kind: Deployment
+        k8s_state: "{{ graphql_engine_deploy_state | default(graphql_engine_state) }}"
+        k8s_wait: "{{ graphql_engine_deploy_wait | default(true) }}"
+        k8s_wait_timeout: "{{ graphql_engine_deploy_wait_timeout | default(120) }}"
+        template: "{{ deploy_template }}"
+        deploy_spec: "{{ graphql_engine_deploy_spec }}"
+      import_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save graphql-engine deploy resource definition task output
   set_fact:

@@ -47,6 +47,7 @@ postgres_tolerations: false
 postgres_node_selector: false
 postgres_affinity: false
 postgres_port: 5432
+postgres_connects_to: ""
 
 # readreplicas sts
 postgres_readreplicas_size: 1
@@ -86,6 +87,7 @@ postgres_readreplicas_term_grace_period: "{{ postgres_term_grace_period }}"
 postgres_readreplicas_tolerations: "{{ postgres_tolerations }}"
 postgres_readreplicas_node_selector: "{{ postgres_node_selector }}"
 postgres_readreplicas_affinity: "{{ postgres_affinity }}"
+postgres_readreplicas_connects_to: ""
 
 # postgres secret
 postgres_secret: "{{ postgres_appname }}-secret"

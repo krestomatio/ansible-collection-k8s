@@ -1,16 +1,10 @@
-- name: moodle new instance
+- include_tasks: condition/instantiated/not-instantiated.yml
+
+- include_tasks: resource/job-new-instance.yml
+
+- include_tasks: "{{ common_path }}/wait/job.yml"
   vars:
-    moodle_component: "job-new-instance"
-    metadata_app: "{{ moodle_new_instance_job }}"
-    runtime: php-fpm
-  block:
-    - include_tasks: condition/instantiated/not-instantiated.yml
+    wait_job_name: "{{ moodle_new_instance_job }}"
+    wait_job_conditions: "{{ k8s_moodle_new_instance_job.result.status.conditions | default([]) }}"
 
-    - include_tasks: resource/job-new-instance.yml
-
-    - include_tasks: "{{ common_path }}/wait/job.yml"
-      vars:
-        wait_job_name: "{{ moodle_new_instance_job }}"
-        wait_job_conditions: "{{ k8s_moodle_new_instance_job.result.status.conditions | default([]) }}"
-
-    - include_tasks: condition/instantiated/instantiated.yml
+- include_tasks: condition/instantiated/instantiated.yml

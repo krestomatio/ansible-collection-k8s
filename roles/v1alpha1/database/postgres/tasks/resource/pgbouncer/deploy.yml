@@ -1,24 +1,26 @@
-- name: set pgbouncer deploy spec
-  when: pgbouncer_deploy_spec is not defined
+- name: pgbouncer deploy
   vars:
-    annotations: "{{ pgbouncer_deploy_spec_annotations | default(false) }}"
-    extra_labels: "{{ pgbouncer_deploy_spec_extra_labels | default(false) }}"
-    inventory_include: true
-  set_fact:
-    pgbouncer_deploy_spec: "{{ lookup('template', pgbouncer_deploy_spec_template) }}"
-
-- name: pgbouncer deploy resource definition
-  vars:
-    k8s_kind: Deployment
-    k8s_state: "{{ pgbouncer_deploy_state | default(pgbouncer_state) }}"
-    k8s_wait: "{{ pgbouncer_deploy_wait | default(true) }}"
-    k8s_wait_timeout: "{{ pgbouncer_deploy_wait_timeout | default(120) }}"
-    template: "{{ deploy_template }}"
     metadata_name: "{{ pgbouncer_deploy }}"
-    annotations: "{{ pgbouncer_deploy_annotations | default(false) }}"
     runtime: pgbouncer
-    deploy_spec: "{{ pgbouncer_deploy_spec }}"
-  import_tasks: "{{ common_path }}/k8s/object.yml"
+    annotations: "{{ pgbouncer_deploy_annotations | default(false) }}"
+    extra_labels: "{{ pgbouncer_deploy_extra_labels | default(false) }}"
+    connects_to: "{{ pgbouncer_connects_to }}"
+    inventory_include: true
+  block:
+    - name: set pgbouncer deploy spec
+      when: pgbouncer_deploy_spec is not defined
+      set_fact:
+        pgbouncer_deploy_spec: "{{ lookup('template', pgbouncer_deploy_spec_template) }}"
+
+    - name: pgbouncer deploy resource definition
+      vars:
+        k8s_kind: Deployment
+        k8s_state: "{{ pgbouncer_deploy_state | default(pgbouncer_state) }}"
+        k8s_wait: "{{ pgbouncer_deploy_wait | default(true) }}"
+        k8s_wait_timeout: "{{ pgbouncer_deploy_wait_timeout | default(120) }}"
+        template: "{{ deploy_template }}"
+        deploy_spec: "{{ pgbouncer_deploy_spec }}"
+      import_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save pgbouncer deploy resource definition task
   set_fact:

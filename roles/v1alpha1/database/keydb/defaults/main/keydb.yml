@@ -45,6 +45,7 @@ keydb_tolerations: false
 keydb_node_selector: false
 keydb_affinity: false
 keydb_port: 6379
+keydb_connects_to: ""
 
 # keydb services
 keydb_service: "{{ keydb_appname }}-service"

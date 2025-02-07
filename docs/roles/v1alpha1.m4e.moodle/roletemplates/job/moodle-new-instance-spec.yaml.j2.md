@@ -3,8 +3,8 @@
 
 
 # moodle-new-instance-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -54,36 +54,36 @@ template:
             name: "{{ moodle_redis_secret }}"
             key: "{{ moodle_redis_secret_auth_key }}"
 {% endif %}
-{% if moodle_new_instance_command is defined and moodle_new_instance_command %}
-{%   if moodle_new_instance_command is string %}
-      command: {{ moodle_new_instance_command }}
-{%   elif moodle_new_instance_command | type_debug == 'list' %}
+{% if moodle_new_instance_job_command is defined and moodle_new_instance_job_command %}
+{%   if moodle_new_instance_job_command is string %}
+      command: {{ moodle_new_instance_job_command }}
+{%   elif moodle_new_instance_job_command | type_debug == 'list' %}
       command:
-      {{ moodle_new_instance_command | to_nice_yaml(indent=2) | indent(6) }}
+      {{ moodle_new_instance_job_command | to_nice_yaml(indent=2) | indent(6) }}
 {%   endif %}
 {% endif %}
-{% if moodle_new_instance_args is defined and moodle_new_instance_args %}
-{%   if moodle_new_instance_args is string %}
-      args: {{ moodle_new_instance_args }}
-{%   elif moodle_new_instance_args | type_debug == 'list' %}
+{% if moodle_new_instance_job_args is defined and moodle_new_instance_job_args %}
+{%   if moodle_new_instance_job_args is string %}
+      args: {{ moodle_new_instance_job_args }}
+{%   elif moodle_new_instance_job_args | type_debug == 'list' %}
       args:
-      {{ moodle_new_instance_args | to_nice_yaml(indent=2) | indent(6) }}
+      {{ moodle_new_instance_job_args | to_nice_yaml(indent=2) | indent(6) }}
 {%   endif %}
 {% endif %}
-{% if moodle_new_instance_startup_probe | bool %}
+{% if moodle_new_instance_job_startup_probe | bool %}
       startupProbe:
         exec:
-{%   if moodle_new_instance_startup_command is string %}
-          command: {{ moodle_new_instance_startup_command }}
-{%   elif moodle_new_instance_startup_command | type_debug == 'list' %}
+{%   if moodle_new_instance_job_startup_command is string %}
+          command: {{ moodle_new_instance_job_startup_command }}
+{%   elif moodle_new_instance_job_startup_command | type_debug == 'list' %}
           command:
-          {{ moodle_new_instance_startup_command | to_nice_yaml(indent=2) | indent(10) }}
+          {{ moodle_new_instance_job_startup_command | to_nice_yaml(indent=2) | indent(10) }}
 {%   endif %}
-        initialDelaySeconds: {{ moodle_new_instance_startup_initial }}
-        periodSeconds: {{ moodle_new_instance_startup_period }}
-        timeoutSeconds: {{ moodle_new_instance_startup_timeout }}
-        successThreshold: {{ moodle_new_instance_startup_success }}
-        failureThreshold: {{ moodle_new_instance_startup_failure }}
+        initialDelaySeconds: {{ moodle_new_instance_job_startup_initial }}
+        periodSeconds: {{ moodle_new_instance_job_startup_period }}
+        timeoutSeconds: {{ moodle_new_instance_job_startup_timeout }}
+        successThreshold: {{ moodle_new_instance_job_startup_success }}
+        failureThreshold: {{ moodle_new_instance_job_startup_failure }}
 {% endif %}
       ports:
       - containerPort: 9000
@@ -168,5 +168,5 @@ template:
     affinity:
       {{ moodle_new_instance_job_affinity | indent(6) }}
 {% endif %}
-  
+
 ```

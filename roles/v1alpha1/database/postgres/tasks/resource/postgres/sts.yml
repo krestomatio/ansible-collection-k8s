@@ -8,43 +8,44 @@
   set_fact:
     postgres_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
 
-- name: set postgres statefulset spec
-  when: postgres_sts_spec is not defined
-  vars:
-    annotations: "{{ postgres_sts_spec_annotations | default(false) }}"
-    extra_labels: "{{ postgres_sts_spec_extra_labels | default(false) }}"
-    inventory_include: true
-  set_fact:
-    postgres_sts_spec: "{{ lookup('template', postgres_sts_spec_template) }}"
-
-- name: resize postgres statefulset pvc
+- name: postgres pvc labels and size
   vars:
     sts_name: "{{ postgres_sts }}"
     sts_state: "{{ postgres_sts_state | default(postgres_state) }}"
     sts_pvc_size: "{{ postgres_pvc_data_size }}"
     sts_pvc_current_size: "{{ postgres_pvc_data_current_size }}"
-  include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
-
-- name: update postgres statefulset labels and annotations
-  vars:
-    sts_name: "{{ postgres_sts }}"
-    sts_state: "{{ postgres_sts_state | default(postgres_state) }}"
     sts_pvc_labels: "{{ postgres_volume_claim_template[0].metadata.labels | default({}) }}"
     sts_pvc_current_labels: "{{ postgres_pvc_data_current_labels }}"
-  include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+  block:
+    - name: resize postgres statefulset pvc
+      include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
 
-- name: postgres statefulset resource definition
+    - name: update postgres statefulset labels and annotations
+      include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+
+- name: postgres statefulset
   vars:
-    k8s_kind: StatefulSet
-    k8s_state: "{{ postgres_sts_state | default(postgres_state) }}"
-    k8s_wait: "{{ postgres_sts_wait | default(true) }}"
-    k8s_wait_timeout: "{{ postgres_sts_wait_timeout | default(200) }}"
-    template: "{{ sts_template }}"
     metadata_name: "{{ postgres_sts }}"
-    annotations: "{{ postgres_sts_annotations | default(false) }}"
     runtime: postgres
-    sts_spec: "{{ postgres_sts_spec }}"
-  include_tasks: "{{ common_path }}/k8s/object.yml"
+    annotations: "{{ postgres_sts_annotations | default(false) }}"
+    extra_labels: "{{ postgres_sts_extra_labels | default(false) }}"
+    connects_to: "{{ postgres_connects_to }}"
+    inventory_include: true
+  block:
+    - name: set postgres statefulset spec
+      when: postgres_sts_spec is not defined
+      set_fact:
+        postgres_sts_spec: "{{ lookup('template', postgres_sts_spec_template) }}"
+
+    - name: postgres statefulset resource definition
+      vars:
+        k8s_kind: StatefulSet
+        k8s_state: "{{ postgres_sts_state | default(postgres_state) }}"
+        k8s_wait: "{{ postgres_sts_wait | default(true) }}"
+        k8s_wait_timeout: "{{ postgres_sts_wait_timeout | default(200) }}"
+        template: "{{ sts_template }}"
+        sts_spec: "{{ postgres_sts_spec }}"
+      include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save postgres statefulset resource definition task output
   set_fact:

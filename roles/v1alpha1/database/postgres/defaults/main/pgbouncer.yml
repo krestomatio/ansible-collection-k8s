@@ -42,9 +42,7 @@ pgbouncer_tolerations: false
 pgbouncer_node_selector: false
 pgbouncer_affinity: false
 pgbouncer_port: 5432
-pgbouncer_connects_to:
-  - "{{ postgres_appname }}"
-  - "{{ postgres_readreplicas_appname }}"
+pgbouncer_connects_to: postgres
 
 # pgbouncer readonly deploy
 pgbouncer_readonly_deploy: "{{ pgbouncer_readonly_appname }}-deploy"
@@ -81,6 +79,7 @@ pgbouncer_readonly_term_grace_period: "{{ pgbouncer_term_grace_period }}"
 pgbouncer_readonly_tolerations: "{{ pgbouncer_tolerations }}"
 pgbouncer_readonly_node_selector: "{{ pgbouncer_node_selector }}"
 pgbouncer_readonly_affinity: "{{ pgbouncer_affinity }}"
+pgbouncer_readonly_connects_to: "{{ pgbouncer_connects_to }}"
 
 # pgbouncer secret
 pgbouncer_secret: "{{ pgbouncer_appname }}-secret"

@@ -39,12 +39,12 @@ metadata:
 {% if extra_labels | default(false) != false %}
     {{ extra_labels | indent(width=4) }}
 {% endif %}
-{% for metadata_connects_to_component in metadata_connects_to_list %}
+{% for metadata_connects_to_component in metadata_connects_to_list if metadata_connects_to_component %}
     {{ meta_app_connects_to }}/{{ metadata_connects_to_component }}: 'true'
 {% endfor %}
 {% if (annotations | default(false) != false) or (connects_to | default(false) != false) or (inventory_annotation_hostvars | default(false) != false and inventory_include)%}
   annotations:
-{% for metadata_connects_to_component in metadata_connects_to_list %}
+{% for metadata_connects_to_component in metadata_connects_to_list if metadata_connects_to_component %}
     app.openshift.io/connects-to: '{{ metadata_connects_to_component }}'
 {% endfor %}
 {% if inventory_annotation_hostvars | default(false) != false and inventory_include %}
