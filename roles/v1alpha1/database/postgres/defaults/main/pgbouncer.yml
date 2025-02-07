@@ -42,7 +42,9 @@ pgbouncer_tolerations: false
 pgbouncer_node_selector: false
 pgbouncer_affinity: false
 pgbouncer_port: 5432
-pgbouncer_connects_to: postgres
+pgbouncer_connects_to:
+  - "{{ postgres_appname }}"
+  - "{{ postgres_readreplicas_appname }}"
 
 # pgbouncer readonly deploy
 pgbouncer_readonly_deploy: "{{ pgbouncer_readonly_appname }}-deploy"
