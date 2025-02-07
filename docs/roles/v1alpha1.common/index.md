@@ -25,4 +25,4 @@ None
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |
-|Job Céspedes Ortiz|Krestomatio|Apache 2.0|2.15|
+|Job Céspedes Ortiz|Krestomatio|Apache 2.0|2.18|

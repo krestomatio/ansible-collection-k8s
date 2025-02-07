@@ -8,8 +8,8 @@
 ```
 
 {% set default_name = meta_name + '-' + name %}
-{% set connects_to = [] %}
-{% set connects_to_list = connects_to if connects_to | type_debug == 'list' else [connects_to] %}
+{% set metadata_connects_to = connects_to | default([]) %}
+{% set metadata_connects_to_list = metadata_connects_to if metadata_connects_to | type_debug == 'list' else [metadata_connects_to] %}
 metadata:
   name: '{{ metadata_name | default(default_name) }}'
 {% if namespaced | default(true) %}
@@ -48,13 +48,13 @@ metadata:
 {% if extra_labels | default(false) != false %}
     {{ extra_labels | indent(width=4) }}
 {% endif %}
-{% for connects_to_component in connects_to_list %}
-    {{ meta_app_connects_to }}/{{ connects_to_component }}: 'true'
+{% for metadata_connects_to_component in metadata_connects_to_list %}
+    {{ meta_app_connects_to }}/{{ metadata_connects_to_component }}: 'true'
 {% endfor %}
 {% if (annotations | default(false) != false) or (connects_to | default(false) != false) or (inventory_annotation_hostvars | default(false) != false and inventory_include)%}
   annotations:
-{% for connects_to_component in connects_to_list %}
-    app.openshift.io/connects-to: '{{ connects_to_component }}'
+{% for metadata_connects_to_component in metadata_connects_to_list %}
+    app.openshift.io/connects-to: '{{ metadata_connects_to_component }}'
 {% endfor %}
 {% if inventory_annotation_hostvars | default(false) != false and inventory_include %}
     {{ cr_group }}/inventory-hostvars: '{{ inventory_annotation_hostvars | to_json | indent( width=4) }}'

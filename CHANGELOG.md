@@ -1,5 +1,9 @@
 ## Changes
 
+### Bug Fixes
+
+* set connect to in metadata (Job Céspedes Ortiz)
+
 ### Chores
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* update min ansible version ref (Job Céspedes Ortiz)

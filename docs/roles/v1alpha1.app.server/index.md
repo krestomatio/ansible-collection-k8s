@@ -26,4 +26,4 @@ Role to handle a Handler Server for Graphql Engine with Ansible Operator SDK
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |
-|Job Céspedes Ortiz|Krestomatio|Apache|2.15|
+|Job Céspedes Ortiz|Krestomatio|Apache|2.18|

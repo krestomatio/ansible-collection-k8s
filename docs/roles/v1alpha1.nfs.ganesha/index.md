@@ -26,4 +26,4 @@ Role to create NFSv4 Ganesha servers for RWX storage in Kubernetes, using Ansibl
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |
-|Job Céspedes Ortiz|Krestomatio|Apache|2.15|
+|Job Céspedes Ortiz|Krestomatio|Apache|2.18|
