@@ -1,22 +1,25 @@
-- name: set moodle update job spec
-  when: moodle_update_job_spec is not defined
+- name: moodle update
   vars:
+    moodle_component: "job-update"
     metadata_name: "{{ moodle_update_job }}"
+    runtime: php-fpm
     annotations: "{{ moodle_update_job_annotations | default(false) }}"
     extra_labels: "{{ moodle_update_job_extra_labels | default(false) }}"
-  set_fact:
-    moodle_update_job_spec:
-      "{{ lookup('template', moodle_update_job_spec_template) }}"
-
-- name: moodle update job resource definition
-  vars:
-    k8s_kind: Job
-    k8s_state: "{{ moodle_update_job_state | default(moodle_state) }}"
-    template: "{{ job_template }}"
-    metadata_name: "{{ moodle_update_job }}"
     connects_to: "{{ moodle_update_job_connects_to }}"
-    job_spec: "{{ moodle_update_job_spec }}"
-  include_tasks: "{{ common_path }}/k8s/object.yml"
+  block:
+    - name: set moodle update job spec
+      when: moodle_update_job_spec is not defined
+      set_fact:
+        moodle_update_job_spec:
+          "{{ lookup('template', moodle_update_job_spec_template) }}"
+
+    - name: moodle update job resource definition
+      vars:
+        k8s_kind: Job
+        k8s_state: "{{ moodle_update_job_state | default(moodle_state) }}"
+        template: "{{ job_template }}"
+        job_spec: "{{ moodle_update_job_spec }}"
+      include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save moodle update job resource definition task
   set_fact:

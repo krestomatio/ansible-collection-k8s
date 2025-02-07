@@ -8,43 +8,44 @@
   set_fact:
     ganesha_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
 
-- name: set (nfs) ganesha server statefulset spec
-  when: ganesha_sts_spec is not defined
-  vars:
-    annotations: "{{ ganesha_sts_spec_annotations | default(false) }}"
-    extra_labels: "{{ ganesha_sts_spec_extra_labels | default(false) }}"
-    inventory_include: true
-  set_fact:
-    ganesha_sts_spec: "{{ lookup('template', ganesha_sts_spec_template) }}"
-
-- name: resize (nfs) ganesha server statefulset pvc
+- name: (nfs) ganesha pvc labels and size
   vars:
     sts_name: "{{ ganesha_sts }}"
     sts_state: "{{ ganesha_sts_state | default(ganesha_state) }}"
     sts_pvc_size: "{{ ganesha_pvc_data_size }}"
     sts_pvc_current_size: "{{ ganesha_pvc_data_current_size }}"
-  include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
-
-- name: update (nfs) ganesha server statefulset labels and annotations
-  vars:
-    sts_name: "{{ ganesha_sts }}"
-    sts_state: "{{ ganesha_sts_state | default(ganesha_state) }}"
     sts_pvc_labels: "{{ ganesha_volume_claim_template[0].metadata.labels | default({}) }}"
     sts_pvc_current_labels: "{{ ganesha_pvc_data_current_labels }}"
-  include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+  block:
+    - name: resize (nfs) ganesha server statefulset pvc
+      include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
 
-- name: (nfs) ganesha server statefulset resource definition
+    - name: update (nfs) ganesha server statefulset labels and annotations
+      include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+
+- name: (nfs) ganesha statefulset
   vars:
-    k8s_kind: StatefulSet
-    k8s_state: "{{ ganesha_sts_state | default(ganesha_state) }}"
-    k8s_wait: "{{ ganesha_sts_wait | default(true) }}"
-    k8s_wait_timeout: "{{ ganesha_sts_wait_timeout | default(200) }}"
-    template: "{{ sts_template }}"
     metadata_name: "{{ ganesha_sts }}"
-    annotations: "{{ ganesha_sts_annotations | default(false) }}"
     runtime: ganesha
-    sts_spec: "{{ ganesha_sts_spec }}"
-  include_tasks: "{{ common_path }}/k8s/object.yml"
+    annotations: "{{ ganesha_sts_annotations | default(false) }}"
+    extra_labels: "{{ ganesha_sts_extra_labels | default(false) }}"
+    connects_to: "{{ ganesha_connects_to }}"
+    inventory_include: true
+  block:
+    - name: set (nfs) ganesha server statefulset spec
+      when: ganesha_sts_spec is not defined
+      set_fact:
+        ganesha_sts_spec: "{{ lookup('template', ganesha_sts_spec_template) }}"
+
+    - name: (nfs) ganesha server statefulset resource definition
+      vars:
+        k8s_kind: StatefulSet
+        k8s_state: "{{ ganesha_sts_state | default(ganesha_state) }}"
+        k8s_wait: "{{ ganesha_sts_wait | default(true) }}"
+        k8s_wait_timeout: "{{ ganesha_sts_wait_timeout | default(200) }}"
+        template: "{{ sts_template }}"
+        sts_spec: "{{ ganesha_sts_spec }}"
+      include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save (nfs) ganesha server statefulset resource definition task output
   set_fact:

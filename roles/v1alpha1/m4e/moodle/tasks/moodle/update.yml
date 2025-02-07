@@ -8,17 +8,11 @@
     moodle_status_script_version: false
   include_tasks: resource/routine.yml
 
-- name: moodle update
-  vars:
-    moodle_component: "job-update"
-    metadata_app: "{{ moodle_update_job }}"
-    runtime: php-fpm
-  block:
-    - name: create update job
-      when: cr_status_properties.state | default('') != 'UpdateStarted'
-      include_tasks: resource/job-update.yml
+- name: create update job
+  when: cr_status_properties.state | default('') != 'UpdateStarted'
+  include_tasks: resource/job-update.yml
 
-    - include_tasks: condition/uptodate/started.yml
+- include_tasks: condition/uptodate/started.yml
 
-    - name: end play, complete update job will trigger new reconcile
-      meta: end_play
+- name: end play, complete update job will trigger new reconcile
+  meta: end_play

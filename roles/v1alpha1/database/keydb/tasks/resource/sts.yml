@@ -8,43 +8,44 @@
   set_fact:
     keydb_volume_claim_template: "{{ [lookup('template', vct_template) | from_yaml] }}"
 
-- name: set keydb statefulset spec
-  when: keydb_sts_spec is not defined
-  vars:
-    annotations: "{{ keydb_sts_spec_annotations | default(false) }}"
-    extra_labels: "{{ keydb_sts_spec_extra_labels | default(false) }}"
-    inventory_include: true
-  set_fact:
-    keydb_sts_spec: "{{ lookup('template', keydb_sts_spec_template) }}"
-
-- name: resize keydb statefulset pvc
+- name: keydb pvc labels and size
   vars:
     sts_name: "{{ keydb_sts }}"
     sts_state: "{{ keydb_sts_state | default(keydb_state) }}"
     sts_pvc_size: "{{ keydb_pvc_data_size }}"
     sts_pvc_current_size: "{{ keydb_pvc_data_current_size }}"
-  include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
-
-- name: update keydb statefulset labels and annotations
-  vars:
-    sts_name: "{{ keydb_sts }}"
-    sts_state: "{{ keydb_sts_state | default(keydb_state) }}"
     sts_pvc_labels: "{{ keydb_volume_claim_template[0].metadata.labels | default({}) }}"
     sts_pvc_current_labels: "{{ keydb_pvc_data_current_labels }}"
-  include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+  block:
+    - name: resize keydb statefulset pvc
+      include_tasks: "{{ common_path }}/sts-patch-pvc-size.yml"
 
-- name: keydb statefulset resource definition
+    - name: update keydb statefulset labels and annotations
+      include_tasks: "{{ common_path }}/sts-patch-pvc-labels.yml"
+
+- name: keydb statefulset
   vars:
-    k8s_kind: StatefulSet
-    k8s_state: "{{ keydb_sts_state | default(keydb_state) }}"
-    k8s_wait: "{{ keydb_sts_wait | default(true) }}"
-    k8s_wait_timeout: "{{ keydb_sts_wait_timeout | default(200) }}"
-    template: "{{ sts_template }}"
     metadata_name: "{{ keydb_sts }}"
-    annotations: "{{ keydb_sts_annotations | default(false) }}"
     runtime: keydb
-    sts_spec: "{{ keydb_sts_spec }}"
-  include_tasks: "{{ common_path }}/k8s/object.yml"
+    annotations: "{{ keydb_sts_annotations | default(false) }}"
+    extra_labels: "{{ keydb_sts_extra_labels | default(false) }}"
+    connects_to: "{{ keydb_connects_to }}"
+    inventory_include: true
+  block:
+    - name: set keydb statefulset spec
+      when: keydb_sts_spec is not defined
+      set_fact:
+        keydb_sts_spec: "{{ lookup('template', keydb_sts_spec_template) }}"
+
+    - name: keydb statefulset resource definition
+      vars:
+        k8s_kind: StatefulSet
+        k8s_state: "{{ keydb_sts_state | default(keydb_state) }}"
+        k8s_wait: "{{ keydb_sts_wait | default(true) }}"
+        k8s_wait_timeout: "{{ keydb_sts_wait_timeout | default(200) }}"
+        template: "{{ sts_template }}"
+        sts_spec: "{{ keydb_sts_spec }}"
+      include_tasks: "{{ common_path }}/k8s/object.yml"
 
 - name: save keydb statefulset resource definition task output
   set_fact:
