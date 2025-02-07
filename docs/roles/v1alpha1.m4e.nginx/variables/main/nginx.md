@@ -159,8 +159,8 @@ true
   
 ```
 
-- php-fpm
-- nfs
+- '{{ php_fpm_appname }}'
+- '{{ moodle_nfs_appname }}'
   
 ```
 ## nginx_ingress_host

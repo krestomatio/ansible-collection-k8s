@@ -249,9 +249,10 @@ true
   
 ```
 
-- pgbouncer
-- keydb
-- nfs
+- '{{ moodle_postgres_appname }}'
+- '{{ moodle_pgbouncer_appname }}'
+- '{{ moodle_keydb_appname }}'
+- '{{ moodle_nfs_appname }}'
   
 ```
 ## php_fpm_envvars

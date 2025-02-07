@@ -470,9 +470,7 @@ false
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
   \ 'php-fpm'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n        {{\
-  \ meta_app_connects_to }}/php-fpm: 'true'\n  - namespaceSelector:\n      matchLabels:\n\
-  \        {{ meta_app_connects_to }}/php-fpm: 'true'\n    podSelector:\n      matchLabels:\n\
-  \        {{ meta_app_connects_to }}/php-fpm: 'true'\n{% if php_fpm_netpol_ingress_ipblock\
+  \ meta_app_connects_to }}/{{ php_fpm_appname }}: 'true'\n{% if php_fpm_netpol_ingress_ipblock\
   \ is defined and php_fpm_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
   \ php_fpm_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
   \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n  - protocol: TCP\n    port:\

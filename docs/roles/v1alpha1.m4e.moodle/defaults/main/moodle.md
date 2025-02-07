@@ -962,6 +962,13 @@ false
 ...
   
 ```
+## moodle_nfs_appname
+  
+```
+
+'{{ moodle_nfs_meta_name + ''-nfs'' if moodle_nfs_meta_name else false }}'
+  
+```
 ## moodle_nfs_service
   
 ```
@@ -1091,19 +1098,34 @@ false
 ...
   
 ```
+## moodle_postgres_appname
+  
+```
+
+'{{ moodle_postgres_meta_name + ''-postgres'' if moodle_postgres_meta_name else false
+  }}'
+  
+```
 ## moodle_pgbouncer_meta_name
   
 ```
 
-'{{ moodle_postgres_meta_name + ''-pgbouncer'' if moodle_postgres_meta_name else false
-  }}'
+'{{ moodle_postgres_meta_name if moodle_postgres_meta_name else false }}'
+  
+```
+## moodle_pgbouncer_appname
+  
+```
+
+'{{ moodle_pgbouncer_meta_name + ''-pgbouncer'' if moodle_pgbouncer_meta_name else
+  false }}'
   
 ```
 ## moodle_database_service
   
 ```
 
-'{{ moodle_pgbouncer_meta_name + ''-service'' if moodle_pgbouncer_meta_name else ''''
+'{{ moodle_pgbouncer_appname + ''-service'' if moodle_pgbouncer_meta_name else ''''
   }}'
   
 ```
@@ -1111,8 +1133,7 @@ false
   
 ```
 
-'{{ moodle_postgres_meta_name + ''-postgres-secret'' if moodle_postgres_meta_name
-  else '''' }}'
+'{{ moodle_postgres_appname + ''-secret'' if moodle_postgres_meta_name else '''' }}'
   
 ```
 ## moodle_database_secret_dbname_key
@@ -1145,6 +1166,13 @@ database_password
 
 false
 ...
+  
+```
+## moodle_keydb_appname
+  
+```
+
+'{{ moodle_keydb_meta_name + ''-keydb'' if moodle_keydb_meta_name else false }}'
   
 ```
 ## moodle_redis_service

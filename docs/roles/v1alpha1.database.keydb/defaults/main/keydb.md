@@ -608,14 +608,12 @@ false
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
   \ '{{ keydb_appname }}'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n\
   \        app.kubernetes.io/name: '{{ keydb_appname }}'\n  - podSelector:\n     \
-  \ matchLabels:\n        {{ meta_app_connects_to }}/keydb: 'true'\n  - namespaceSelector:\n\
-  \      matchLabels:\n        {{ meta_app_connects_to }}/keydb: 'true'\n    podSelector:\n\
-  \      matchLabels:\n        {{ meta_app_connects_to }}/keydb: 'true'\n{% if keydb_netpol_ingress_ipblock\
-  \ is defined and keydb_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
-  \ keydb_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
-  \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n  - podSelector:\n\
-  \      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_appname }}'\n{% for\
-  \ keydb_netpol_connects_to_app_name in keydb_netpol_connects_to if keydb_netpol_connects_to_app_name\
+  \ matchLabels:\n        {{ meta_app_connects_to }}/{{ keydb_appname }}: 'true'\n\
+  {% if keydb_netpol_ingress_ipblock is defined and keydb_netpol_ingress_ipblock %}\n\
+  \  - ipBlock:\n      cidr: '{{ keydb_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n\
+  - ports:\n  - protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n\
+  \  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_appname\
+  \ }}'\n{% for keydb_netpol_connects_to_app_name in keydb_netpol_connects_to if keydb_netpol_connects_to_app_name\
   \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
   \ '{{ keydb_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
   \        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name }}'\n   \

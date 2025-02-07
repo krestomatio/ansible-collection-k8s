@@ -3,8 +3,8 @@
 
 
 # moodle-instance.j2
-
----
+  
+---  
 ```
 
 #!/bin/bash -eu
@@ -53,7 +53,7 @@ database_check() {
 database_check_with_retry() {
     DATABASE_CHECK_TIMES=${1:-5}
     DATABASE_CHECK_SLEEP=${2:-5}
-    echo "Checking if database engine is available..."
+    echo "Checking if database engine is available with ${DATABASE_CHECK_TIMES} retries and ${DATABASE_CHECK_SLEEP} seconds sleep..."
 
     until [ "${DATABASE_CHECK_TIMES}" -lt 0 ]; do
         database_check
@@ -120,7 +120,7 @@ moodle_instance_install() {
 }
 
 moodle_instance_update() {
-    database_check_with_retry 5 1
+    database_check_with_retry 10 1
 
     # get climaintenance to keep it in that state if preexisting
     climaintenance=$(test -f "{{ moodle_pvc_data_path }}/climaintenance.html" && echo true || echo false)
@@ -135,7 +135,7 @@ moodle_instance_update() {
 }
 
 moodle_cron() {
-    database_check_with_retry 5 1
+    database_check_with_retry 10 1
 
     echo "Running moodle cron..."
     MOODLE_CRON_MEMORY_LIMIT={{ moodle_cronjob_php_max_memory | default('') }}
@@ -166,5 +166,5 @@ if (( $OPTIND == 1 )); then
     usage
     exit
 fi
-
+  
 ```

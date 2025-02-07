@@ -823,9 +823,7 @@ false
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
   \ 'pgbouncer'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n       \
-  \ {{ meta_app_connects_to }}/pgbouncer: 'true'\n  - namespaceSelector:\n      matchLabels:\n\
-  \        {{ meta_app_connects_to }}/pgbouncer: 'true'\n    podSelector:\n      matchLabels:\n\
-  \        {{ meta_app_connects_to }}/pgbouncer: 'true'\n{% if pgbouncer_netpol_ingress_ipblock\
+  \ {{ meta_app_connects_to }}/{{ pgbouncer_appname }}: 'true'\n{% if pgbouncer_netpol_ingress_ipblock\
   \ is defined and pgbouncer_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr:\
   \ '{{ pgbouncer_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  -\
   \ protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n{% for pgbouncer_netpol_connects_to_app_name\
