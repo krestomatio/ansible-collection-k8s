@@ -82,6 +82,7 @@ keydb_service_headless_spec: |
   {% endif %}
 
 # keydb pvc
+keydb_pvc_enabled: true
 keydb_pvc_data: "{{ keydb_appname }}-data-pvc"
 keydb_pvc_data_storage_access_mode: ReadWriteOnce
 keydb_pvc_data_storage_class_name: false
