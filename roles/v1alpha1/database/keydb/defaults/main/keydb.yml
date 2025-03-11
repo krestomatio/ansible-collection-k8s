@@ -81,6 +81,10 @@ keydb_service_headless_spec: |
       timeoutSeconds: {{ keydb_service_session_affinity_timeout }}
   {% endif %}
 
+# keydb empty dir
+keydb_empty_dir_data: |-
+  medium: Memory
+
 # keydb pvc
 keydb_pvc_enabled: true
 keydb_pvc_data: "{{ keydb_appname }}-data-pvc"
