@@ -1,5 +1,11 @@
 ## Changes
 
-### Bug Fixes
+### Code Refactoring
 
-* pgbouncer: set connects_to correctly (Job Céspedes Ortiz)
+* add var type in template (Job Céspedes Ortiz)
+
+### Other Changes
+
+These commits did not use [Conventional Commits](https://conventionalcommits.org/) formatted messages:
+
+* Allowing for deployments using an emptyDir volume rather than persistent storage (Andrew Chiarello)

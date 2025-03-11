@@ -142,8 +142,13 @@ template:
       - mountPath: /etc/keydb/keydb.conf
         name: keydb-config
         subPath: keydb.conf
+{% if keydb_pvc_enabled | bool %}
       - mountPath: '{{ keydb_data }}'
         name: {{ keydb_pvc_data }}
+{% else %}
+      - mountPath: '{{ keydb_data }}'
+        name: keydb-data
+{% endif %}
     volumes:
     - name: keydb-config
       configMap:
@@ -152,6 +157,11 @@ template:
         items:
         - key: keydb.conf
           path: keydb.conf
+{% if not keydb_pvc_enabled | bool %}
+    - name: keydb-data
+      emptyDir:
+        {{ keydb_empty_dir_data | indent(8) }}
+{% endif %}
 {% if keydb_tolerations is defined and keydb_tolerations %}
     tolerations:
     {{ keydb_tolerations | to_nice_yaml(indent=2) | indent(4) }}
@@ -168,7 +178,9 @@ template:
     affinity:
       {{ keydb_affinity | indent(6) }}
 {% endif %}
+{% if keydb_pvc_enabled | bool %}
 volumeClaimTemplates:
   {{ keydb_volume_claim_template | to_nice_yaml(indent=2) | indent(2) }}
+{% endif %}
   
 ```

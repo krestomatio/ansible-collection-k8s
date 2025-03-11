@@ -384,6 +384,21 @@ false
   \ }}\n{% endif %}\n"
   
 ```
+## keydb_empty_dir_data
+  
+```
+
+'medium: Memory'
+  
+```
+## keydb_pvc_enabled
+  
+```
+
+true
+...
+  
+```
 ## keydb_pvc_data
   
 ```
