@@ -14,7 +14,7 @@ template:
       sysctls:
       {{ keydb_sysctls | to_nice_yaml(indent=2) | indent(6) }}
 {% endif %}
-{% if k8s_distribution == 'k8s' %}
+{% if k8s_distribution == 'k8s' and keydb_pvc_enabled | bool %}
     initContainers:
     - name: 'data-dir-permissions'
       image: '{{ keydb_image }}'
