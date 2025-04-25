@@ -2,4 +2,4 @@
 
 ### Bug Fixes
 
-* add netpol ipblock variables (Job Céspedes Ortiz)
+* set var names (Job Céspedes Ortiz)

@@ -284,17 +284,17 @@ true
 '{{ moodle_netpol_omit }}'
   
 ```
-## php_fpm_netpol_ingress
+## php_fpm_netpol_ingress_ipblock
   
 ```
 
-'{{ moodle_netpol_ingress }}'
+'{{ moodle_netpol_ingress_ipblock }}'
   
 ```
-## php_fpm_netpol_egress
+## php_fpm_netpol_egress_ipblock
   
 ```
 
-'{{ moodle_netpol_egress }}'
+'{{ moodle_netpol_egress_ipblock }}'
   
 ```
