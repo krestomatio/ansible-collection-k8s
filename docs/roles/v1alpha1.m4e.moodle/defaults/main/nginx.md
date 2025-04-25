@@ -198,3 +198,17 @@ true
 '{{ moodle_netpol_omit }}'
   
 ```
+## nginx_netpol_ingress
+  
+```
+
+'{{ moodle_netpol_ingress }}'
+  
+```
+## nginx_netpol_egress
+  
+```
+
+'{{ moodle_netpol_egress }}'
+  
+```

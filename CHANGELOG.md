@@ -1,3 +1,5 @@
 ## Changes
 
-* removing the initContainer when pvc is disabled (Andrew Chiarello)
+### Bug Fixes
+
+* add netpol ipblock variables (Job Céspedes Ortiz)

@@ -954,6 +954,22 @@ true
 ...
   
 ```
+## moodle_netpol_ingress_ipblock
+  
+```
+
+false
+...
+  
+```
+## moodle_netpol_egress_ipblock
+  
+```
+
+false
+...
+  
+```
 ## moodle_nfs_meta_name
   
 ```
