@@ -3,8 +3,8 @@
 
 
 # netpol.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} persistent volume claim
@@ -16,5 +16,5 @@ apiVersion: v1
 spec:
   {{ netpol_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

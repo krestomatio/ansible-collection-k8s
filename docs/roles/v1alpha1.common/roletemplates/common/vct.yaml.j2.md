@@ -3,8 +3,8 @@
 
 
 # vct.yaml.j2
-  
----  
+
+---
 ```
 
 # volumeClaimTemplate
@@ -13,5 +13,5 @@
 spec:
   {{ pvc_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

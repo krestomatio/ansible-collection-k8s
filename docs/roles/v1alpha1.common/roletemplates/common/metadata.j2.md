@@ -3,8 +3,8 @@
 
 
 # metadata.j2
-  
----  
+
+---
 ```
 
 {% set default_name = meta_name + '-' + name %}
@@ -66,5 +66,5 @@ metadata:
     {{ annotations | indent( width=4) }}
 {% endif %}
 {% endif %}
-  
+
 ```

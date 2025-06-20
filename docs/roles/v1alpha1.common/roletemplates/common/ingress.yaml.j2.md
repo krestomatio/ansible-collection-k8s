@@ -3,8 +3,8 @@
 
 
 # ingress.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} ingress
@@ -16,5 +16,5 @@ apiVersion: networking.k8s.io/v1
 spec:
   {{ ingress_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

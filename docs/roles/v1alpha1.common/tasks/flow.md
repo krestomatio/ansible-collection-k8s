@@ -3,7 +3,7 @@
 
 
 # Flow
-  
-```mermaid  
-graph LR  
+
+```mermaid
+graph LR
 ```

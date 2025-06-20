@@ -3,8 +3,8 @@
 
 
 # nginx-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -203,5 +203,5 @@ template:
     affinity:
       {{ nginx_affinity | indent(6) }}
 {% endif %}
-  
+
 ```

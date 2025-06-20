@@ -3,8 +3,8 @@
 
 
 # postgres-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -220,5 +220,5 @@ template:
 {% endif %}
 volumeClaimTemplates:
   {{ postgres_volume_claim_template | to_nice_yaml(indent=2) | indent(2) }}
-  
+
 ```

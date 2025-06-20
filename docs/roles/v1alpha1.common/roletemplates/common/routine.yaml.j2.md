@@ -3,8 +3,8 @@
 
 
 # routine.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} routine
@@ -16,5 +16,5 @@ apiVersion: "{{ cr_api_version }}"
 spec:
   {{ routine_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

@@ -3,8 +3,8 @@
 
 
 # route.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} route
@@ -16,5 +16,5 @@ apiVersion: v1
 spec:
   {{ route_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

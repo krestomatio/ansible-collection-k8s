@@ -3,8 +3,8 @@
 
 
 # hpa.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} horizontalpodautoscaler
@@ -20,5 +20,5 @@ spec:
     name: {{ hpa_ref_name }}
   {{ hpa_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

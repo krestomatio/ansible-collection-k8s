@@ -3,26 +3,26 @@
 
 
 # v1alpha1.m4e.moodle
-  
+
 ---
 ## Role Name
-  
-moodle  
-  
+
+moodle
+
 ---
 ## Description
-  
-Role to handle Moodle with Ansible Operator SDK  
-  
+
+Role to handle Moodle with Ansible Operator SDK
+
 ---
 ## Dependencies
-  
-> krestomatio.k8s.v1alpha1.common  
-  
-  
+
+> krestomatio.k8s.v1alpha1.common
+
+
 ---
 ## Information
-  
+
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |

@@ -3,8 +3,8 @@
 
 
 # muc-config.php.j2
-  
----  
+
+---
 ```
 
 #!/usr/bin/env php
@@ -211,5 +211,5 @@ function reset_cache() {
     unlink($muc_file);
     cache_factory::reset();
 }
-  
+
 ```

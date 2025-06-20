@@ -3,17 +3,17 @@
 
 
 # customresources.yml
-  
+
 ---
 ## ganesha_routine
-  
+
 ```
 
 '{{ ganesha_appname }}-routine'
-  
+
 ```
 ## ganesha_routine_spec
-  
+
 ```
 
 "{% for _routine_varname in query('varnames', '^routine.+')  %}\n{% if _routine_varname\
@@ -26,5 +26,5 @@
   n|\\t') %}\n{{ _routine_varname }}: |\n  {{ _routine_varvalue | indent(2) }}\n{%\
   \ else %}\n{{ _routine_varname }}: '{{ _routine_varvalue | regex_replace(\"'\",\
   \ \"''\") }}'\n{% endif %}\n{% endif %}\n{% endfor %}"
-  
+
 ```

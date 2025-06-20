@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Chores
 
-* set var names (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (Job Céspedes Ortiz)

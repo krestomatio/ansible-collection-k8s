@@ -3,8 +3,8 @@
 
 
 # vpa.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} horizontalpodautoscaler
@@ -20,5 +20,5 @@ spec:
     name: {{ vpa_ref_name }}
   {{ vpa_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

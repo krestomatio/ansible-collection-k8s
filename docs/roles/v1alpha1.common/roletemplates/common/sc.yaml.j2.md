@@ -3,8 +3,8 @@
 
 
 # sc.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} storage class
@@ -33,5 +33,5 @@ reclaimPolicy: {{ sc_reclaim_policy  }}
 {% if sc_volume_binding_mode is defined and sc_volume_binding_mode %}
 volumeBindingMode: {{ sc_volume_binding_mode }}
 {% endif %}
-  
+
 ```

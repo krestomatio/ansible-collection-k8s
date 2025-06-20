@@ -3,8 +3,8 @@
 
 
 # pv.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} persistent volume
@@ -16,5 +16,5 @@ apiVersion: v1
 spec:
   {{ pv_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

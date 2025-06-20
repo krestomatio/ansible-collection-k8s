@@ -3,8 +3,8 @@
 
 
 # status.php.j2
-  
----  
+
+---
 ```
 
 #!/usr/bin/php
@@ -217,5 +217,5 @@ if ($options['checks'] && empty($CFG->upgraderunning)){
 # export as json
 echo json_encode($json);
 ?>
-  
+
 ```

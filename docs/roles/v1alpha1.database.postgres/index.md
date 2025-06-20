@@ -3,26 +3,26 @@
 
 
 # v1alpha1.database.postgres
-  
+
 ---
 ## Role Name
-  
-postgres  
-  
+
+postgres
+
 ---
 ## Description
-  
-Role to handle Postgres with Ansible Operator SDK  
-  
+
+Role to handle Postgres with Ansible Operator SDK
+
 ---
 ## Dependencies
-  
-> krestomatio.k8s.v1alpha1.common  
-  
-  
+
+> krestomatio.k8s.v1alpha1.common
+
+
 ---
 ## Information
-  
+
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |

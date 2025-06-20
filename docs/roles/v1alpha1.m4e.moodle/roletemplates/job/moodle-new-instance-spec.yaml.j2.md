@@ -3,8 +3,8 @@
 
 
 # moodle-new-instance-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -168,5 +168,5 @@ template:
     affinity:
       {{ moodle_new_instance_job_affinity | indent(6) }}
 {% endif %}
-  
+
 ```

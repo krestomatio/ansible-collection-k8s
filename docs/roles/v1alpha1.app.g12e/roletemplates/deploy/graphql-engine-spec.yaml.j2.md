@@ -3,8 +3,8 @@
 
 
 # graphql-engine-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -126,5 +126,5 @@ template:
     imagePullSecrets:
     - name: {{ graphql_engine_image_pull_secret }}
 {% endif %}
-  
+
 ```

@@ -3,8 +3,8 @@
 
 
 # cronjob.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} cronjob
@@ -16,5 +16,5 @@ apiVersion: batch/v1
 spec:
   {{ cronjob_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

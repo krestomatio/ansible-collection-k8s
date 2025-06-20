@@ -3,26 +3,26 @@
 
 
 # v1alpha1.app.server
-  
+
 ---
 ## Role Name
-  
-server  
-  
+
+server
+
 ---
 ## Description
-  
-Role to handle a Handler Server for Graphql Engine with Ansible Operator SDK  
-  
+
+Role to handle a Handler Server for Graphql Engine with Ansible Operator SDK
+
 ---
 ## Dependencies
-  
-> krestomatio.k8s.v1alpha1.common  
-  
-  
+
+> krestomatio.k8s.v1alpha1.common
+
+
 ---
 ## Information
-  
+
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |

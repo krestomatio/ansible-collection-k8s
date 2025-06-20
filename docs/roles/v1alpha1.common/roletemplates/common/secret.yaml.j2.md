@@ -3,8 +3,8 @@
 
 
 # secret.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} secret
@@ -23,5 +23,5 @@ data:
 stringData:
   {{ secret_string_data | indent(width=2) }}
 {% endif %}
-  
+
 ```

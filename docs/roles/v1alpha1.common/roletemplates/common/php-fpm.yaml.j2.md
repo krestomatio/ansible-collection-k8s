@@ -3,8 +3,8 @@
 
 
 # php-fpm.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} php-fpm
@@ -16,5 +16,5 @@ apiVersion: "{{ cr_api_version }}"
 spec:
   {{ php_fpm_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

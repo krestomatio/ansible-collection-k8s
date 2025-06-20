@@ -3,17 +3,17 @@
 
 
 # customresources.yml
-  
+
 ---
 ## moodle_php_fpm
-  
+
 ```
 
 '{{ moodle_appname }}-php-fpm'
-  
+
 ```
 ## moodle_php_fpm_spec
-  
+
 ```
 
 "cr_state: {{ php_fpm_cr_state | default(cr_state) }}\n{%  if common_labels | default(false)\
@@ -28,17 +28,17 @@
   n|\\t') %}\n{{ _php_fpm_varname }}: |\n  {{ _php_fpm_varvalue | indent(2) }}\n{%\
   \ else %}\n{{ _php_fpm_varname }}: '{{ _php_fpm_varvalue | regex_replace(\"'\",\
   \ \"''\") }}'\n{% endif %}\n{% endif %}\n{% endfor %}"
-  
+
 ```
 ## moodle_nginx
-  
+
 ```
 
 '{{ moodle_appname }}-nginx'
-  
+
 ```
 ## moodle_nginx_spec
-  
+
 ```
 
 "cr_state: {{ nginx_cr_state | default(cr_state) }}\n{%  if common_labels | default(false)\
@@ -52,17 +52,17 @@
   \ -}}\n{% elif _nginx_varvalue is regex('\\n|\\t') %}\n{{ _nginx_varname }}: |\n\
   \  {{ _nginx_varvalue | indent(2) }}\n{% else %}\n{{ _nginx_varname }}: '{{ _nginx_varvalue\
   \ | regex_replace(\"'\", \"''\") }}'\n{% endif %}\n{% endif %}\n{% endfor %}"
-  
+
 ```
 ## moodle_routine
-  
+
 ```
 
 '{{ moodle_appname }}-routine'
-  
+
 ```
 ## moodle_routine_spec
-  
+
 ```
 
 "{%  if common_labels | default(false) %}\ncommon_labels: |-\n  {{ common_labels |\
@@ -76,5 +76,5 @@
   \ _routine_varvalue is regex('\\n|\\t') %}\n{{ _routine_varname }}: |\n  {{ _routine_varvalue\
   \ | indent(2) }}\n{% else %}\n{{ _routine_varname }}: '{{ _routine_varvalue | regex_replace(\"\
   '\", \"''\") }}'\n{% endif %}\n{% endif %}\n{% endfor %}"
-  
+
 ```

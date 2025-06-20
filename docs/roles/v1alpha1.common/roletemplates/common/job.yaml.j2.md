@@ -3,8 +3,8 @@
 
 
 # job.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} job
@@ -16,5 +16,5 @@ apiVersion: batch/v1
 spec:
   {{ job_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

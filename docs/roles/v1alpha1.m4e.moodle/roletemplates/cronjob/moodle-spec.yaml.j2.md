@@ -3,8 +3,8 @@
 
 
 # moodle-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -144,5 +144,5 @@ jobTemplate:
         affinity:
           {{ moodle_cronjob_affinity | indent(10) }}
 {% endif %}
-  
+
 ```

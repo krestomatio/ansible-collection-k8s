@@ -3,8 +3,8 @@
 
 
 # deploy.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} deployment
@@ -16,5 +16,5 @@ apiVersion: apps/v1
 spec:
   {{ deploy_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

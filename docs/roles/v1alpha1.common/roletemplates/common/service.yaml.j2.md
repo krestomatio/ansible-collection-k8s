@@ -3,8 +3,8 @@
 
 
 # service.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} service
@@ -16,5 +16,5 @@ apiVersion: v1
 spec:
   {{ service_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

@@ -3,25 +3,25 @@
 
 
 # v1alpha1.common
-  
+
 ---
 ## Role Name
-  
-common  
-  
+
+common
+
 ---
 ## Description
-  
-Role to handle common tasks with Ansible Operator SDK  
-  
+
+Role to handle common tasks with Ansible Operator SDK
+
 ---
 ## Dependencies
-  
-None  
-  
+
+None
+
 ---
 ## Information
-  
+
 
 |Author|Company|License|Minimum Ansible Version|
 | :---: | :---: | :---: | :---: |

@@ -3,8 +3,8 @@
 
 
 # nginx.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} nginx
@@ -16,5 +16,5 @@ apiVersion: "{{ cr_api_version }}"
 spec:
   {{ nginx_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

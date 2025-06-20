@@ -3,8 +3,8 @@
 
 
 # pgbouncer-readonly-spec.yaml.j2
-  
----  
+
+---
 ```
 
 {% macro metadata() %}{% include common_path + '/metadata.j2' ignore missing %}{% endmacro %}
@@ -188,5 +188,5 @@ template:
     affinity:
       {{ pgbouncer_readonly_affinity | indent(6) }}
 {% endif %}
-  
+
 ```

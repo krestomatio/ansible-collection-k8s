@@ -3,8 +3,8 @@
 
 
 # sts.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} statefulset
@@ -16,5 +16,5 @@ apiVersion: apps/v1
 spec:
   {{ sts_spec | indent(width=2) }}
 {% endif %}
-  
+
 ```

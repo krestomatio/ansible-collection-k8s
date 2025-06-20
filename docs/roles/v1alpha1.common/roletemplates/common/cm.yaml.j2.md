@@ -3,8 +3,8 @@
 
 
 # cm.yaml.j2
-  
----  
+
+---
 ```
 
 # {{ name }} configmap
@@ -16,5 +16,5 @@ apiVersion: v1
 data:
   {{ cm_data | indent(width=2) }}
 {% endif %}
-  
+
 ```
