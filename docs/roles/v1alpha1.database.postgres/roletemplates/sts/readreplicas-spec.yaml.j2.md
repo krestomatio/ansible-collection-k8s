@@ -53,8 +53,8 @@ template:
         value: "copy"
 {% endif %}
 {% if postgres_config_log_stderr %}
-      - name: POSTGRESQL_LOG_STDERR
-        value: "true"
+      - name: POSTGRESQL_LOG_DESTINATION
+        value: "/dev/stderr"
 {% endif %}
       - name: POSTGRESQL_MASTER_USER
         valueFrom:
