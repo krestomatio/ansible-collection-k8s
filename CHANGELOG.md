@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Code Refactoring
 
-* moodle: set cache class path (Job Céspedes Ortiz)
+* moodle: use php default serializer (Job Céspedes Ortiz)
