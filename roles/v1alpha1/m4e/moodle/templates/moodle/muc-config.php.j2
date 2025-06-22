@@ -7,7 +7,11 @@ $MOODLE_COMMIT = getenv('MOODLE_COMMIT') ?: false;
 $MOODLE_APP = getenv('MOODLE_APP') ?: '/var/www/html';
 require($MOODLE_APP . '/config.php');
 require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->dirroot.'/cache/locallib.php');
+$config_writer_file = ($CFG->branch >= 405)
+    ? $CFG->dirroot . '/cache/classes/config_writer.php'
+    : $CFG->dirroot . '/cache/locallib.php';
+require_once($config_writer_file);
+
 
 list($options, $unrecognized) = cli_get_params([
     'help'  => false,
