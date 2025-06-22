@@ -1,5 +1,5 @@
 ## Changes
 
-### Bug Fixes
+### Chores
 
-* postgres: wait using database size when upgrading (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)

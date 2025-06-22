@@ -39,7 +39,7 @@ standalone
 
 ```
 
-quay.io/krestomatio/keydb:6.3.4@sha256:e1d8b3e3b3e7503ebe646cd27908fa54d463c20d43e64e104866f42c43c34322
+quay.io/krestomatio/keydb:6.3.4@sha256:19f0ed01ac1de49a4f76d06d7291fb25709a5d07cec04c0c7c430ce6e5f2f20e
 ...
 
 ```
