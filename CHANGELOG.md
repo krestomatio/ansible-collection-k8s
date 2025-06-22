@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### Bug Fixes
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* moodle: set cache class path (Job Céspedes Ortiz)
