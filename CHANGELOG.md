@@ -1,5 +1,5 @@
 ## Changes
 
-### New Features
+### Bug Fixes
 
-* postgres: update env var name (Job Céspedes Ortiz)
+* postgres: wait using database size when upgrading (Job Céspedes Ortiz)

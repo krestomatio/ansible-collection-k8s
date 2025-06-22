@@ -127,7 +127,8 @@ true
 
 ```
 
-'{{ 3 if not postgres_upgrade else postgres_upgrade_readiness_failure }}'
+'{{ 3 if not postgres_upgrade else postgres_upgrade_readiness_failure + (postgres_pvc_data_size_gib
+  | int) }}'
 
 ```
 ## postgres_readiness_probe
