@@ -20,7 +20,7 @@ postgres_startup_initial: "{{ 5 if not postgres_upgrade else 30 }}"
 postgres_startup_period: "{{ 10 if not postgres_upgrade else 60 }}"
 postgres_startup_timeout: 1
 postgres_startup_success: 1
-postgres_startup_failure: "{{ 3 if not postgres_upgrade else postgres_upgrade_readiness_failure }}"
+postgres_startup_failure: "{{ 3 if not postgres_upgrade else postgres_upgrade_readiness_failure + (postgres_pvc_data_size_gib | int) }}"
 postgres_readiness_probe: true
 postgres_readiness_command: "['/usr/libexec/check-container-postgres']"
 postgres_readiness_initial: 5
