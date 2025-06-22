@@ -291,7 +291,7 @@ moodle_redis_password: "{{ '' if not moodle_redis_secret else
   [moodle_redis_secret_auth_key | default('redis_password')] | default('') | b64decode }}"
 moodle_redis_muc_config: "{{ true if moodle_keydb_meta_name else false }}"
 moodle_redis_muc_config_prefix: muc_
-moodle_redis_muc_config_serializer: 2
+moodle_redis_muc_config_serializer: 1
 moodle_redis_muc_config_compressor: 1
 
 ## muc store
