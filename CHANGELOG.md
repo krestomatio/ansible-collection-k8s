@@ -1,5 +1,5 @@
 ## Changes
 
-### Code Refactoring
+### Chores
 
-* moodle: use php default serializer (Job Céspedes Ortiz)
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)
