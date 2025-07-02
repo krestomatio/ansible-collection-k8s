@@ -1,5 +1,5 @@
 ## Changes
 
-### Chores
+### Bug Fixes
 
-* bump image versions in ansible collection with updatebot (krestomatio-cibot)
+* add moodle update types vars (Job Céspedes Ortiz)

@@ -473,8 +473,32 @@ true
 
 ```
 
-- Other
-- Minor
+'{{ ([''Other''] if moodle_update_other else []) + ([''Minor''] if moodle_update_minor
+  else []) + ([''Major''] if moodle_update_major else []) }}'
+
+```
+## moodle_update_other
+
+```
+
+true
+...
+
+```
+## moodle_update_minor
+
+```
+
+true
+...
+
+```
+## moodle_update_major
+
+```
+
+false
+...
 
 ```
 ## moodle_update_job
