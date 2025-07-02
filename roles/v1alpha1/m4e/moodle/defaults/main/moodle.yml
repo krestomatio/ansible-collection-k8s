@@ -93,10 +93,10 @@ moodle_new_instance_job_startup_failure: 12
 moodle_new_instance_job_connects_to: "{{ php_fpm_connects_to }}"
 
 # moodle auto update
-moodle_update_allow_pending_types:
-  - Other
-  - Minor
-  # - Major
+moodle_update_allow_pending_types: "{{ (['Other'] if moodle_update_other else []) + (['Minor'] if moodle_update_minor else []) + (['Major'] if moodle_update_major else []) }}"
+moodle_update_other: true
+moodle_update_minor: true
+moodle_update_major: false
 moodle_update_job:
   "{{ moodle_appname }}-update-{{ moodle_status_version.allVersionsHash[:10]
   | default(now(utc=True).timestamp() | int) }}-job"
