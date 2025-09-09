@@ -102,3 +102,5 @@ php_fpm_config_process_control_timeout: 20
 php_fpm_netpol_omit: "{{ moodle_netpol_omit }}"
 php_fpm_netpol_ingress_ipblock: "{{ moodle_netpol_ingress_ipblock }}"
 php_fpm_netpol_egress_ipblock: "{{ moodle_netpol_egress_ipblock }}"
+php_fpm_netpol_ingress_extra_ports: "{{ moodle_netpol_ingress_extra_ports }}"
+php_fpm_netpol_egress_extra_ports: "{{ moodle_netpol_egress_extra_ports }}"

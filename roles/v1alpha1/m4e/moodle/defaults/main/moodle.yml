@@ -212,6 +212,8 @@ moodle_pvc_data_autoexpansion_cap_gib: 5
 moodle_netpol_omit: true
 moodle_netpol_ingress_ipblock: false
 moodle_netpol_egress_ipblock: false
+moodle_netpol_ingress_extra_ports: []
+moodle_netpol_egress_extra_ports: []
 
 # optional moodle data nfs volume instead of pvc
 moodle_nfs_meta_name: false

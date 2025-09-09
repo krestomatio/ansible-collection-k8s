@@ -125,6 +125,8 @@ ganesha_netpol_omit: true
 ganesha_netpol: "{{ ganesha_appname }}-netpol"
 ganesha_netpol_ingress_ipblock: false
 ganesha_netpol_egress_ipblock: false
+ganesha_netpol_ingress_extra_ports: []
+ganesha_netpol_egress_extra_ports: []
 ganesha_netpol_connects_to: "{{ ganesha_connects_to if ganesha_connects_to | type_debug == 'list' else [ganesha_connects_to | default('')] }}"
 ganesha_netpol_spec: |-
   policyTypes:
@@ -134,6 +136,13 @@ ganesha_netpol_spec: |-
     matchLabels:
       app.kubernetes.io/name: '{{ ganesha_appname }}'
   ingress:
+  {% if ganesha_netpol_ingress_extra_ports | default([]) %}
+  - ports:
+  {% for _extra_port in ganesha_netpol_ingress_extra_ports %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
+  {% endif %}
   - from:
     - podSelector:
         matchLabels:
@@ -151,6 +160,10 @@ ganesha_netpol_spec: |-
       port: 53
     - protocol: UDP
       port: 53
+  {% for _extra_port in ganesha_netpol_egress_extra_ports | default([]) %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
   - to:
     - podSelector:
         matchLabels:

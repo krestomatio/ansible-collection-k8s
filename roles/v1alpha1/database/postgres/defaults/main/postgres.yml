@@ -278,6 +278,8 @@ postgres_netpol_omit: true
 postgres_netpol: "{{ postgres_appname }}-netpol"
 postgres_netpol_ingress_ipblock: false
 postgres_netpol_egress_ipblock: false
+postgres_netpol_ingress_extra_ports: []
+postgres_netpol_egress_extra_ports: []
 postgres_netpol_connects_to: "{{ postgres_connects_to if postgres_connects_to | type_debug == 'list' else [postgres_connects_to | default('')] }}"
 postgres_netpol_spec: |-
   policyTypes:
@@ -287,6 +289,13 @@ postgres_netpol_spec: |-
     matchLabels:
       app.kubernetes.io/runtime: 'postgres'
   ingress:
+  {% if postgres_netpol_ingress_extra_ports | default([]) %}
+  - ports:
+  {% for _extra_port in postgres_netpol_ingress_extra_ports %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
+  {% endif %}
   - from:
     - podSelector:
         matchLabels:
@@ -307,6 +316,10 @@ postgres_netpol_spec: |-
       port: 53
     - protocol: UDP
       port: 53
+  {% for _extra_port in postgres_netpol_egress_extra_ports | default([]) %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
   - to:
     - podSelector:
         matchLabels:

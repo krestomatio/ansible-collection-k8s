@@ -108,6 +108,13 @@ php_fpm_netpol_spec: |-
     matchLabels:
       app.kubernetes.io/runtime: 'php-fpm'
   ingress:
+  {% if php_fpm_netpol_ingress_extra_ports | default([]) %}
+  - ports:
+  {% for _extra_port in php_fpm_netpol_ingress_extra_ports %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
+  {% endif %}
   - from:
     - podSelector:
         matchLabels:
@@ -126,6 +133,10 @@ php_fpm_netpol_spec: |-
       port: 80
     - protocol: TCP
       port: 443
+  {% for _extra_port in php_fpm_netpol_egress_extra_ports | default([]) %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
   {% for php_fpm_netpol_connects_to_app_name in php_fpm_netpol_connects_to if php_fpm_netpol_connects_to_app_name %}
   - to:
     - podSelector:

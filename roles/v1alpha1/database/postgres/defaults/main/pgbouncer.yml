@@ -212,6 +212,8 @@ pgbouncer_netpol_omit: true
 pgbouncer_netpol: "{{ pgbouncer_appname }}-netpol"
 pgbouncer_netpol_ingress_ipblock: false
 pgbouncer_netpol_egress_ipblock: false
+pgbouncer_netpol_ingress_extra_ports: []
+pgbouncer_netpol_egress_extra_ports: []
 pgbouncer_netpol_connects_to: "{{ pgbouncer_connects_to if pgbouncer_connects_to | type_debug == 'list' else [pgbouncer_connects_to | default('')] }}"
 pgbouncer_netpol_spec: |-
   policyTypes:
@@ -221,6 +223,13 @@ pgbouncer_netpol_spec: |-
     matchLabels:
       app.kubernetes.io/runtime: 'pgbouncer'
   ingress:
+  {% if pgbouncer_netpol_ingress_extra_ports | default([]) %}
+  - ports:
+  {% for _extra_port in pgbouncer_netpol_ingress_extra_ports %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
+  {% endif %}
   - from:
     - podSelector:
         matchLabels:
@@ -235,6 +244,10 @@ pgbouncer_netpol_spec: |-
       port: 53
     - protocol: UDP
       port: 53
+  {% for _extra_port in pgbouncer_netpol_egress_extra_ports | default([]) %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
   {% for pgbouncer_netpol_connects_to_app_name in pgbouncer_netpol_connects_to if pgbouncer_netpol_connects_to_app_name %}
   - to:
     - podSelector:

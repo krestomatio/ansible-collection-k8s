@@ -171,6 +171,10 @@ nginx_netpol_spec: |-
   - ports:
     - protocol: TCP
       port: {{ nginx_port }}
+  {% for _extra_port in nginx_netpol_ingress_extra_ports %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
   - from:
     - podSelector:
         matchLabels:
@@ -189,6 +193,10 @@ nginx_netpol_spec: |-
       port: 80
     - protocol: TCP
       port: 443
+  {% for _extra_port in nginx_netpol_egress_extra_ports | default([]) %}
+    - protocol: "{{ _extra_port.protocol | default('TCP') }}"
+      port: {{ _extra_port.port }}
+  {% endfor %}
   {% for nginx_netpol_connects_to_app_name in nginx_netpol_connects_to if nginx_netpol_connects_to_app_name %}
   - to:
     - podSelector:
