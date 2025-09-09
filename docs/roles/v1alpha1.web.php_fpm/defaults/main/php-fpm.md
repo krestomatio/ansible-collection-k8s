@@ -477,7 +477,8 @@ false
   \ is defined and php_fpm_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
   \ php_fpm_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
   \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n  - protocol: TCP\n    port:\
-  \ 80\n  - protocol: TCP\n    port: 443\n{% for _extra_port in php_fpm_netpol_egress_extra_ports\
+  \ 80\n  - protocol: TCP\n    port: 443\n  - protocol: TCP\n    port: 465\n  - protocol:\
+  \ TCP\n    port: 587\n  - protocol: TCP\n    port: 636\n{% for _extra_port in php_fpm_netpol_egress_extra_ports\
   \ | default([]) %}\n  - protocol: \"{{ _extra_port.protocol | default('TCP') }}\"\
   \n    port: {{ _extra_port.port }}\n{% endfor %}\n{% for php_fpm_netpol_connects_to_app_name\
   \ in php_fpm_netpol_connects_to if php_fpm_netpol_connects_to_app_name %}\n- to:\n\
