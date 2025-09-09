@@ -131,6 +131,9 @@ $CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
 $CFG->debugsmtp = true;
 $CFG->debugimap = true;
 {% endif %}
+{% if moodle_config_last_block is defined %}
+{{ moodle_config_last_block }}
+{% endif %}
 
 require_once(__DIR__ . '/lib/setup.php');
 

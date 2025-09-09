@@ -383,3 +383,6 @@ moodle_config_disableupdateautodeploy: true
 # moodle_config_additional_block: |
 #   $CFG->property_name_one = 'value';
 #   $CFG->property_name_two = 2;
+# moodle_config_last_block: |
+#   $CFG->property_name_one = 'value';
+#   $CFG->property_name_two = 2;
