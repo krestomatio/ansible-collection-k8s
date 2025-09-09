@@ -133,6 +133,12 @@ php_fpm_netpol_spec: |-
       port: 80
     - protocol: TCP
       port: 443
+    - protocol: TCP
+      port: 465
+    - protocol: TCP
+      port: 587
+    - protocol: TCP
+      port: 636
   {% for _extra_port in php_fpm_netpol_egress_extra_ports | default([]) %}
     - protocol: "{{ _extra_port.protocol | default('TCP') }}"
       port: {{ _extra_port.port }}
