@@ -608,6 +608,20 @@ false
 ...
 
 ```
+## keydb_netpol_ingress_extra_ports
+
+```
+
+[]
+
+```
+## keydb_netpol_egress_extra_ports
+
+```
+
+[]
+
+```
 ## keydb_netpol_connects_to
 
 ```
@@ -621,19 +635,25 @@ false
 ```
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
-  \ '{{ keydb_appname }}'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n\
+  \ '{{ keydb_appname }}'\ningress:\n{% if keydb_netpol_ingress_extra_ports | default([])\
+  \ %}\n- ports:\n{% for _extra_port in keydb_netpol_ingress_extra_ports %}\n  - protocol:\
+  \ \"{{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port\
+  \ }}\n{% endfor %}\n{% endif %}\n- from:\n  - podSelector:\n      matchLabels:\n\
   \        app.kubernetes.io/name: '{{ keydb_appname }}'\n  - podSelector:\n     \
   \ matchLabels:\n        {{ meta_app_connects_to }}/{{ keydb_appname }}: 'true'\n\
   {% if keydb_netpol_ingress_ipblock is defined and keydb_netpol_ingress_ipblock %}\n\
   \  - ipBlock:\n      cidr: '{{ keydb_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n\
-  - ports:\n  - protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n\
-  \  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_appname\
-  \ }}'\n{% for keydb_netpol_connects_to_app_name in keydb_netpol_connects_to if keydb_netpol_connects_to_app_name\
-  \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
-  \ '{{ keydb_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
-  \        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name }}'\n   \
-  \ podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name\
-  \ }}'\n{% endfor %}\n{% if keydb_netpol_egress_ipblock is defined and keydb_netpol_egress_ipblock\
-  \ %}\n  - ipBlock:\n      cidr: '{{ keydb_netpol_egress_ipblock }}'\n{% endif %}"
+  - ports:\n  - protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n{% for\
+  \ _extra_port in keydb_netpol_egress_extra_ports | default([]) %}\n  - protocol:\
+  \ \"{{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port\
+  \ }}\n{% endfor %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ keydb_appname }}'\n{% for keydb_netpol_connects_to_app_name in keydb_netpol_connects_to\
+  \ if keydb_netpol_connects_to_app_name %}\n- to:\n  - podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name }}'\n  -\
+  \ namespaceSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ keydb_netpol_connects_to_app_name\
+  \ }}'\n    podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{\
+  \ keydb_netpol_connects_to_app_name }}'\n{% endfor %}\n{% if keydb_netpol_egress_ipblock\
+  \ is defined and keydb_netpol_egress_ipblock %}\n  - ipBlock:\n      cidr: '{{ keydb_netpol_egress_ipblock\
+  \ }}'\n{% endif %}"
 
 ```

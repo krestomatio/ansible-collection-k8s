@@ -469,12 +469,17 @@ false
 ```
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
-  \ 'php-fpm'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n        {{\
-  \ meta_app_connects_to }}/{{ php_fpm_appname }}: 'true'\n{% if php_fpm_netpol_ingress_ipblock\
+  \ 'php-fpm'\ningress:\n{% if php_fpm_netpol_ingress_extra_ports | default([]) %}\n\
+  - ports:\n{% for _extra_port in php_fpm_netpol_ingress_extra_ports %}\n  - protocol:\
+  \ \"{{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port\
+  \ }}\n{% endfor %}\n{% endif %}\n- from:\n  - podSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/{{ php_fpm_appname }}: 'true'\n{% if php_fpm_netpol_ingress_ipblock\
   \ is defined and php_fpm_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
   \ php_fpm_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
   \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n  - protocol: TCP\n    port:\
-  \ 80\n  - protocol: TCP\n    port: 443\n{% for php_fpm_netpol_connects_to_app_name\
+  \ 80\n  - protocol: TCP\n    port: 443\n{% for _extra_port in php_fpm_netpol_egress_extra_ports\
+  \ | default([]) %}\n  - protocol: \"{{ _extra_port.protocol | default('TCP') }}\"\
+  \n    port: {{ _extra_port.port }}\n{% endfor %}\n{% for php_fpm_netpol_connects_to_app_name\
   \ in php_fpm_netpol_connects_to if php_fpm_netpol_connects_to_app_name %}\n- to:\n\
   \  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ php_fpm_netpol_connects_to_app_name\
   \ }}'\n  - namespaceSelector:\n      matchLabels:\n        app.kubernetes.io/name:\

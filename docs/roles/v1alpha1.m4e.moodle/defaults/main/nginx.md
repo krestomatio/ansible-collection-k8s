@@ -212,3 +212,17 @@ true
 '{{ moodle_netpol_egress_ipblock }}'
 
 ```
+## nginx_netpol_ingress_extra_ports
+
+```
+
+'{{ moodle_netpol_ingress_extra_ports }}'
+
+```
+## nginx_netpol_egress_extra_ports
+
+```
+
+'{{ moodle_netpol_egress_extra_ports }}'
+
+```

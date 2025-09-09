@@ -620,17 +620,22 @@ false
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/name:\
   \ '{{ nginx_appname }}'\ningress:\n- ports:\n  - protocol: TCP\n    port: {{ nginx_port\
-  \ }}\n- from:\n  - podSelector:\n      matchLabels:\n        {{ meta_app_connects_to\
+  \ }}\n{% for _extra_port in nginx_netpol_ingress_extra_ports %}\n  - protocol: \"\
+  {{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port }}\n\
+  {% endfor %}\n- from:\n  - podSelector:\n      matchLabels:\n        {{ meta_app_connects_to\
   \ }}/{{ nginx_appname }}: 'true'\n{% if nginx_netpol_ingress_ipblock is defined\
   \ and nginx_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{ nginx_netpol_ingress_ipblock\
   \ }}'\n{% endif %}\negress:\n- ports:\n  - protocol: TCP\n    port: 53\n  - protocol:\
   \ UDP\n    port: 53\n  - protocol: TCP\n    port: 80\n  - protocol: TCP\n    port:\
-  \ 443\n{% for nginx_netpol_connects_to_app_name in nginx_netpol_connects_to if nginx_netpol_connects_to_app_name\
-  \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
-  \ '{{ nginx_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
-  \        app.kubernetes.io/name: '{{ nginx_netpol_connects_to_app_name }}'\n   \
-  \ podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ nginx_netpol_connects_to_app_name\
-  \ }}'\n{% endfor %}\n{% if nginx_netpol_egress_ipblock is defined and nginx_netpol_egress_ipblock\
-  \ %}\n  - ipBlock:\n      cidr: '{{ nginx_netpol_egress_ipblock }}'\n{% endif %}"
+  \ 443\n{% for _extra_port in nginx_netpol_egress_extra_ports | default([]) %}\n\
+  \  - protocol: \"{{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port\
+  \ }}\n{% endfor %}\n{% for nginx_netpol_connects_to_app_name in nginx_netpol_connects_to\
+  \ if nginx_netpol_connects_to_app_name %}\n- to:\n  - podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ nginx_netpol_connects_to_app_name }}'\n  -\
+  \ namespaceSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ nginx_netpol_connects_to_app_name\
+  \ }}'\n    podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{\
+  \ nginx_netpol_connects_to_app_name }}'\n{% endfor %}\n{% if nginx_netpol_egress_ipblock\
+  \ is defined and nginx_netpol_egress_ipblock %}\n  - ipBlock:\n      cidr: '{{ nginx_netpol_egress_ipblock\
+  \ }}'\n{% endif %}"
 
 ```

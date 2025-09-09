@@ -809,6 +809,20 @@ false
 ...
 
 ```
+## pgbouncer_netpol_ingress_extra_ports
+
+```
+
+[]
+
+```
+## pgbouncer_netpol_egress_extra_ports
+
+```
+
+[]
+
+```
 ## pgbouncer_netpol_connects_to
 
 ```
@@ -822,14 +836,19 @@ false
 ```
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
-  \ 'pgbouncer'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n       \
-  \ {{ meta_app_connects_to }}/{{ pgbouncer_appname }}: 'true'\n{% if pgbouncer_netpol_ingress_ipblock\
+  \ 'pgbouncer'\ningress:\n{% if pgbouncer_netpol_ingress_extra_ports | default([])\
+  \ %}\n- ports:\n{% for _extra_port in pgbouncer_netpol_ingress_extra_ports %}\n\
+  \  - protocol: \"{{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port\
+  \ }}\n{% endfor %}\n{% endif %}\n- from:\n  - podSelector:\n      matchLabels:\n\
+  \        {{ meta_app_connects_to }}/{{ pgbouncer_appname }}: 'true'\n{% if pgbouncer_netpol_ingress_ipblock\
   \ is defined and pgbouncer_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr:\
   \ '{{ pgbouncer_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  -\
-  \ protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n{% for pgbouncer_netpol_connects_to_app_name\
-  \ in pgbouncer_netpol_connects_to if pgbouncer_netpol_connects_to_app_name %}\n\
-  - to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{\
-  \ pgbouncer_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
+  \ protocol: TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n{% for _extra_port\
+  \ in pgbouncer_netpol_egress_extra_ports | default([]) %}\n  - protocol: \"{{ _extra_port.protocol\
+  \ | default('TCP') }}\"\n    port: {{ _extra_port.port }}\n{% endfor %}\n{% for\
+  \ pgbouncer_netpol_connects_to_app_name in pgbouncer_netpol_connects_to if pgbouncer_netpol_connects_to_app_name\
+  \ %}\n- to:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
+  \ '{{ pgbouncer_netpol_connects_to_app_name }}'\n  - namespaceSelector:\n      matchLabels:\n\
   \        app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name }}'\n\
   \    podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ pgbouncer_netpol_connects_to_app_name\
   \ }}'\n{% endfor %}\n{% if pgbouncer_netpol_egress_ipblock is defined and pgbouncer_netpol_egress_ipblock\

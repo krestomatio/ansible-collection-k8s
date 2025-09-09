@@ -298,3 +298,17 @@ true
 '{{ moodle_netpol_egress_ipblock }}'
 
 ```
+## php_fpm_netpol_ingress_extra_ports
+
+```
+
+'{{ moodle_netpol_ingress_extra_ports }}'
+
+```
+## php_fpm_netpol_egress_extra_ports
+
+```
+
+'{{ moodle_netpol_egress_extra_ports }}'
+
+```

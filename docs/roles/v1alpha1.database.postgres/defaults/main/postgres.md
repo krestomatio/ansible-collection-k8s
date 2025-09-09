@@ -1041,6 +1041,20 @@ false
 ...
 
 ```
+## postgres_netpol_ingress_extra_ports
+
+```
+
+[]
+
+```
+## postgres_netpol_egress_extra_ports
+
+```
+
+[]
+
+```
 ## postgres_netpol_connects_to
 
 ```
@@ -1054,15 +1068,21 @@ false
 ```
 
 "policyTypes:\n- Ingress\n- Egress\npodSelector:\n  matchLabels:\n    app.kubernetes.io/runtime:\
-  \ 'postgres'\ningress:\n- from:\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
-  \ '{{ postgres_appname }}'\n  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name:\
-  \ '{{ postgres_readreplicas_appname }}'\n  - podSelector:\n      matchLabels:\n\
-  \        {{ meta_app_connects_to }}/{{ postgres_appname }}: 'true'\n{% if postgres_netpol_ingress_ipblock\
-  \ is defined and postgres_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{\
-  \ postgres_netpol_ingress_ipblock }}'\n{% endif %}\negress:\n- ports:\n  - protocol:\
-  \ TCP\n    port: 53\n  - protocol: UDP\n    port: 53\n- to:\n  - podSelector:\n\
-  \      matchLabels:\n        app.kubernetes.io/name: '{{ postgres_appname }}'\n\
-  \  - podSelector:\n      matchLabels:\n        app.kubernetes.io/name: '{{ postgres_readreplicas_appname\
+  \ 'postgres'\ningress:\n{% if postgres_netpol_ingress_extra_ports | default([])\
+  \ %}\n- ports:\n{% for _extra_port in postgres_netpol_ingress_extra_ports %}\n \
+  \ - protocol: \"{{ _extra_port.protocol | default('TCP') }}\"\n    port: {{ _extra_port.port\
+  \ }}\n{% endfor %}\n{% endif %}\n- from:\n  - podSelector:\n      matchLabels:\n\
+  \        app.kubernetes.io/name: '{{ postgres_appname }}'\n  - podSelector:\n  \
+  \    matchLabels:\n        app.kubernetes.io/name: '{{ postgres_readreplicas_appname\
+  \ }}'\n  - podSelector:\n      matchLabels:\n        {{ meta_app_connects_to }}/{{\
+  \ postgres_appname }}: 'true'\n{% if postgres_netpol_ingress_ipblock is defined\
+  \ and postgres_netpol_ingress_ipblock %}\n  - ipBlock:\n      cidr: '{{ postgres_netpol_ingress_ipblock\
+  \ }}'\n{% endif %}\negress:\n- ports:\n  - protocol: TCP\n    port: 53\n  - protocol:\
+  \ UDP\n    port: 53\n{% for _extra_port in postgres_netpol_egress_extra_ports |\
+  \ default([]) %}\n  - protocol: \"{{ _extra_port.protocol | default('TCP') }}\"\n\
+  \    port: {{ _extra_port.port }}\n{% endfor %}\n- to:\n  - podSelector:\n     \
+  \ matchLabels:\n        app.kubernetes.io/name: '{{ postgres_appname }}'\n  - podSelector:\n\
+  \      matchLabels:\n        app.kubernetes.io/name: '{{ postgres_readreplicas_appname\
   \ }}'\n{% for postgres_netpol_connects_to_app_name in postgres_netpol_connects_to\
   \ if postgres_netpol_connects_to_app_name %}\n- to:\n  - podSelector:\n      matchLabels:\n\
   \        app.kubernetes.io/name: '{{ postgres_netpol_connects_to_app_name }}'\n\
