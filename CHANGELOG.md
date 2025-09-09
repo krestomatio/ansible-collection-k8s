@@ -2,4 +2,9 @@
 
 ### New Features
 
-* moodle: add smtp and ldap ports to php fpm netpol (Job Céspedes Ortiz)
+* moodle: add last config block (Job Céspedes Ortiz)
+
+### Code Refactoring
+
+* moodle: put developer mode last (Job Céspedes Ortiz)
+* moodle: put additional cfg last (Job Céspedes Ortiz)

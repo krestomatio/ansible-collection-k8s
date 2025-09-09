@@ -92,14 +92,6 @@ $CFG->disableupdateautodeploy = true;
 $CFG->lock_factory = "\\tool_lockstats\\proxy_lock_factory";
 $CFG->proxied_lock_factory = "auto";
 {% endif %}
-{% if moodle_config_developer is defined and moodle_config_developer %}
-@error_reporting(E_ALL | E_STRICT); // NOT FOR PRODUCTION SERVERS!
-@ini_set('display_errors', '1');    // NOT FOR PRODUCTION SERVERS!
-$CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
-$CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
-$CFG->debugsmtp = true;
-$CFG->debugimap = true;
-{% endif %}
 {% if moodle_config_perfdebug is defined and moodle_config_perfdebug %}
 $CFG->debug = 32767;
 $CFG->perfdebug = 15;
@@ -132,13 +124,24 @@ $CFG->forced_plugin_settings = array(
 {% if moodle_config_tool_generator_users_password is defined %}
 $CFG->tool_generator_users_password = '{{ moodle_config_tool_generator_users_password }}';
 {% endif %}
+{% if moodle_config_additional_block is defined %}
+{{ moodle_config_additional_block }}
+{% endif %}
 {% if moodle_config_additional_cfg is defined %}
 {% for property, value in moodle_config_additional_cfg.items() %}
 $CFG->{{ property }} = {{ value if (value is number or value | bool ) else "'" + value + "'" }};
 {% endfor %}
 {% endif %}
-{% if moodle_config_additional_block is defined %}
-{{ moodle_config_additional_block }}
+{% if moodle_config_developer is defined and moodle_config_developer %}
+@error_reporting(E_ALL | E_STRICT); // NOT FOR PRODUCTION SERVERS!
+@ini_set('display_errors', '1');    // NOT FOR PRODUCTION SERVERS!
+$CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
+$CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
+$CFG->debugsmtp = true;
+$CFG->debugimap = true;
+{% endif %}
+{% if moodle_config_last_block is defined %}
+{{ moodle_config_last_block }}
 {% endif %}
 
 require_once(__DIR__ . '/lib/setup.php');
