@@ -83,6 +83,14 @@ $CFG->disableupdateautodeploy = true;
 $CFG->lock_factory = "\\tool_lockstats\\proxy_lock_factory";
 $CFG->proxied_lock_factory = "auto";
 {% endif %}
+{% if moodle_config_developer is defined and moodle_config_developer %}
+@error_reporting(E_ALL | E_STRICT); // NOT FOR PRODUCTION SERVERS!
+@ini_set('display_errors', '1');    // NOT FOR PRODUCTION SERVERS!
+$CFG->debug = (E_ALL | E_STRICT);   // === DEBUG_DEVELOPER - NOT FOR PRODUCTION SERVERS!
+$CFG->debugdisplay = 1;             // NOT FOR PRODUCTION SERVERS!
+$CFG->debugsmtp = true;
+$CFG->debugimap = true;
+{% endif %}
 {% if moodle_config_perfdebug is defined and moodle_config_perfdebug %}
 $CFG->debug = 32767;
 $CFG->perfdebug = 15;

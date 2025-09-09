@@ -367,6 +367,7 @@ moodle_config_localcachedir: "{{ moodle_local_dir }}/cache"
 # moodle_config_extramemorylimit: 256M
 moodle_config_disableupdateautodeploy: true
 # moodle_config_tool_lockstats: true
+# moodle_config_developer: true
 # moodle_config_perfdebug: true
 # moodle_config_noemailever: true
 # moodle_config_forced_plugin_settings:
