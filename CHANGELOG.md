@@ -1,5 +1,9 @@
 ## Changes
 
+### New Features
+
+* moodle: add option to enable developer debugging (Job Céspedes Ortiz)
+
 ### Bug Fixes
 
-* add moodle update types vars (Job Céspedes Ortiz)
+* moodle: do not use quotes for bool values (Job Céspedes Ortiz)
