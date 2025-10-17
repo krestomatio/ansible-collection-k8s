@@ -249,11 +249,11 @@ postgres_readreplicas_pvc_data_size:
 postgres_readreplicas_pvc_data_size_gib: "{{ cr_status_properties[routine_pvc_autoexpand_info_keyname].autoexpandSizeGib
   | default(postgres_readreplicas_pvc_data_autoexpansion_increment_gib) }}"
 ## enable autoexpansion
-postgres_readreplicas_pvc_data_autoexpansion: false
+postgres_readreplicas_pvc_data_autoexpansion: "{{ postgres_pvc_data_autoexpansion }}"
 ### Increments in those GiB
-postgres_readreplicas_pvc_data_autoexpansion_increment_gib: 1
+postgres_readreplicas_pvc_data_autoexpansion_increment_gib: "{{ postgres_pvc_data_autoexpansion_increment_gib }}"
 ### No more than those GiB
-postgres_readreplicas_pvc_data_autoexpansion_cap_gib: 5
+postgres_readreplicas_pvc_data_autoexpansion_cap_gib: "{{ postgres_pvc_data_autoexpansion_cap_gib }}"
 ### Current labels
 postgres_readreplicas_pvc_data_current_labels: "{{ lookup('k8s', api_version='v1', kind='StatefulSet', namespace=meta_namespace,
   resource_name=postgres_readreplicas_sts).spec.volumeClaimTemplates[0].metadata.labels | default('') }}"
