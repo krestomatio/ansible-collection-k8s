@@ -1,10 +1,9 @@
 ## Changes
 
-### New Features
-
-* moodle: add last config block (Job Céspedes Ortiz)
-
 ### Code Refactoring
 
-* moodle: put developer mode last (Job Céspedes Ortiz)
-* moodle: put additional cfg last (Job Céspedes Ortiz)
+* postgres: set defaults for autoexpansion of read replicas (Job Céspedes Ortiz)
+
+### Chores
+
+* bump image versions in ansible collection with updatebot (krestomatio-cibot)

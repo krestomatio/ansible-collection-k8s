@@ -38,7 +38,7 @@ standalone
 
 ```
 
-quay.io/krestomatio/postgres:15@sha256:051a45211d7fe2bf6d05e85910683c7a1f7009c3cb3e177000b9c34afcfadf55
+quay.io/krestomatio/postgres:15@sha256:cc3d880525619d1efd418a6742bd54abd74a43e2513adb5093e2c4af21cdffcd
 ...
 
 ```
@@ -927,24 +927,21 @@ false
 
 ```
 
-false
-...
+'{{ postgres_pvc_data_autoexpansion }}'
 
 ```
 ## postgres_readreplicas_pvc_data_autoexpansion_increment_gib
 
 ```
 
-1
-...
+'{{ postgres_pvc_data_autoexpansion_increment_gib }}'
 
 ```
 ## postgres_readreplicas_pvc_data_autoexpansion_cap_gib
 
 ```
 
-5
-...
+'{{ postgres_pvc_data_autoexpansion_cap_gib }}'
 
 ```
 ## postgres_readreplicas_pvc_data_current_labels
