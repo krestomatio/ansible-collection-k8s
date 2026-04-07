@@ -65,7 +65,7 @@ spec:
               memory: 32Mi
           workingDir: /workspace/source
         steps:
-        - image: quay.io/krestomatio/ansible-docker-ci:0.4.29
+        - image: quay.io/krestomatio/ansible-docker-ci:0.5
           name: pr
           script: |
             #!/bin/bash
