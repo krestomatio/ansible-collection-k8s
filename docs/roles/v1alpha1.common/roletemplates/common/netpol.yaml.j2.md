@@ -7,7 +7,7 @@
 ---
 ```
 
-# {{ name }} persistent volume claim
+# {{ name }} network policy
 ---
 kind: NetworkPolicy
 apiVersion: v1
