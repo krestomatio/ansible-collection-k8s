@@ -2,4 +2,4 @@
 
 ### Documentation
 
-* agents: add repository guidance (Job Céspedes Ortiz)
+* agents: remove shared context imports (Job Céspedes Ortiz)
