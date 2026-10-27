@@ -172,7 +172,6 @@ import traceback
 from ansible_collections.krestomatio.k8s.plugins.module_utils.ansiblemodule import AnsibleModule
 from ansible.module_utils.basic import missing_required_lib
 from ansible.module_utils._text import to_native
-from ansible.module_utils.six import iteritems
 
 AUTH_ARG_SPEC = {
     'kubeconfig': {
@@ -394,7 +393,7 @@ def get_api_client(module=None):
     except AttributeError:
         configuration = kubernetes.client.Configuration()
 
-    for key, value in iteritems(auth):
+    for key, value in auth.items():
         if key in AUTH_ARG_MAP.keys() and value is not None:
             if key == 'api_key':
                 setattr(configuration, key, {'authorization': "Bearer {0}".format(value)})

@@ -14,7 +14,6 @@ except ImportError:
 
 from os import environ, getenv
 from ansible.errors import AnsibleFilterError, AnsibleFilterTypeError
-from ansible.module_utils.six import string_types, integer_types
 
 
 def jwt_token(payload, key_env_name="JWT_TOKEN_SECRET", expiration_time=30, algorithms="HS256"):
@@ -25,10 +24,10 @@ def jwt_token(payload, key_env_name="JWT_TOKEN_SECRET", expiration_time=30, algo
     if not isinstance(payload, dict):
         raise AnsibleFilterTypeError("payload passed is required to be a dict, instead we got: %s" % type(payload))
 
-    if not isinstance(algorithms, string_types):
+    if not isinstance(algorithms, str):
         raise AnsibleFilterTypeError("algorithms passed is required to be a string, instead we got: %s" % type(algorithms))
 
-    if not isinstance(expiration_time, integer_types):
+    if not isinstance(expiration_time, int):
         raise AnsibleFilterTypeError("expiration_time passed is required to be a int, instead we got: %s" % type(expiration_time))
 
     if key_env_name not in environ:
