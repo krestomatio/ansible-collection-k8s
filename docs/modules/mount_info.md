@@ -44,10 +44,10 @@ Get mount info\.
     block_used (success, int, 24276429)
       Block used
 
-    device (success, string, /dev/vda1)
+    device (success, str, /dev/vda1)
       Device path
 
-    fstype (success, string, ext4)
+    fstype (success, str, ext4)
       FSType
 
     inode_available (success, int, 128131677)
@@ -59,10 +59,10 @@ Get mount info\.
     inode_used (success, int, 2940323)
       INode used
 
-    mount (success, string, /nfs-sample-nfs-pvc)
+    mount (success, str, /nfs-sample-nfs-pvc)
       Mount path
 
-    options (success, string, rw,relatime,bind)
+    options (success, str, rw,relatime,bind)
       Mount options
 
     size_available (success, int, 134332473344)
