@@ -1,0 +1,15 @@
+plugins/inventory/inventory.py import-3.12
+plugins/inventory/inventory.py import-3.13
+plugins/inventory/inventory.py import-3.14
+plugins/inventory/inventory.py validate-modules:invalid-documentation
+plugins/module_utils/jwt.py import-3.9
+plugins/module_utils/jwt.py import-3.10
+plugins/module_utils/jwt.py import-3.11
+plugins/module_utils/jwt.py import-3.12
+plugins/module_utils/jwt.py import-3.13
+plugins/module_utils/jwt.py import-3.14
+plugins/module_utils/jwt.py pylint:ansible-bad-module-import
+plugins/modules/k8s_status.py pylint:use-a-generator
+plugins/modules/k8s_status.py validate-modules!skip
+roles/v1alpha1/m4e/moodle/templates/moodle/muc-config.php.j2 shebang
+roles/v1alpha1/m4e/moodle/templates/moodle/status.php.j2 shebang

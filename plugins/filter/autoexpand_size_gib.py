@@ -4,7 +4,6 @@ __metaclass__ = type
 
 from ansible_collections.krestomatio.k8s.plugins.module_utils.storage import (
     autoexpand_size_gib,
-    b_to_gib,
 )
 
 DOCUMENTATION = r"""
