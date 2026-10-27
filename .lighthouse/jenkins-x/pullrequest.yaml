@@ -76,8 +76,9 @@ spec:
             ## keep tests/sanity/ignore-<version>.txt in sync with this version
             pip install --no-cache 'ansible-core==2.20.*'
 
-            ## pipeline from make
-            make ${JOB_NAME}
+            ## run sanity without containers: SELinux on the CI Docker builder blocks systemd
+            ## in ansible-test's default test container
+            ansible-test sanity --venv
           resources:
             limits:
               cpu: 750m
