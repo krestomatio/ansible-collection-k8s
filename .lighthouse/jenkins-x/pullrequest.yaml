@@ -72,6 +72,10 @@ spec:
             ## copy source to ansible_collections dir
             rsync -a /workspace/source/ /workspace/ansible_collections/krestomatio/k8s
 
+            ## ansible-test requires an ansible-core release that supports the image's Python (3.14);
+            ## keep tests/sanity/ignore-<version>.txt in sync with this version
+            pip install --no-cache 'ansible-core==2.20.*'
+
             ## pipeline from make
             make ${JOB_NAME}
           resources:

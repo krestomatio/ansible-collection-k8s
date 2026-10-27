@@ -61,12 +61,12 @@ mount_info:
       sample: 24276429
     device:
       description: Device path
-      type: string
+      type: str
       returned: success
       sample: "/dev/vda1"
     fstype:
       description: FSType
-      type: string
+      type: str
       returned: success
       sample: "ext4"
     inode_available:
@@ -86,12 +86,12 @@ mount_info:
       sample: 2940323
     mount:
       description: Mount path
-      type: string
+      type: str
       returned: success
       sample: "/nfs-sample-nfs-pvc"
     options:
       description: Mount options
-      type: string
+      type: str
       returned: success
       sample: "rw,relatime,bind"
     size_available:
