@@ -1,5 +1,5 @@
 ## Changes
 
-### Documentation
+### Bug Fixes
 
-* agents: remove shared context imports (Job Céspedes Ortiz)
+* moodle: default session caches to the redis muc store (Job Céspedes Ortiz)

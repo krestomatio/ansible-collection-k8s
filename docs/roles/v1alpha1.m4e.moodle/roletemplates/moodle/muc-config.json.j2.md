@@ -38,6 +38,9 @@
             }
         }
     },
+    "modes": {
+        "session": "{{ 'redis' if moodle_redis_muc_config else 'shared' }}"
+    },
     "rules": {
         "application": [
             {

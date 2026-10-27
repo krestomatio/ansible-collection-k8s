@@ -93,6 +93,8 @@ $cw = cache_config_writer::instance();
 
 write_stores();
 
+write_modes();
+
 write_rules();
 
 /**
@@ -112,6 +114,41 @@ function write_stores() {
                 $cw->add_store_instance($name, $store['type'], $store['config']);
             }
         }
+    }
+}
+
+// Default stores per mode apply to ad hoc caches and to definitions without a mapping.
+// Session caches must not default to the session store when enable_read_only_sessions is set.
+function write_modes() {
+    global $cw, $cache_config;
+    if (!array_key_exists('modes', $cache_config)){
+        return;
+    }
+    $all_stores = $cw->get_all_stores();
+    // set_mode_mappings() replaces every mode, so start from the current defaults.
+    // It assigns ascending sort values while the config reads them descending, so
+    // collect each list in reverse to keep multi-store defaults in their current order.
+    $mappings = array_fill_keys(array_values(CACHE_STORE_MODES), array());
+    foreach ($cw->get_mode_mappings() as $mapping) {
+        array_unshift($mappings[$mapping['mode']], $mapping['store']);
+    }
+    $changed = false;
+    foreach ($cache_config["modes"] as $mode => $store) {
+        if (!array_key_exists($mode, CACHE_STORE_MODES)){
+            cli_error("Unknown cache mode: '" . $mode . "'");
+        }
+        $mode_id = CACHE_STORE_MODES[$mode];
+        if (!array_key_exists($store, $all_stores) || !($all_stores[$store]['modes'] & $mode_id)){
+            cli_error("Store not suitable for mode '" . $mode . "': '" . $store . "'");
+        }
+        if ($mappings[$mode_id] !== array($store)){
+            cli_writeln("Setting default store for mode '" . $mode . "': '" . $store . "'");
+            $mappings[$mode_id] = array($store);
+            $changed = true;
+        }
+    }
+    if ($changed){
+        $cw->set_mode_mappings($mappings);
     }
 }
 
